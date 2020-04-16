@@ -12,6 +12,7 @@ Additional controls:
  * Hold shift and move mouse to edge of screen to scroll
  * T: Show location
  * L: Toggle lighting
+ * B: level up currently selected spell
 
 Other:
 
