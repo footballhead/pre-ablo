@@ -1,5 +1,9 @@
 # diablo-prdemo-patches
 
+Download: https://diablo-evolution.net/index.php?pageid=files
+
+After downloading, checkout [00_dplay] and [01_ddraw] to get it up and running on modern Windows.
+
 ## Missing graphics
 
 Player graphics follow this formula:
