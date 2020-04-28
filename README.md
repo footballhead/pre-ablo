@@ -2,7 +2,15 @@
 
 Download: https://diablo-evolution.net/index.php?pageid=files
 
-After downloading, checkout [00_dplay] and [01_ddraw] to get it up and running on modern Windows.
+After downloading, checkout [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get it up and running on modern Windows.
+
+After that I'd recommend:
+
+  * [fullgame](fullgame)
+  * [skipintros](skipintros)
+  * [rogue-fix](rogue-fix)
+  * [catacombs-fix](catacombs-fix)
+  * [caves-fix](caves-fix)
 
 ## Missing graphics
 
