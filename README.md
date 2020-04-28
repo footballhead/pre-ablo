@@ -7,7 +7,7 @@ After downloading, checkout [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get
 After that I'd recommend:
 
   * [fullgame](fullgame)
-  * [skipintros](skipintros)
+  * [skip_intros](skip_intros)
   * [rogue-fix](rogue-fix)
   * [catacombs-fix](catacombs-fix)
   * [caves-fix](caves-fix)
