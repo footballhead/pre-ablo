@@ -14,34 +14,23 @@ After that I'd recommend:
   * [catacombs-fix](catacombs-fix)
   * [caves-fix](caves-fix)
 
+## Philosophy
+
+The goal is to make the Pre-Release Demo as enjoyable as possible with as few crashes as possible by making as few changes as possible.
+
+Things that we will do:
+
+* The skeleton king is supposed to drop the Undead Crown but doesn't because it's missing from the unique table. This should be fixed to be closer to the intent
+
+Things that we won't do:
+
+* A lot of later monsters don't have their own sound files, e.g. succubus. We will not add the missing files because that was not the state of the game at the time.
+
 ## Making patches
 
 VCDIFF patches are made with [open-vcdiff](https://github.com/google/open-vcdiff).
 
 To make creation and application of patches easier, I've made a Python UI with Gooey. Checkout the [vcdiff-gooey](vcdiff-gooey) submodule.
-
-## Missing graphics
-
-Player graphics follow this formula:
-
-    plrgfx/CLASS/XYZ/XYZ*.CEL
-
-Where:
-
- * `class` is either `warrior` or `rogue`
- * `X` is either `w` (warrior) or `r` (rogue)
- * `Y` is either `l` (light), `m` (medium) or `h` (heavy)
- * `z` is either `a`, `b`, `d`, `h`, `m`, `n`, `s`, `t`, `u`
- * `*` is `as`, `at`, `aw`, `dt`, `fm`, `ht`, `lm`, `qm`, `st`, `wl`
-
-So we're missing:
-
-* All rogue graphics
-* All heavy/medium warrior graphics
-
-These can be grabbed from retail, but need a CL2 -> CEL conversion. (Alpha4 has already done this, just use theirs).
-
-NOTE: The game doesn't try to load medium and heavy variants :( 
 
 ## Adding Missing Files
 
