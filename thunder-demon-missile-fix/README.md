@@ -1,14 +1,36 @@
-GetSpellLevel with a monster ID will try to index the player spell level which can crash.
+Thunder Demo Missile Fix
+===============================================================================
 
-This happens for lightning demons
+(apply after infraring_fix)
 
-Bad code in sub_4371BD (bin offset 0x3673b):
+The Thunder Demon missile calls GetSpellLevel (.text:00453CDB) with a monster ID. This is supposed to be a player ID though, so it can crash trying to access an invalid entry in the `plr` table.
 
-.text:0043733B E8 9B C9 01 00  call    GetSpellLevel
+Retail added ID validation, we can try the same.
 
-Replace with
+```cxx
+if (id != myplr) {
+	return 1;
+}
+// Rest of GetSpellLevel
+```
 
-33 C0 xor eax, eax
-90 nop
-90 nop
-90 nop
+
+
+
+
+```
+mov eax, [ebp+id]
+mov ebx, [myplr]
+cmp eax, ebx
+jz normal_function_body
+mov eax, 1
+jmp end_of_function
+```
+
+
+```
+.text:00401129
+...
+.text:00436D65
+
+```

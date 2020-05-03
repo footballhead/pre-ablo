@@ -6,13 +6,17 @@ Download the game: https://diablo-evolution.net/index.php?pageid=files
 
 After downloading, look at [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get it up and running on modern Windows.
 
-After that I'd recommend:
+To get all missing graphics, look at [02_missing_gfx](02_missing_gfx).
+
+After that I'd recommend (in order):
 
   * [fullgame](fullgame)
   * [skip_intros](skip_intros)
-  * [rogue-fix](rogue-fix)
-  * [catacombs-fix](catacombs-fix)
-  * [caves-fix](caves-fix)
+  * [music-nompq-fix](music-nompq-fix)
+  * [infraring_fix](infraring_fix)
+  * [always_load_flare](always_load_flare)
+  * [lmh_nocrash](lmh_nocrash)
+  * [thunder-demon-missile-fix](thunder-demon-missile-fix)
 
 ## Philosophy
 
