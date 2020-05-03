@@ -1,0 +1,3 @@
+[submodule "vcdiff-gooey"]
+	path = vcdiff-gooey
+	url = https://gitlab.com/moralbacteria/vcdiff-gooey

@@ -1,8 +1,10 @@
 # diablo-prdemo-patches
 
-Download: https://diablo-evolution.net/index.php?pageid=files
+## !!! WARNING: This repo uses submodules, please clone recursively!
 
-After downloading, checkout [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get it up and running on modern Windows.
+Download the game: https://diablo-evolution.net/index.php?pageid=files
+
+After downloading, look at [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get it up and running on modern Windows.
 
 After that I'd recommend:
 
@@ -11,6 +13,12 @@ After that I'd recommend:
   * [rogue-fix](rogue-fix)
   * [catacombs-fix](catacombs-fix)
   * [caves-fix](caves-fix)
+
+## Making patches
+
+VCDIFF patches are made with [open-vcdiff](https://github.com/google/open-vcdiff).
+
+To make creation and application of patches easier, I've made a Python UI with Gooey. Checkout the [vcdiff-gooey](vcdiff-gooey) submodule.
 
 ## Missing graphics
 
