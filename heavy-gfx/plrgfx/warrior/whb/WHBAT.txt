@@ -1,1 +1,0 @@
-tdg misdetects framewidth as 128 instead of 96

@@ -1,11 +1,9 @@
 Medium/Heavy Armor on Warrior Hangs
 ===============================================================================
 
-The medium and heavy armor gfx for Warrior are missing. Trying to load them causes a hang.
+The medium and heavy armor graphics have been converted, see [02_missing_gfx](../02_missing_gfx). You should only need this patch if you encounter issues using them.
 
-The long term fix is to convert all retail graphics from CL2 to CEL (started, see `medium-gfx`).
-
-The short term fix is to not try to load medium or heavy.
+This patch will disable medium and heavy armor graphics, treating them all as light.
 
 Replace (at binary offset 0xB7EF0)
 

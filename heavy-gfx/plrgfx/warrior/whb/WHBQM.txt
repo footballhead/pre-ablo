@@ -1,1 +1,0 @@
-tdg chokes on this one, fails to turn certain BMP into cels
