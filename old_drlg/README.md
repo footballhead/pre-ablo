@@ -1,8 +1,6 @@
 Old Cathedral DRLG
 ===============================================================================
 
-WARNING: This is very crash prone
-
 `InitLevelType` will return the leveltype based on the dungeon level. It's called at program start, kept in `gnLevelTypeTbl`, and stored in the character file.
 
 It returns `5` for cathedral. If it returns `1` then it will use the old cathedral level generator.
