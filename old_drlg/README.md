@@ -77,3 +77,20 @@ to this:
 .text:004532D2 83 3D 48 36 4E 00 01                          cmp     leveltype, 1
 .text:004532D9 0F 84 1F 00 00 00                             jz      loc_4532FE
 ```
+
+Dev Mode Spawns in Newer Dungeons
+-------------------------------------------------------------------------------
+
+Dev mode explicitly sets `leveltype` for new characters to `5` when it should be `1`.
+
+At binary offset 0x888AF, change:
+
+```
+.text:004894AF C7 05 48 36 4E 00 05 00 00 00                 mov     leveltype, 5
+``
+
+to
+
+```
+.text:004894AF C7 05 48 36 4E 00 01 00 00 00                 mov     leveltype, 1
+```
