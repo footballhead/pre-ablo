@@ -7,7 +7,6 @@ REM call :apply_patch cheat\diablo.exe.vcdiff
 call :apply_patch music-nompq-fix\diablo.exe.vcdiff
 call :apply_patch infraring_fix\diablo.exe.vcdiff
 REM call :apply_patch lmh_nocrash\diablo.exe.vcdiff
-call :apply_patch thunder-demon-missile-fix\diablo.exe.vcdiff
 call :apply_patch always_load_flare\diablo.exe.vcdiff
 call :apply_patch snake_frame_fix\diablo.exe.vcdiff
 REM call :apply_patch old_drlg\diablo.exe.vcdiff
@@ -16,6 +15,7 @@ call :apply_patch hell_automap\diablo.exe.vcdiff
 call :apply_patch undead_crown\diablo.exe.vcdiff
 call :apply_patch tp_setlvl_fix\diablo.exe.vcdiff
 call :apply_patch too_much_hp_crash\diablo.exe.vcdiff
+call :apply_patch thunder-demon-missile-fix\diablo.exe.vcdiff
 pause
 exit /b
 
