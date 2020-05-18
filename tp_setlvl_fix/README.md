@@ -1,6 +1,8 @@
 Town Portals Combined with Set Levels are No Bueno
 ===============================================================================
 
+> Depends on [undead_crown](../undead_crown) being applied first
+
 If your town portal is in a set level (e.g. sking lair, bone chamber) and you return from town then the game still thinks you are in town. This is a problem because the game will eventually crash. Also you can't use spells.
 
 This is because the TP code doesn't save or restore `currlevel` in the case of a `setlevel`. We can add code with hardcoded numbers to restore `currlevel` based on the `setlvlnum`. (Alternatives are discussed in #2).

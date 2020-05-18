@@ -1,6 +1,8 @@
 Always Load Flare Graphics
 ===============================================================================
 
+> Depends on [infraring_fix](../infraring_fix) being applied first
+
 Loading the Blood Star/"flare" CELs is conditional on a Succubus being present on the level. However, some monsters other than the Succubus want these graphics (e.g. certain boss packs.) If they aren't loaded then the game will crash.
 
 The solution is to always load the Blood Star CELs.

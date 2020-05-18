@@ -1,7 +1,7 @@
 Skeleton King Does Not Drop Undead Crown
 ===============================================================================
 
-> This must be applied after [always_load_flare](../always_load_flare)
+> Depends on [always_load_flare](../always_load_flare) being applied first
 
 The Skeleton King reward is stored in `monsterdata[48]` under the `mTreasure` column like this:
 
