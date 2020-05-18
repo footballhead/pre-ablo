@@ -1,6 +1,6 @@
 del DIABLO.EXE
 copy _ORIGINAL\DIABLO.EXE DIABLO.EXE
-call :apply_patch devmode\diablo.exe.vcdiff
+REM call :apply_patch devmode\diablo.exe.vcdiff
 call :apply_patch fullgame\diablo.exe.vcdiff
 call :apply_patch skip_intros\diablo.exe.vcdiff
 REM call :apply_patch cheat\diablo.exe.vcdiff
@@ -15,6 +15,7 @@ call :apply_patch no_tp_light\diablo.exe.vcdiff
 call :apply_patch hell_automap\diablo.exe.vcdiff
 call :apply_patch undead_crown\diablo.exe.vcdiff
 call :apply_patch tp_setlvl_fix\diablo.exe.vcdiff
+call :apply_patch too_much_hp_crash\diablo.exe.vcdiff
 pause
 exit /b
 
