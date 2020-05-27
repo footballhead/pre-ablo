@@ -2,9 +2,11 @@
 
 The directory contains:
 
-* `levels/l2data`: catacombs graphics, subset of Alpha4
-* `levels/l3data`: caves graphics, subset of Alpha4
-* `plrgfx/rogue`: rogue graphics from Alpha4
+* `levels/l2data`: catacombs graphics, from Alpha4 with modifications (see #11)
+* `levels/l3data`: caves graphics, from Alpha4 with modifications (see #11)
+* `monsters`: missing monster graphics, from Alpha4
+* `plrgfx/rogue`: rogue graphics, from Alpha4
+* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Beta
 
 Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
