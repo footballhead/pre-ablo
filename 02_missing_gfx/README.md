@@ -6,24 +6,29 @@ The directory contains:
 * `levels/l3data`: caves graphics, from Alpha4 with modifications (see #11)
 * `monsters`: missing monster graphics, from Alpha4
 * `plrgfx/rogue`: rogue graphics, from Alpha4
-* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Beta
+* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Battle.net Beta
 
 Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
 ## Installing
 
-The game doesn't like:
+You have two options for using these files:
 
-  * new files in the MPQ (not recognized for some reason)
-  * files on filesystem alongside the MPQ
+### Local Files
 
-So:
+If DIABDAT.MPQ is missing (e.g. if you delete it) then the game will load the files from subdirectories instead. This is useful for development or debugging where you are constantly modifying and inspecting the 
 
-1. Extract DIABDAT.MPQ into the same directory as DIABLO.EXE
+1. Extract DIABDAT.MPQ into the same directory as DIABLO.EXE. Any version of Ladik's MPQ Editor will work for extraction, but I've included a specific known working version in [../!Tools/mpqediten32_3.5.1.795](../!Tools/mpqediten32_3.5.1.795)
 2. Delete DIABDAT.MPQ
 3. Merge these directories with the ones you just extracted.
 
-To get music working, check out [music-nompq-fix](../music-nompq-fix)
+This will break music. To get music working, check out [music-nompq-fix](../music-nompq-fix)
+
+### Modify the MPQ
+
+**The latest Ladik's MPQ Editor will not work.** Prefer the known working version I've included in [../!Tools/mpqediten32_3.5.1.795](../!Tools/mpqediten32_3.5.1.795)
+
+Open the MPQ, then drag & drop these folders into the right place.
 
 ## Known Problems:
 
