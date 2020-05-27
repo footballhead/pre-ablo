@@ -3,6 +3,8 @@ Skeleton King Does Not Drop Undead Crown
 
 > Depends on [always_load_flare](../always_load_flare) being applied first
 
+> Also depennds on [infraring_fix](../infraring_fix) to prevent a crash when hovering the item in the inventory.
+
 The Skeleton King reward is stored in `monsterdata[48]` under the `mTreasure` column like this:
 
     0x8001 = 0x8000 + 0x1 = U_T + UID_SKCROWN
