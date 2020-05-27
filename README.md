@@ -43,7 +43,7 @@ Deviating from this philosophy needs to be evaluated on a case-by-case basis. Di
 
 ## Making patches
 
-VCDIFF patches are made with [open-vcdiff](https://github.com/google/open-vcdiff).
+VCDIFF patches are made with [open-vcdiff](https://github.com/google/open-vcdiff). A precompiled version can be found in [!Tools/vcdiff.exe](!Tools/vcdiff.exe).
 
 To make creation and application of patches easier, I've made a Python UI with Gooey. Checkout the [!Tools/vcdiff-gooey](!Tools/vcdiff-gooey) submodule.
 
