@@ -27,43 +27,28 @@ After that I'd recommend (in order):
 
 ## Philosophy
 
-The goal is to take a light handed "if it ain't broke, don't fix it approach" to making the Pre-Release Demo:
-
-1. as enjoyable as possible
-2. with as few crashes as possible
-3. by making as few changes as possible.
+"If it ain't broke, don't fix it" is our motto. The goal is to get the most benefit from the fewest changes.
 
 Things that we will do:
 
-* The skeleton king is supposed to drop the Undead Crown but doesn't because it's missing from the unique table. This is probably an explicit ommision from the PR demo (along with the infravision ring) so should be fixed to be closer to the intent at the time.
 * Any crash. The game should not crash.
+* The Skeleton King is supposed to drop the Undead Crown but doesn't because it's missing from the unique table. This is probably an explicit ommision from the PR demo (along with the Infravision Ring) so should be fixed to be closer to the intent at the time.
 
-Things that we won't do, these are part of the "charm of the PR Demo":
+Things that we won't do, these are part of the "charm of the PR Demo" (these use the `prority::lo` tag on the Issue Tracker):
 
+* Gameplay bugs that otherwise don't crash the game or prevent game progressionn, e.g. Griswold showing affixes while selling unidentified magic items.
 * A lot of later monsters don't have their own sound files, e.g. succubus. We will not add the missing files because that was not the state of the game at the time.
-* Gameplay bugs that otherwise don't crash the game, e.g. Griswold showing affixes while selling unidentified magic items.
 
-Deviating from this philosophy needs to be evaluated on a case-by-case basis.
+Deviating from this philosophy needs to be evaluated on a case-by-case basis. Discussion will happen on the [Issue Tracker](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues).
 
 ## Making patches
 
 VCDIFF patches are made with [open-vcdiff](https://github.com/google/open-vcdiff).
 
-To make creation and application of patches easier, I've made a Python UI with Gooey. Checkout the [vcdiff-gooey](vcdiff-gooey) submodule.
+To make creation and application of patches easier, I've made a Python UI with Gooey. Checkout the [!Tools/vcdiff-gooey](!Tools/vcdiff-gooey) submodule.
 
-## Adding Missing Files
+## Adding Missing Files to MPQ
 
-The game doesn't like:
+(For the original MPQ listfile, see [!Tools/listfile.txt](!Tools/listfile.txt))
 
-  * new files in the MPQ (not recognized for some reason)
-  * files on filesystem alongside the MPQ
-  
-So:
-
- 1. Extract the MPQ to wherever diablo.exe is
- 2. Copy your files into the right place on FS
- 3. Delete diabdat.mpq
-
-## MPQ File List
-
-For all files in Pre-Release Demo, see [listfile.txt]
+For modifying/creating compatible MPQs, use [!Tools/mpqediten32_3.5.1.795](!Tools/mpqediten32_3.5.1.795) with the Game Compatibility set to _Diablo I_. This is an old version of Ladik's MPQ Editor that works for some reason. If you use the latest then files added to the MPQ will be ignored (the game will pretend that they don't exist).
