@@ -34,7 +34,7 @@ Things that we will do:
 * Any crash. The game should not crash.
 * The Skeleton King is supposed to drop the Undead Crown but doesn't because it's missing from the unique table. This is probably an explicit ommision from the PR demo (along with the Infravision Ring) so should be fixed to be closer to the intent at the time.
 
-Things that we won't do, these are part of the "charm of the PR Demo" (these use the `prority::lo` tag on the Issue Tracker):
+Things that we won't do, these are part of the "charm of the PR Demo" (these use the `prority::low` tag on the Issue Tracker):
 
 * Gameplay bugs that otherwise don't crash the game or prevent game progressionn, e.g. Griswold showing affixes while selling unidentified magic items.
 * A lot of later monsters don't have their own sound files, e.g. succubus. We will not add the missing files because that was not the state of the game at the time.
