@@ -26,4 +26,3 @@ To get music working, check out [music-nompq-fix](../music-nompq-fix)
 ## Known Problems:
 
 * caves minimap doesn't 100% work, see https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues/7
-* `l2.cel` and `l3.cel` don't look 100% correct, see https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues/11
