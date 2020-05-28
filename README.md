@@ -11,17 +11,16 @@ To get all missing graphics, look at [02_missing_gfx](02_missing_gfx).
 After that I'd recommend (in order):
 
   * [fullgame](fullgame)
-  * [skip_intros](skip_intros)
-  * [music-nompq-fix](music-nompq-fix)
   * [infraring_fix](infraring_fix)
   * [always_load_flare](always_load_flare)
-  * [snake_frame_fix](snake_frame_fix)
   * [no_tp_light](no_tp_light)
   * [hell_automap](hell_automap)
   * [undead_crown](undead_crown)
   * [tp_setlvl_fix](tp_setlvl_fix)
   * [too_much_hp_crash](too_much_hp_crash)
   * [thunder-demon-missile-fix](thunder-demon-missile-fix)
+  * [snake_frame_fix](snake_frame_fix)
+  * [mega_fix](mega_fix)
 
 > Some patches have dependencies on other patches. If they are not applied in the correct order then some may be overridden or not applied at all. Refer to the README in each folder for dependency resolution.
 
