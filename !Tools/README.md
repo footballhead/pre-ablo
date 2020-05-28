@@ -11,7 +11,7 @@ These tools were made by other people:
 **Folder:** [TDG23](TDG23)  
 **Homepage:** (DEAD LINK, RIP) http://www.thedark5.com/forum/forum_posts.asp?TID=960&PN=1
 
-_*Run as Administrator!_ A slightly modified distribution of TDG to work on mondern Windows. Only difference is I've included `comdlg32.ocx` which is missing on most modern windows.
+_Run as Administrator!_ A slightly modified distribution of TDG to work on mondern Windows. Only difference is I've included `comdlg32.ocx` which is missing on most modern windows.
 
 ### Ladik's MPQ Editor v3.5.1.795
 
