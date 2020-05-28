@@ -36,7 +36,7 @@ Things that we will do:
 
 Things that we won't do, these are part of the "charm of the PR Demo" (these use the `prority::low` tag on the Issue Tracker):
 
-* Gameplay bugs that otherwise don't crash the game or prevent game progressionn, e.g. Griswold showing affixes while selling unidentified magic items.
+* Gameplay bugs that otherwise don't crash the game or prevent game progression, e.g. Griswold showing affixes while selling unidentified magic items.
 * A lot of later monsters don't have their own sound files, e.g. succubus. We will not add the missing files because that was not the state of the game at the time.
 
 Deviating from this philosophy needs to be evaluated on a case-by-case basis. Discussion will happen on the [Issue Tracker](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues).
