@@ -16,14 +16,14 @@ _*Run as Administrator!_ A slightly modified distribution of TDG to work on mond
 ### Ladik's MPQ Editor v3.5.1.795
 
 **Folder:** [mpqediten32_3.5.1.795](mpqediten32_3.5.1.795)  
-**Homepage:** [http://www.zezula.net/en/mpq/download.html](http://www.zezula.net/en/mpq/download.html)
+**Homepage:** http://www.zezula.net/en/mpq/download.html
 
 _Set Game Compatibility to_ Diablo I _!_ Only v3.5.1.795 (and maybe earlier) will be able to create/modify MPQs in a way that PR Demo can read.
 
 ### open-vcdiff
 
 **File:** [vcdiff.exe](vcdiff.exe)  
-**Homepage**: [open-vcdiff](https://github.com/google/open-vcdiff)
+**Homepage**: https://github.com/google/open-vcdiff
 
 This is a binary diff creator/applicator. It's the backbone of the entire operation.
 
