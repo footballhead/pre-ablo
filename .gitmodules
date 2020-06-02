@@ -1,3 +1,6 @@
 [submodule "!Tools/vcdiff-gooey"]
 	path = !Tools/vcdiff-gooey
 	url = https://gitlab.com/moralbacteria/vcdiff-gooey
+[submodule "!Tools/open-vcdiff"]
+	path = !Tools/open-vcdiff
+	url = https://github.com/google/open-vcdiff.git
