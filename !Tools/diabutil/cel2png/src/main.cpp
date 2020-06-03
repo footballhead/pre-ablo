@@ -12,22 +12,26 @@ using namespace std::string_literals;
 
 int main(int argc, char **argv)
 {
-	if (argc != 4)
+	if (argc < 4 || argc > 5)
 	{
-		fprintf(stderr, "Usage: %s file.celpart palette.pal width\n", argv[0]);
+		fprintf(stderr, "Usage: %s file.celpart palette.pal width [--header]\n", argv[0]);
 		return 1;
 	}
 
 	auto const in_cel_file = argv[1];
 	auto const in_palette_file = argv[2];
 	auto const width = std::stoi(argv[3]);
+	auto has_header = false;
+	if (argc == 5) {
+		has_header = (argv[4] == "--header"s);
+	}
 
 	auto const cel_data = read_entire_file(in_cel_file);
 	auto const palette_data = read_entire_file(in_palette_file);
 
 	auto const palette = palette_from_data(palette_data);
 
-	auto const image = image_from_cel(cel_data, width, palette, /*has_header=*/true);
+	auto const image = image_from_cel(cel_data, width, palette, has_header);
 
 	if (image.width * image.height != image.pixels.size())
 	{
