@@ -12,7 +12,6 @@ data\diabsmal.cel
 data\hugetext.cel
 data\inv\inv.cel
 data\inv\inv.pal
-data\inv\inv_1.bmp
 data\inv\objcurs.cel
 data\medtexts.cel
 data\PentSpin.cel
@@ -21,13 +20,11 @@ data\square.cel
 data\textbox.cel
 data\textbox2.cel
 data\textslid.cel
-File00000101.xxx
 gendata\bigtext.cel
 gendata\blizno.cel
 gendata\blizno.pal
 gendata\bliznort.cel
 gendata\bliznort.pal
-gendata\bliznort_1.bmp
 gendata\charscrn.pal
 gendata\create.pal
 gendata\create4.pal
@@ -49,13 +46,11 @@ gendata\netgames.pal
 gendata\pentitle.cel
 gendata\quote.pal
 gendata\quote1.cel
-gendata\quote1_1.bmp
 gendata\quote2.cel
 gendata\quotes.cel
 gendata\quotes.pal
 gendata\screen01.cel
 gendata\screen01.pal
-gendata\screen01_1.bmp
 gendata\screen02.cel
 gendata\screen02.pal
 gendata\screen03.cel
@@ -72,7 +67,6 @@ gendata\titlgray.cel
 gendata\titlqtxt.cel
 gendata\titltext.cel
 items\armor2.cel
-items\armor2_1.bmp
 items\axe.cel
 items\axeflip.cel
 items\bottle.cel
