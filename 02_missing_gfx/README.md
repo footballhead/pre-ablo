@@ -30,6 +30,8 @@ This will break music. To get music working, check out [music-nompq-fix](../musi
 
 Open the MPQ, then drag & drop these folders into the right place.
 
-## Known Problems:
+## Notes
 
 * caves minimap doesn't 100% work, see https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues/7
+* monsters/mage/magew.cel is actually mages.cel (since it's the required 20 frames). In retail, magew.cel is only 1 frame.
+* 
