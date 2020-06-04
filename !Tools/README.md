@@ -34,9 +34,12 @@ This is a binary diff creator/applicator. It's the backbone of the entire operat
 
 Tools made by me for this project:
 
-* vcdiff-gooey: A Python Gooey front-end for open-vcdiff.
-* [apply.bat](apply.bat): a sample script of using VCDIFF to apply patches in order.
-* [splitcel](splitcel): A C++ program that explodes a CEL file into one file per frame ("celparts").
-* [joincel](joincel): A C++ program that combines "celparts" back into a CEL file.
-* [retail2prdemo](retail2prdemo): A C++ program for converting retail `l*data` into PR demo `l*data`.
-* [storm-sample](storm-sample): An example of using PR Demo's STORM.DLL in a C++ program to extract files.
+  * vcdiff-gooey: A Python Gooey front-end for open-vcdiff.
+  * [apply.bat](apply.bat)/[apply.sh](apply.sh): a sample script of using VCDIFF to apply patches in order.
+  * [diabutil](diabutil): Various file format helper programs
+      * [splitcel](diabutil/splitcel): A C++ program that explodes a CEL file into one file per frame ("celparts").
+      * [joincel](diabutil/joincel): A C++ program that combines "celparts" back into a CEL file.
+      * [splitgroups](diabutil/splitgroups): A C++ program that explodes a CEL file with a group header (e.g. player animations)
+      * [joingroups](diabutil/joingroups): A C++ program that joins CEL files with a group header
+      * [retail2prdemo](diabutil/retail2prdemo): A C++ program for converting retail `l*data` into PR demo `l*data`.
+  * [mpqadd](mpqadd): A C++ program using [StormLib](https://github.com/ladislav-zezula/StormLib) to add files to an MPQ
