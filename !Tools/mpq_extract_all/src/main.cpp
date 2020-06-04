@@ -109,6 +109,6 @@ int main(int argc, char **argv)
         SFileCloseFile(handle);
     }
 
-    // SFileCloseArchive(mpq);
+    SFileCloseArchive(mpq);
     return 0;
 }
