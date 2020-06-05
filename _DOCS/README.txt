@@ -34,6 +34,7 @@ Changelog
 v0.1.0
 
   * Remove demo restrictions
+  * Display our version on main menu
   * Package additional file to support modern Windows:
       * dplay.dll from DirectX 2.0
       * ddraw.dll from Strange Bytes's wrapper
