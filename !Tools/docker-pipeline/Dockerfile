@@ -17,12 +17,19 @@ RUN apt-get update \
         make \
         p7zip \
         wget \
-        zlib1g-dev
+        zlib1g-dev \
+        unzip
 
 # Download and extract prdemo to /root/DIABLO
 WORKDIR /root
 RUN wget https://diablo-evolution.net/files/prereleasedemo.7z \
     && 7zr x prereleasedemo.7z
+
+# Download and extract ddraw patch (we don't need to do this every CI build)
+WORKDIR /root
+RUN wget https://www.strangebytes.com/projects/1-diablo-1-windows-7-vista-patch/diablopatch_20140908.zip \
+    && unzip diablopatch_20140908.zip -d diablopatch_20140908 \
+    && cp diablopatch_20140908/ddraw.dll DIABLO/
 
 # Clone, build, and install StormLib to tool staging directory
 WORKDIR /root
@@ -32,6 +39,7 @@ WORKDIR /root/StormLib
 RUN mkdir build \
     && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/root/tools \
+    && make -j $(nproc) \
     && make install
 
 # Clone, build, and install mpqadd to tool staging directory
@@ -42,6 +50,7 @@ WORKDIR /root/diablo-prdemo-patches/!Tools/mpqadd
 RUN mkdir build \
     && cd build \
     && STORM_ROOT=/root/tools cmake .. -DCMAKE_INSTALL_PREFIX=/root/tools \
+    && make -j $(nproc) \
     && make install
 
 # Clone, build, and install open-vcdiff to tool staging directory
@@ -54,6 +63,7 @@ WORKDIR /root/open-vcdiff
 RUN mkdir build \
     && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/root/tools \
+    && make -j $(nproc) \
     && make install
 
 #

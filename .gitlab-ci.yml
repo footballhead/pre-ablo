@@ -2,11 +2,6 @@ image: "moralbacteria/diablo-prdemo-patches:latest"
 
 build:
   script:
-    - apt-get update
-    - apt-get install --no-install-recommends -y wget unzip ca-certificates
-    - wget https://www.strangebytes.com/projects/1-diablo-1-windows-7-vista-patch/diablopatch_20140908.zip
-    - unzip diablopatch_20140908.zip -d diablopatch_20140908
-    - cp diablopatch_20140908/ddraw.dll /root/DIABLO/
     - cp _DOCS/README.txt /root/DIABLO/
     - cp 00_dplay/dplay.dll /root/DIABLO/
     - cd 02_missing_gfx
