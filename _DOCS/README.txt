@@ -5,8 +5,6 @@ DIABLO PR DEMO ENHANCED v0.1.0
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches
 
-This project is a conservation attempt.
-
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
 purposes, they produced a build to be distributed as shareware called the Pre-
 Release Demo. Blizzard intended this build to be locked down: players would be
@@ -52,7 +50,7 @@ v0.1.0
   * Fix crash on inspecting Infravision Ring/Undead Crown (#3)
   * Remove town portal light source to avoid crash on load (#5 workaround)
   * Enable minimap in Hell (#8)
-  * Fix crash when encountering <<FLARE GOAT BOW BOSS>> (#23)
+  * Fix crash when encountering Blightfire (#23)
   * Prevent overlapping missiles from drawing (#75 workaround)
   * Fix crash when HP > max or < 0 (#40, #76)
   * Fix town portals in Skeleton King Lair and Bone Chamber (#2)
