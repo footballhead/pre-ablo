@@ -3,7 +3,8 @@ On Windows, open me in WordPad!
 DIABLO PR DEMO ENHANCED v0.1.0
 ================================================================================
 
-Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches
+Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
+Discord: https://discord.gg/2btAntp
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
 purposes, they produced a build to be distributed as shareware called the Pre-

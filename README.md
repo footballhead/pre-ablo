@@ -2,6 +2,8 @@
 
 ## !!! WARNING: This repo uses submodules, please clone recursively!
 
+Discord: https://discord.gg/2btAntp
+
 Download the game: https://diablo-evolution.net/index.php?pageid=files
 
 After downloading, look at [00_dplay](00_dplay) and [01_ddraw](01_ddraw) to get it up and running on modern Windows.
