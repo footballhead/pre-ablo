@@ -23,6 +23,6 @@ build:
     - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta stone-curse-missile-fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
     - mv /root/DIABLO .
   artifacts:
-    name: "$CI_COMMIT_SHORT_SHA"
+    name: "prdemo_enhanced_$CI_COMMIT_SHORT_SHA"
     paths:
       - DIABLO/
