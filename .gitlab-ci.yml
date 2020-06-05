@@ -1,0 +1,32 @@
+image: "moralbacteria:diablo-prdemo-patches"
+
+build:
+  script:
+    - apt-get update
+    - apt-get install --no-install-recommends -y wget unzip ca-certificates
+    - wget https://www.strangebytes.com/projects/1-diablo-1-windows-7-vista-patch/diablopatch_20140908.zip
+    - unzip diablopatch_20140908.zip -d diablopatch_20140908
+    - cp diablopatch_20140908/ddraw.dll /root/DIABLO/
+    - cp _DOCS/README.txt /root/DIABLO/
+    - cp 00_dplay/dplay.dll /root/DIABLO/
+    - cd 02_missing_gfx
+    - find levels/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
+    - find monsters/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
+    - find plrgfx/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
+    - cd ..
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta fullgame/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta infraring_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta always_load_flare/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta snake_frame_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta no_tp_light/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta hell_automap/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta undead_crown/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta tp_setlvl_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta too_much_hp_crash/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta thunder-demon-missile-fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta mega_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta stone-curse-missile-fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+  artifacts:
+    name: "$CI_COMMIT_SHORT_SHA"
+    paths:
+      - /root/DIABLO/
