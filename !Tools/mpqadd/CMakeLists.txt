@@ -15,3 +15,5 @@ target_include_directories(mpqadd
     PRIVATE 
         ${STORM_INCLUDE_DIR}
     )
+
+install(TARGETS mpqadd RUNTIME DESTINATION bin)
