@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         }
 
         // add file
-        if (!SFileAddFileEx(mpq, line.c_str(), winpath.c_str(), 0, 0, 0))
+        if (!SFileAddFileEx(mpq, line.c_str(), winpath.c_str(), MPQ_FILE_IMPLODE | MPQ_FILE_ENCRYPTED, 0, 0))
         {
             std::cerr << "Failed to add file: " << line << " (" << winpath << ")\n";
         }
