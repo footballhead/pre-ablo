@@ -42,4 +42,3 @@ Tools made by me for this project:
       * [splitgroups](diabutil/splitgroups): A C++ program that explodes a CEL file with a group header (e.g. player animations)
       * [joingroups](diabutil/joingroups): A C++ program that joins CEL files with a group header
       * [retail2prdemo](diabutil/retail2prdemo): A C++ program for converting retail `l*data` into PR demo `l*data`.
-  * [mpqadd](mpqadd): A C++ program using [StormLib](https://github.com/ladislav-zezula/StormLib) to add files to an MPQ

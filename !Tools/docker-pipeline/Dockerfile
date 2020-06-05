@@ -44,9 +44,9 @@ RUN mkdir build \
 
 # Clone, build, and install mpqadd to tool staging directory
 WORKDIR /root
-RUN git clone https://gitlab.com/moralbacteria/diablo-prdemo-patches.git
+RUN git clone https://gitlab.com/moralbacteria/mpqadd.git
 
-WORKDIR /root/diablo-prdemo-patches/!Tools/mpqadd
+WORKDIR /root/mpqadd
 RUN mkdir build \
     && cd build \
     && STORM_ROOT=/root/tools cmake .. -DCMAKE_INSTALL_PREFIX=/root/tools \
