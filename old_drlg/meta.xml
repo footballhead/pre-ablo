@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>0</order>
+    <recommended>false</recommended>
+    <description>Enable the old Alpha DRLG for the cathedral levels 1-4. Not recommended because it's largely untested and conflicts with hell_automap.</description>
+</patch>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>0</order>
+    <recommended>true</recommended>
+    <description>Enables the minimap in Hell.
+
+Conflicts with old_drlg, do not apply both!</description>
+</patch>

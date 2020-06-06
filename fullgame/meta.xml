@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>11</order>
+    <recommended>true</recommended>
+    <description>Removes demo limitations. This allows you to play as Rogue or Sorceror, and to venture farther than level 1.</description>
+</patch>

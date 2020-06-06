@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>14</order>
+    <recommended>false</recommended>
+    <description>This is an old fix to allow playing music from the filesystem instead of the MPQ. Now that the files are packaged in the MPQ, this is not recommended.</description>
+</patch>

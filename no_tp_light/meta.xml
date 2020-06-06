@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>0</order>
+    <recommended>true</recommended>
+    <description>A workaround that disables the light emitted by the town portal. This fixes a crash on load if the player was in the dungeon and had cast town portal.</description>
+</patch>

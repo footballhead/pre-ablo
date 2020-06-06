@@ -1,6 +1,8 @@
 Enable Hell Automap
 ===============================================================================
 
+> This conflicts with [old_drlg](old_drlg)
+
 Levels 12-16 have `leveltype == 4`. `InitAutomap` (.text:) only supports leveltype `2/3/5`. We can trick it to care about leveltype `2-5` then divert the 4 case to load the catacombs automap information.
 
 Change (binary offset 0x51251):

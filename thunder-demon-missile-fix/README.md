@@ -1,7 +1,5 @@
-Thunder Demo Missile Fix
+Thunder Demon Missile Fix
 ===============================================================================
-
-> Depends on [too_much_hp_crash](../too_much_hp_crash) being applied first
 
 The Thunder Demon missile calls GetSpellLevel (.text:00453CDB) with a monster ID. This is supposed to be a player ID though, so it can crash trying to access an invalid entry in the `plr` table.
 

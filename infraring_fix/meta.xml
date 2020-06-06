@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>1</order>
+    <recommended>true</recommended>
+    <description>Fix crash when hovering over Infravision Ring or Undead Crown in inventory. Makes it easier to equip those items.</description>
+</patch>

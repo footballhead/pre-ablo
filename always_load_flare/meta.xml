@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>2</order>
+    <recommended>true</recommended>
+    <description>Always load the Succubi missile graphics. This fixes a crash encountering Blightfire, the unique Fire Clan archer, on level 7.</description>
+</patch>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>0</order>
+    <recommended>true</recommended>
+    <description>Prevent a crash when drawing the snake enemies by altering the frames to match the assets we have.</description>
+</patch>

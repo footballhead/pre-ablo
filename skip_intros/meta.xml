@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>12</order>
+    <recommended>false</recommended>
+    <description>Skip the logos, quotes, and intro animation when launching the game.</description>
+</patch>

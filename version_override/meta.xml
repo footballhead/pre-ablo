@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>0</order>
+    <recommended>true</recommended>
+    <description>Replaces the version number on the main menu with the PR Demo Enhanced release number. Purely cosmetic and vain.</description>
+</patch>

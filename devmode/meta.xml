@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<patch>
+    <order>10</order>
+    <recommended>false</recommended>
+    <description>Enables a developer debug mode. This does the following:
+
+- All monsters are Skeletons with axes (except for setlevels like Skeleton King Lair and Bone Chamber, or the Butcher)
+- Cheats: On/Off replaces Music: On/Off in the game menu. Hold CTRL+SHIFT when clicking to toggle.
+- Bunch of developer related keyboard functions
+- All normal quests are active (Butcher, Skeleton King, Magic Rock, Bone Chamber)
+
+When cheats are on:
+
+- Everything in the cheat patch
+- You have access to all spells, each is level 0
+- All quests are in the quest log, even The Maze (level 4 stairs blocker that requires reading the Tome)</description>
+</patch>
