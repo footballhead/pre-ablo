@@ -2,6 +2,10 @@ image: "moralbacteria/diablo-prdemo-patches:latest"
 
 build:
   script:
+    - apt-get update && apt-get install --no-install-recommends -y curl ca-certificates unzip
+    - curl -L "https://drive.google.com/uc?export=download&id=18f5Dl-kYkxKA_e7mp2cfol8-78LcBZmC" > prde_patcher.zip
+    - unzip prde_patcher.zip -d prde_patcher
+    - cp -R prde_patcher/* /root/DIABLO/
     - cp _DOCS/README.txt /root/DIABLO/
     - cp 00_dplay/dplay.dll /root/DIABLO/
     - cd 02_missing_gfx
@@ -9,19 +13,27 @@ build:
     - find monsters/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
     - find plrgfx/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
     - cd ..
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta fullgame/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta infraring_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta always_load_flare/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta snake_frame_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta no_tp_light/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta hell_automap/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta undead_crown/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta tp_setlvl_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta too_much_hp_crash/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta thunder-demon-missile-fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta mega_fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta stone-curse-missile-fix/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
-    - vcdiff decode --dictionary /root/DIABLO/DIABLO.EXE --delta version_override/diablo.exe.vcdiff --target /root/DIABLO/DIABLO.EXE
+    - mkdir /root/DIABLO/patches
+    - mv /root/DIABLO/DIABLO.EXE /root/DIABLO/patches/DIABLO.EXE
+    - cp -R always_load_flare /root/DIABLO/patches/
+    - cp -R cheat /root/DIABLO/patches/
+    - cp -R devmode /root/DIABLO/patches/
+    - cp -R fullgame /root/DIABLO/patches/
+    - cp -R hell_automap /root/DIABLO/patches/
+    - cp -R infraring_fix /root/DIABLO/patches/
+    - cp -R lmh_nocrash /root/DIABLO/patches/
+    - cp -R mega_fix /root/DIABLO/patches/
+    - cp -R music-nompq-fix /root/DIABLO/patches/
+    - cp -R np_tp_light /root/DIABLO/patches/
+    - cp -R old_drlg /root/DIABLO/patches/
+    - cp -R skip_intros /root/DIABLO/patches/
+    - cp -R snake_frame_fix /root/DIABLO/patches/
+    - cp -R stone-curse-missile-fix /root/DIABLO/patches/
+    - cp -R thunder-demon-missile-fix /root/DIABLO/patches/
+    - cp -R too_much_hp_crash /root/DIABLO/patches/
+    - cp -R tp_setlvl_fix /root/DIABLO/patches/
+    - cp -R undead_crown /root/DIABLO/patches/
+    - cp -R version_override /root/DIABLO/patches/
     - mv /root/DIABLO .
   artifacts:
     name: "prdemo_enhanced_$CI_COMMIT_SHORT_SHA"
