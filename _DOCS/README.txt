@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.1.0
+DIABLO PR DEMO ENHANCED v0.2.0
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -28,8 +28,32 @@ Bugs are expected since, in August 1996, the game was actively under
 development. These bugs are left in to be faithful to the state of the game as
 it was being developed.
 
+Running
+--------------------------------------------------------------------------------
+
+We've include a custom launcher so you can choose your own adventure.
+
+After extracting this zip to C:\PRDEMO, run launcher.exe. This will open a
+window with a list of checkboxes down the left-hand side. Click on the
+individual labels to get a description on the right-hand side.
+
+Select individual patches by clicking the checkboxes. The patches checked by 
+default are the ones that we recommend. After choosing patches, click Launch!
+This will apply the chosen patches and start the game.
+
+Your previous choices are saved as DIABLO.EXE. If you like the patches you chose
+last time, you can run DIABLO.EXE instead of the launcher.
+
 Changelog
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+v0.2.0
+
+  * Include v0.2.0 of prde_patcher, a custom launcher
+    (https://gitlab.com/moralbacteria/prde_patcher)
+  * Create meta.xml for each patch. This provides information for the launcher
+  * Bundle all patches in the release. By default, select recommended patches
+      * Specifically, I want to point out the old_drlg patch. Try it out!
 
 v0.1.0
 
@@ -59,7 +83,7 @@ v0.1.0
   * Fix Thunder Demon Lightning missile-related crash (#9)
 
 Known Bugs
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 For a full list: https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues
 
@@ -73,7 +97,7 @@ Here are some bugs worth mentioning:
       * WORKAROUND: Start a new game until you're in Tristram, then load
 
 Thanks
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 This project could not happen without the help and efforts of many people:
 
