@@ -47,6 +47,14 @@ last time, you can run DIABLO.EXE instead of the launcher.
 Changelog
 --------------------------------------------------------------------------------
 
+v0.2.1
+
+  * Improve hell_automap fix to not conflict with old_drlg
+  * Rename hell_automap to automap_fix
+  * Update old_drlg to work with automap_fix
+  * Add known issues to old_drlg description
+  * Changed V key behaviour in-game to print our version
+
 v0.2.0
 
   * Include v0.2.0 of prde_patcher, a custom launcher
