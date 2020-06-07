@@ -2,5 +2,5 @@
 <patch>
     <order>0</order>
     <recommended>true</recommended>
-    <description>Replaces the version number on the main menu with the PR Demo Enhanced release number. Purely cosmetic and vain.</description>
+    <description>Replaces the version number on the main menu and in-game (press V) with the PR Demo Enhanced release number. Purely cosmetic and vain.</description>
 </patch>
