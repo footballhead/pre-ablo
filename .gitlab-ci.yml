@@ -16,10 +16,10 @@ build:
     - mkdir /root/DIABLO/patches
     - mv /root/DIABLO/DIABLO.EXE /root/DIABLO/patches/DIABLO.EXE
     - cp -R always_load_flare /root/DIABLO/patches/
+    - cp -R automap_fix /root/DIABLO/patches/
     - cp -R cheat /root/DIABLO/patches/
     - cp -R devmode /root/DIABLO/patches/
     - cp -R fullgame /root/DIABLO/patches/
-    - cp -R hell_automap /root/DIABLO/patches/
     - cp -R infraring_fix /root/DIABLO/patches/
     - cp -R lmh_nocrash /root/DIABLO/patches/
     - cp -R mega_fix /root/DIABLO/patches/
