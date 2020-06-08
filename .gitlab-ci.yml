@@ -3,7 +3,7 @@ image: "moralbacteria/diablo-prdemo-patches:latest"
 build:
   script:
     - apt-get update && apt-get install --no-install-recommends -y curl ca-certificates unzip
-    - curl -L "https://drive.google.com/uc?export=download&id=18f5Dl-kYkxKA_e7mp2cfol8-78LcBZmC" > prde_patcher.zip
+    - curl -L "https://drive.google.com/uc?export=download&id=1YvQ-Di1aXSotaRr3wE55lp6UXU9K0LB_" > prde_patcher.zip
     - unzip prde_patcher.zip -d prde_patcher
     - cp -R prde_patcher/* /root/DIABLO/
     - cp _DOCS/README.txt /root/DIABLO/
