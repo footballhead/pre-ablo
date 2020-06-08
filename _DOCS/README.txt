@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.2.0
+DIABLO PR DEMO ENHANCED v0.2.2
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -46,6 +46,16 @@ last time, you can run DIABLO.EXE instead of the launcher.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.2.2
+
+  * Update launcher. Here are some highlights:
+      * Qt 5.15 (built with VS 2019)
+      * Remember last applied patches in last_patch.txt
+      * Add buttons to easily check recommend/all/none
+      * Improve high DPI support by allowing window to resize
+      * Full changelog: https://gitlab.com/moralbacteria/prde_patcher/-/releases/0.3.0
+  * Add more info to devmode/cheat patch descriptions
 
 v0.2.1
 
