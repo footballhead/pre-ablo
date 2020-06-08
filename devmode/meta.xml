@@ -4,10 +4,18 @@
     <recommended>false</recommended>
     <description>Enables a developer debug mode. This does the following:
 
-- All monsters are Skeletons with axes (except for setlevels like Skeleton King Lair and Bone Chamber, or the Butcher)
+- New games start on dlvl 1 instead of in Tristram
+- All monsters are Corpse Axes (except for setlevels like Skeleton King Lair and Bone Chamber, or the Butcher)
+- Dungeon seeds are fixed to dlvl (dlvl 1 is seed 1, etc)
 - Cheats: On/Off replaces Music: On/Off in the game menu. Hold CTRL+SHIFT when clicking to toggle.
 - Bunch of developer related keyboard functions
 - All normal quests are active (Butcher, Skeleton King, Magic Rock, Bone Chamber)
+
+This unlocks additional inputs:
+
+- F4: Show FPS on control panel
+- E: Show eflag on control panle
+- P: Will pause the game, but pressing again will frame advance. No way to unpause
 
 When cheats are on:
 

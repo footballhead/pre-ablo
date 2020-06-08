@@ -9,7 +9,7 @@
 - You always hit monsters and kill them in one hit
 - All drops are magic or unique
 
-It unlocks the following keyboard/mouse functionality:
+It unlocks the following input:
 
 - F5: Teleport to starting house in town
 - F6: Teleport to level 1
@@ -18,5 +18,10 @@ It unlocks the following keyboard/mouse functionality:
 - * (Shift+8, or numpad): gain level
 - Shift (hold): Allows RTS-style view scrolling when the mouse is near the edge of the screen
 - L: Toggle lighting
+- T: Show (x,y) coords on control panel
+- D: Show transval value on control panel
+- F: Decrease gamma
+- G: Increase gamma
+- M: Show invincible value on control panel
 - B: Increase current spell by 1 level</description>
 </patch>
