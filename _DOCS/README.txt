@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.2.2
+DIABLO PR DEMO ENHANCED v0.2.3
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -46,6 +46,10 @@ last time, you can run DIABLO.EXE instead of the launcher.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.2.3
+
+  * Fix a crash when a missile overlaps a Stone Cursed enemy (#75)
 
 v0.2.2
 
