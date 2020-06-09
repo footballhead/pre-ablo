@@ -1,5 +1,4 @@
-Stone Curse Missile Fix
-===============================================================================
+# Stone Curse Missile Fix
 
 The game uses a few variables to know when to draw a missile:
 
@@ -20,35 +19,147 @@ Our problem resides when `dMissile[x][y] == -1`. When this is the case, the game
 
 If those 3 things match the draw expectation for the given tile then it will draw the missile using `missile.mAnimData`.
 
-Enter Stone Curse
--------------------------------------------------------------------------------
+## Enter Stone Curse
 
 Casting Stone Curse creates a missile at the location of the monster, but `missile.mAnimData` is `0` (`NULL`).
 
 So how does the game not crash when casting Stone Curse on one enemy? Well it doesn't update `dFlags` to tell the game to draw it. As soon as another missile occupies that tile though, `dFlags` gets set and the game will try to draw all missiles on that tile. So it finds the `MIT_STONE` missle and tries to deference `missile.mAnimData` which is NULL and the game crashes.
 
-Quick Fix
--------------------------------------------------------------------------------
+## Fix
 
-Never set `dMissile` to `-1`. This is handled by `PutMissile`:
+Bail from both `CDrawMissile` and `DrawMissile` when `missile._mAnimData` is `NULL` in the `-1` case. This required rewriting the existing checks to compress then and create code space
+
+`DrawMissile` before:
 
 ```
-.text:00436796 8B 45 FC                                      mov     eax, [ebp+mx] ; BINOFF 0x35B96
-.text:00436799 8B C8                                         mov     ecx, eax
-.text:0043679B C1 E0 03                                      shl     eax, 3
-.text:0043679E 2B C1                                         sub     eax, ecx
-.text:004367A0 C1 E0 04                                      shl     eax, 4
-.text:004367A3 8B 4D F8                                      mov     ecx, [ebp+my]
-.text:004367A6 0F BE 84 08 08 86 57 00                       movsx   eax, dMissile[eax+ecx]
-.text:004367AE 85 C0                                         test    eax, eax
-.text:004367B0 0F 85 21 00 00 00                             jnz     more_than_one_missile
+        0047c002 8b 45 fc        MOV        EAX,dword ptr [EBP + i]
+        0047c005 8b 04 85        MOV        EAX,dword ptr [EAX*0x4 + missileactive]          = ??
+                 a8 c6 5f 00
+        0047c00c 89 45 f0        MOV        dword ptr [EBP + gnMI],EAX
+        0047c00f 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c012 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c015 c1 e0 05        SHL        EAX,0x5
+        0047c018 8b 4d ec        MOV        ECX,dword ptr [EBP + sx]
+        0047c01b 39 88 6c        CMP        dword ptr [EAX + missile_mix],ECX                = ??
+                 72 5f 00
+        0047c021 0f 85 7b        JNZ        loop_continue
+                 01 00 00
+        0047c027 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c02a 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c02d c1 e0 05        SHL        EAX,0x5
+        0047c030 8b 4d e8        MOV        ECX,dword ptr [EBP + sy]
+        0047c033 39 88 70        CMP        dword ptr [EAX + missile_miy],ECX                = ??
+                 72 5f 00
+        0047c039 0f 85 63        JNZ        loop_continue
+                 01 00 00
+        0047c03f 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c042 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c045 c1 e0 05        SHL        EAX,0x5
+        0047c048 8b 4d 18        MOV        ECX,dword ptr [EBP + pre]
+        0047c04b 39 88 c4        CMP        dword ptr [EAX + missile_miPreFlag],ECX          = ??
+                 72 5f 00
+        0047c051 0f 85 4b        JNZ        loop_continue
+                 01 00 00
 ```
 
-Replace this with nops.
+`DrawMissile` after:
 
-This might have adverse effects on missile logic. It definitely creates graphical glitches with firewall. But those might be better than crashing!
+```
+        0047c002 8b 45 fc        MOV        EAX,dword ptr [EBP + i]
+        0047c005 8b 04 85        MOV        EAX,dword ptr [EAX*0x4 + missileactive]
+                 a8 c6 5f 00
+        0047c00c 89 45 f0        MOV        dword ptr [EBP + gnMI],EAX
+        0047c00f 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c012 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c015 c1 e0 05        SHL        EAX,0x5
+        0047c018 8b 4d ec        MOV        ECX,dword ptr [EBP + sx]
+        0047c01b 39 88 6c        CMP        dword ptr [EAX + missile_mix],ECX
+                 72 5f 00
+        0047c021 0f 85 7b        JNZ        loop_continue
+                 01 00 00
+        0047c027 8b 4d e8        MOV        ECX,dword ptr [EBP + -0x18]
+        0047c02a 39 88 70        CMP        dword ptr [EAX + missile_miy],ECX
+                 72 5f 00
+        0047c030 0f 85 6c        JNZ        loop_continue
+                 01 00 00
+        0047c036 8b 4d 18        MOV        ECX,dword ptr [EBP + 0x18]
+        0047c039 39 88 c4        CMP        dword ptr [EAX + 0x5f72c4],ECX
+                 72 5f 00
+        0047c03f 0f 85 5d        JNZ        loop_continue
+                 01 00 00
+        0047c045 81 bc 20        CMP        dword ptr [EAX + 0x5f72a0],0x0
+                 a0 72 5f 
+                 00 00 00 
+        0047c050 0f 84 4c        JZ         loop_continue
+                 01 00 00
+        0047c056 90              NOP
+```
 
-Proper Fix
--------------------------------------------------------------------------------
+---
 
-Go through each draw function and gracefully exit if `pCelBuff` is `NULL`.
+`CDrawMissile` before:
+
+```
+        0047c384 8b 45 fc        MOV        EAX,dword ptr [EBP + i]
+        0047c387 8b 04 85        MOV        EAX,dword ptr [EAX*0x4 + missileactive]          = ??
+                 a8 c6 5f 00
+        0047c38e 89 45 f0        MOV        dword ptr [EBP + gnMI],EAX
+        0047c391 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c394 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c397 c1 e0 05        SHL        EAX,0x5
+        0047c39a 8b 4d ec        MOV        ECX,dword ptr [EBP + sx]
+        0047c39d 39 88 6c        CMP        dword ptr [EAX + missile_mix],ECX                = ??
+                 72 5f 00
+        0047c3a3 0f 85 7b        JNZ        loop_continue
+                 01 00 00
+        0047c3a9 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c3ac 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c3af c1 e0 05        SHL        EAX,0x5
+        0047c3b2 8b 4d e8        MOV        ECX,dword ptr [EBP + sy]
+        0047c3b5 39 88 70        CMP        dword ptr [EAX + missile_miy],ECX                = ??
+                 72 5f 00
+        0047c3bb 0f 85 63        JNZ        loop_continue
+                 01 00 00
+        0047c3c1 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c3c4 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c3c7 c1 e0 05        SHL        EAX,0x5
+        0047c3ca 8b 4d 18        MOV        ECX,dword ptr [EBP + pre]
+        0047c3cd 39 88 c4        CMP        dword ptr [EAX + missile_miPreFlag],ECX          = ??
+                 72 5f 00
+        0047c3d3 0f 85 4b        JNZ        loop_continue
+                 01 00 00
+```
+
+`CDrawMissile` after:
+
+```
+        0047c384 8b 45 fc        MOV        EAX,dword ptr [EBP + i]
+        0047c387 8b 04 85        MOV        EAX,dword ptr [EAX*0x4 + missileactive]          = ??
+                 a8 c6 5f 00
+        0047c38e 89 45 f0        MOV        dword ptr [EBP + gnMI],EAX
+        0047c391 8b 45 f0        MOV        EAX,dword ptr [EBP + gnMI]
+        0047c394 8d 04 80        LEA        EAX,[EAX + EAX*0x4]
+        0047c397 c1 e0 05        SHL        EAX,0x5
+        0047c39a 8b 4d ec        MOV        ECX,dword ptr [EBP + sx]
+        0047c39d 39 88 6c        CMP        dword ptr [EAX + missile_mix],ECX                = ??
+                 72 5f 00
+        0047c3a3 0f 85 7b        JNZ        loop_continue
+                 01 00 00
+        0047c3a9 8b 4d e8        MOV        ECX,dword ptr [EBP + -0x18]
+        0047c3ac 39 88 70        CMP        dword ptr [EAX + 0x5f7270],ECX
+                 72 5f 00
+        0047c3b2 0f 85 6c        JNZ        loop_continue
+                 01 00 00
+        0047c3b8 8b 4d 18        MOV        ECX,dword ptr [EBP + 0x18]
+        0047c3bb 39 88 c4        CMP        dword ptr [EAX + 0x5f72c4],ECX
+                 72 5f 00
+        0047c3c1 0f 85 5d        JNZ        loop_continue
+                 01 00 00
+        0047c3c7 81 bc 20        CMP        dword ptr [EAX + 0x5f72a0],0x0
+                 a0 72 5f 
+                 00 00 00 
+        0047c3d2 0f 84 4c        JZ         loop_continue
+                 01 00 00
+        0047c3d8 90              NOP
+
+```

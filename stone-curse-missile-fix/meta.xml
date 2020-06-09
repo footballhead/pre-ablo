@@ -2,5 +2,5 @@
 <patch>
     <order>0</order>
     <recommended>true</recommended>
-    <description>A workaround to prevent the game from crashing when using Stone Curse. Specifically, this prevents drawing overlapping missiles. While this causees graphical glitches for a lot of spells (e.g. Flash, Mana Shield, Town Portal, ...) it's better than crashing since Stone Curse is highly recommended for later dungeon levels.</description>
+    <description>Prevents crashing when a missile (e.g. Lightning) overlaps with a Stone Cursed enemy.</description>
 </patch>
