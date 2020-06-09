@@ -36,6 +36,6 @@ build:
     - cp -R version_override /root/DIABLO/patches/
     - mv /root/DIABLO .
   artifacts:
-    name: "prdemo_enhanced_$CI_COMMIT_SHORT_SHA"
+    name: "prdemo_enhanced_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
     paths:
       - DIABLO/
