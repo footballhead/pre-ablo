@@ -39,6 +39,9 @@ int main(int argc, char **argv)
 	auto space_height = kerning_data.at(1);
 	kerning_data.erase(begin(kerning_data), std::next(begin(kerning_data), 2));
 
+	// Space kerning not set properly?
+	kerning_data[' '] = space_width;
+
 	//
 	// Read PCX
 	//
@@ -86,14 +89,6 @@ int main(int argc, char **argv)
 	}
 
 	drpcx_free(pcx_data);
-
-	// for (size_t i = 0; i < glyphs.size(); ++i) {
-	// 	auto const filename = std::to_string(i) + ".png";
-	// 	if (!save_to_png(glyphs.at(i), filename)) {
-	// 		fprintf(stderr, "Failed to save image: %s\n", filename.c_str());
-	// 		return 1;
-	// 	}
-	// }
 
 	//
 	// Determine width of final image
