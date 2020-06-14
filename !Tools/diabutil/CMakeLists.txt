@@ -7,6 +7,7 @@ add_subdirectory(stb_image_write)
 add_subdirectory(diabutil)
 
 add_subdirectory(cel2png)
+add_subdirectory(drawtext)
 add_subdirectory(joincel)
 add_subdirectory(joingroups)
 add_subdirectory(retail2prdemo)
