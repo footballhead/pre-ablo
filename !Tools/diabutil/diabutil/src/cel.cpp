@@ -112,3 +112,57 @@ image_t image_from_cel(std::vector<uint8_t> const &cel, int width, palette_t con
 
 	return flip_vertically(builder);
 }
+
+std::vector<cel_data> split_cel(std::vector<uint8_t> const &cel)
+{
+	if (cel.empty())
+	{
+		throw std::invalid_argument{"expected data, got none"};
+	}
+
+	auto contents_iter = cel.data();
+
+	//
+	// read number of frames
+	//
+
+	auto const num_frames = *reinterpret_cast<uint32_t const *>(contents_iter);
+	contents_iter += sizeof(uint32_t);
+
+	//
+	// read all frame sizes from frame table
+	//
+
+	std::vector<uint32_t> sizes;
+	sizes.reserve(num_frames);
+	for (uint32_t i = 0; i < num_frames; ++i)
+	{
+		auto const start_offset = *reinterpret_cast<uint32_t const *>(contents_iter);
+		contents_iter += sizeof(uint32_t);
+
+		auto const end_offset = *reinterpret_cast<uint32_t const *>(contents_iter);
+		// Don't increment because the end of cell N is the start of cel N+1
+
+		auto const size = end_offset - start_offset;
+		sizes.push_back(size);
+	}
+
+	// Skip past final end_offset to get to data
+	contents_iter += sizeof(uint32_t);
+
+	//
+	// Use frame sizes to extract each cel
+	//
+
+	std::vector<cel_data> split;
+	split.reserve(num_frames);
+
+	for (uint32_t i = 0; i < num_frames; ++i)
+	{
+		auto const size = sizes.at(i);
+		split.emplace_back(contents_iter, contents_iter + size);
+		contents_iter += size;
+	}
+
+	return split;
+}
