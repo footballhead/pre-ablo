@@ -14,14 +14,22 @@ struct image_t
 	int height = 0;
 	std::vector<color_t> pixels;
 
-	color_t const& at(int x, int y) const
+	color_t at(int x, int y) const
 	{
-		return pixels.at(y * width + x);
+		auto const index = y * width + x;
+		if (index < 0 || index >= pixels.size()) {
+			return color_t{};
+		}
+		return pixels.at(index);
 	}
 
 	void set(int x, int y, color_t const& color)
 	{
-		auto index = y * width + x;
+		set(y * width + x, color);
+	}
+
+	void set(int index, color_t const& color)
+	{
 		if (index < 0 || index >= width * height) {
 			throw std::invalid_argument{"Invalid coords"};
 		}

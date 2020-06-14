@@ -3,11 +3,14 @@ project(diabutil CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(dr_pcx)
 add_subdirectory(stb_image_write)
+
 add_subdirectory(diabutil)
 
 add_subdirectory(cel2png)
 add_subdirectory(drawtext)
+add_subdirectory(drawtextpcx)
 add_subdirectory(joincel)
 add_subdirectory(joingroups)
 add_subdirectory(retail2prdemo)
