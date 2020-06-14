@@ -25,12 +25,6 @@ WORKDIR /root
 RUN wget https://diablo-evolution.net/files/prereleasedemo.7z \
     && 7zr x prereleasedemo.7z
 
-# Download and extract ddraw patch (we don't need to do this every CI build)
-WORKDIR /root
-RUN wget https://www.strangebytes.com/projects/1-diablo-1-windows-7-vista-patch/diablopatch_20140908.zip \
-    && unzip diablopatch_20140908.zip -d diablopatch_20140908 \
-    && cp diablopatch_20140908/ddraw.dll DIABLO/
-
 # Clone, build, and install StormLib to tool staging directory
 WORKDIR /root
 RUN git clone https://github.com/ladislav-zezula/StormLib.git -b v9.20
