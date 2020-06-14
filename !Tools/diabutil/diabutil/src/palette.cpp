@@ -1,6 +1,7 @@
 #include <diabutil/palette.hpp>
 
 #include <stdexcept>
+#include <string>
 
 palette_t palette_from_data(std::vector<uint8_t> const &data)
 {
