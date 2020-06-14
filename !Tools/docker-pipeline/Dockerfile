@@ -11,6 +11,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         ca-certificates \
         cmake \
+        curl \
         g++ \
         git \
         libbz2-dev \
@@ -22,7 +23,7 @@ RUN apt-get update \
 
 # Download and extract prdemo to /root/DIABLO
 WORKDIR /root
-RUN wget https://diablo-evolution.net/files/prereleasedemo.7z \
+RUN curl -L "https://drive.google.com/uc?export=download&id=1E-AC21QMiOao8hVun-McROsfYBeEW20y" > prereleasedemo.7z \
     && 7zr x prereleasedemo.7z
 
 # Clone, build, and install StormLib to tool staging directory
