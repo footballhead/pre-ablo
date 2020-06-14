@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.2.3
+DIABLO PR DEMO ENHANCED v0.2.4
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -46,6 +46,15 @@ last time, you can run DIABLO.EXE instead of the launcher.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.2.4
+
+  * Custom ddraw patch based on diablo-ddrawwrapper by Strange Bytes.
+      * Upstream: https://github.com/strangebytes/diablo-ddrawwrapper
+      * Fork: https://github.com/footballhead/diablo-ddrawwrapper
+      * This release bundles v0.1.0
+  * Custom ddraw patch locks the mouse to the window to reduce panic mistakes
+      * Configurable via the "Capture Mouse" option in the ~ menu
 
 v0.2.3
 
