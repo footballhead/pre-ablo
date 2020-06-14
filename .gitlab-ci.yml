@@ -1,4 +1,4 @@
-image: "moralbacteria/diablo-prdemo-patches:latest"
+image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
 
 build:
   script:
