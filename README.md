@@ -2,7 +2,7 @@
 
 ![Banner](_DOCS/banner.png)
 
-**Download latest release:** [v0.2.4](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
+**Download latest release:** [v0.3.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional

@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.2.4
+DIABLO PR DEMO ENHANCED v0.3.0
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -47,14 +47,16 @@ last time, you can run DIABLO.EXE instead of the launcher.
 Changelog
 --------------------------------------------------------------------------------
 
-v0.2.4
+v0.3.0
 
-  * Custom ddraw patch based on diablo-ddrawwrapper by Strange Bytes.
+  * Introduce modified ddraw patch based on diablo-ddrawwrapper by Strange Bytes
       * Upstream: https://github.com/strangebytes/diablo-ddrawwrapper
       * Fork: https://github.com/footballhead/diablo-ddrawwrapper
       * This release bundles v0.1.0
-  * Custom ddraw patch locks the mouse to the window to reduce panic mistakes
+  * Modify ddraw patch to lock the mouse to the window (reduces panic mistakes)
       * Configurable via the "Capture Mouse" option in the ~ menu
+  * Remove lmh_nocrash since we have missing warrior graphics
+  * Remove music-nompq-fix because we bundle a working MPQ
 
 v0.2.3
 
