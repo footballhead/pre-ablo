@@ -48,19 +48,6 @@ RUN mkdir build \
     && make -j $(nproc) \
     && make install
 
-# Clone, build, and install open-vcdiff to tool staging directory
-WORKDIR /root
-RUN git clone https://github.com/google/open-vcdiff --recursive \
-    && cd open-vcdiff \
-    && git checkout 868f459a8d815125c2457f8c74b12493853100f9
-
-WORKDIR /root/open-vcdiff
-RUN mkdir build \
-    && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=/root/tools \
-    && make -j $(nproc) \
-    && make install
-
 #
 # Final image
 #
