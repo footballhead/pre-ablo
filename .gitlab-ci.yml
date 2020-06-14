@@ -3,7 +3,7 @@ image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
 build:
   script:
     - apt-get update && apt-get install --no-install-recommends -y curl ca-certificates unzip
-    - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-v0.1.0.zip" > ddrawwrapper.zip
+    - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
     - cp ddrawwrapper/ddraw.dll /root/DIABLO/
     - curl -L "https://drive.google.com/uc?export=download&id=1YvQ-Di1aXSotaRr3wE55lp6UXU9K0LB_" > prde_patcher.zip
