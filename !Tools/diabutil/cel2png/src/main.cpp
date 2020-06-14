@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	}
 
 	auto const filename = in_cel_file + ".png"s;
-	if (stbi_write_png(filename.c_str(), image.width, image.height, 4, image.pixels.data(), image.width * sizeof(color_t)) == 0)
+	if (!save_to_png(image, filename))
 	{
 		fprintf(stderr, "failed to write %s\n", filename.c_str());
 		return 1;
