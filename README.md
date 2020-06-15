@@ -49,6 +49,7 @@ _Diablo Pre-release Demo ENHANCED_ (PRDE) is a project that consists of many par
   * Individual fixes (this repo)
   * A custom launcher for applying the fixes (https://gitlab.com/moralbacteria/prde_patcher)
   * A custom CLI for packaging files in the final MPQ (https://gitlab.com/moralbacteria/mpqadd)
+  * A custom ddraw.dll for window mode and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
   * A CI/CD pipeline for producing builds for release (see [.gitlab-ci.yml](.gitlab-ci.yml))
 
 ### diablo-prdemo-patches (this repo!)
@@ -109,6 +110,14 @@ The launcher has it's own versioning scheme. Binaries are hand-produced and uplo
 We have a custom MPQ packer: https://gitlab.com/moralbacteria/mpqadd
 
 This CLI is designed to add/replace files in the PR Demo MPQ. It is included in the Docker image (see [!Tools/docker-pipeline](!Tools/docker-pipeline)) used by the CI/CD pipeline. Any changes here require rebuilding the Docker image.
+
+### ddrawwrapper
+
+We have a custom ddraw.dll: https://github.com/footballhead/diablo-ddrawwrapper/tree/prde
+
+Initially created by Strange Bytes, we forked it to add our own modifications.
+
+This implements a subset of DirectDraw (the parts used by Diablo) to use a DirectX 9 backend. This works better on modern Windows than the default DirectDraw implementation. It also allows for window mode and other graphics related customizations.
 
 ### CI/CD Pipeline
 
