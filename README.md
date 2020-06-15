@@ -49,7 +49,7 @@ _Diablo Pre-release Demo ENHANCED_ (PRDE) is a project that consists of many par
   * Individual fixes (this repo)
   * A custom launcher for applying the fixes (https://gitlab.com/moralbacteria/prde_patcher)
   * A custom CLI for packaging files in the final MPQ (https://gitlab.com/moralbacteria/mpqadd)
-  * A custom ddraw.dll for window mode and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
+  * A custom ddraw.dll for better graphics support and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
   * A CI/CD pipeline for producing builds for release (see [.gitlab-ci.yml](.gitlab-ci.yml))
 
 ### diablo-prdemo-patches (this repo!)
@@ -127,14 +127,13 @@ This is responsible for producing releasable ZIP files.
 
 It has several components:
 
-  * A Docker image called `moralbacteria/diablo-prdemo-patches`. This is produced from [!Tools/docker-pipeline](!Tools/docker-pipeline) and hosted at https://hub.docker.com/repository/docker/moralbacteria/diablo-prdemo-patches . This Docker image contains anything that's not expected to change frequently. Currently, it contains:
-      * `mpqadd`
-      * `vcdiff`
+  * A Docker image called `moralbacteria/diablo-prdemo-patches`. This is produced from [!Tools/docker-pipeline](!Tools/docker-pipeline) and is hosted at https://gitlab.com/moralbacteria/diablo-prdemo-patches/container_registry/. This Docker image contains anything needed by a CI agent to produce the final ZIP. Currently, it contains:
       * Extracted version of the base PR Demo
-      * DirectDraw patch
+      * `mpqadd`
   * A script run on every commit and tag, stored in [.gitlab-ci.yml](.gitlab-ci.yml). This
+      * Downloads a release of ddraw.dll  and puts it into the release folder
       * Downloads a release of the launcher and puts it into the release folder
-      * Copys the missing DirectPlay DLL
+      * Copiess the missing DirectPlay DLL
       * Adds all missing graphics to the MPQ
       * Adds all patches to the release
       * Exposes the release as a downloadable artifact
