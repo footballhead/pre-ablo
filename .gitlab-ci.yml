@@ -3,6 +3,9 @@ image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
 build:
   script:
     - apt-get update && apt-get install --no-install-recommends -y curl ca-certificates unzip
+    - curl -L "https://drive.google.com/uc?export=download&id=1MxUIWwLcDBlT3eKBi2REUwTXx2CU0bLX" > dplaywrapper.zip
+    - unzip dplaywrapper.zip -d dplaywrapper
+    - cp dplaywrapper/dplay.dll /root/DIABLO
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
     - cp ddrawwrapper/ddraw.dll /root/DIABLO/
@@ -10,7 +13,6 @@ build:
     - unzip prde_patcher.zip -d prde_patcher
     - cp -R prde_patcher/* /root/DIABLO/
     - cp _DOCS/README.txt /root/DIABLO/
-    - cp 00_dplay/dplay.dll /root/DIABLO/
     - cd 02_missing_gfx
     - find levels/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
     - find monsters/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ

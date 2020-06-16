@@ -1,5 +1,6 @@
-DPLAY.DLL was not found
-===============================================================================
+# DPLAY.DLL was not found
+
+tl;dr: Download our dplay.dll from here: https://gitlab.com/moralbacteria/dplaywrapper/-/releases
 
 Running DIABLO.EXE will most likely show this error dialog:
 
@@ -7,6 +8,4 @@ Running DIABLO.EXE will most likely show this error dialog:
 
 The Pre-Release Demo contains early netcode (even though it's mostly unused) that is built on DirectPlay. Given the binary date of 8/16/1996, it's either DirectX 1 or 2.
 
-You can use the DPLAY.DLL in this folder. Copy it to the same directory as DIABLO.EXE.
-
-(This file was taken from http://www.oldversion.com/windows/download/directx-2-0)
+We've built a custom dplay.dll that works. It can be downloaded from this GitLab repo: https://gitlab.com/moralbacteria/dplaywrapper/-/releases
