@@ -14,8 +14,18 @@ configure_file(version.h.in version.h @ONLY)
 # Build dplay.dll
 #
 
-add_library(dplay SHARED dll.cpp fake_ordinals.def fake_ordinals.cpp)
-target_include_directories(dplay PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-# produce `dplay.dll` (not libdplay.dll)
-set_target_properties(dplay PROPERTIES PREFIX "")
+add_library(dplay SHARED
+    dll.cpp
+    fake_ordinals.def
+    fake_ordinals.cpp
+    )
+target_include_directories(dplay
+    PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR} # Find version.h
+    )
+set_target_properties(dplay
+    PROPERTIES
+        PREFIX "" # produce dplay.dll (not libdplay.dll)
+        LINK_FLAGS_RELEASE "-s" # strip Release binaries to reduce size
+        LINK_FLAGS_MINSIZEREL "-s" # ditto for MinSizeRel
+        )
