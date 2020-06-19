@@ -17,7 +17,6 @@ package:
   dependencies:
     - build_dplay
   script:
-    - cp dplaywrapper/dplay.dll /root/DIABLO
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
     - cp ddrawwrapper/ddraw.dll /root/DIABLO/
