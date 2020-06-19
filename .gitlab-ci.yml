@@ -12,6 +12,8 @@ build_dplay:
 
 package:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
+  dependencies:
+    - build_dplay
   script:
     - cp dplaywrapper/dplay.dll /root/DIABLO
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
