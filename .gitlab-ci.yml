@@ -12,7 +12,7 @@ build_dplay:
       - 00_dplay/build/dplay.dll
 
 package:
-  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
+  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/package:latest"
   stage: deploy
   dependencies:
     - build_dplay
