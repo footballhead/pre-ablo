@@ -53,12 +53,14 @@ RUN mkdir build \
 
 FROM ubuntu:20.04
 
+COPY --from=build /root/DIABLO /root/DIABLO
+COPY --from=build /root/tools/ /usr/
+
 # `curl` and `unzip` are used by CI/CD runners
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
+        ca-certificates \
         curl \
         unzip \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /root/tools/ /usr/
-COPY --from=build /root/DIABLO /root/DIABLO
