@@ -1,5 +1,6 @@
 build_dplay:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
+  stage: build
   script:
     - cd 00_dplay
     - mkdir build
@@ -12,6 +13,7 @@ build_dplay:
 
 package:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches:latest"
+  stage: deploy
   dependencies:
     - build_dplay
   script:
