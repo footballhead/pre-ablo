@@ -15,15 +15,21 @@ configure_file(version.h.in version.h @ONLY)
 #
 
 add_library(dplay SHARED
-    dll.cpp
     fake_ordinals.def
-    fake_ordinals.cpp
-    savegame_path_fix.cpp
-    version_override.cpp
+    src/dllmain.cpp
+    src/fake_ordinals.cpp
+    src/patches/cheat.cpp
+    src/patches/devmode.cpp
+    src/patches/fullgame.cpp
+    src/patches/music_nompq_fix.cpp
+    src/patches/savegame_path_fix.cpp
+    src/patches/skip_intros.cpp
+    src/patches/version_override.cpp
     )
 target_include_directories(dplay
     PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR} # Find version.h
+        src
     )
 
 if (MINGW)

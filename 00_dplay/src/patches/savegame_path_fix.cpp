@@ -1,32 +1,8 @@
-// Problem areas:
-//
-// In general, .data:0061B770 (savedir_abspath) is widely used and only 64 chars
-//
-// fn 004190AE:
-//  * local buffer [ebp-34h] is 52 long (too small)
-//  * uses savedir_abspath
-//
-// fn 00460D3F:
-//  * references savedir_abspath
-//
-// fn 00461F5F:
-//  * references savedir_abspath
-//
-// fn 00462FD5:
-//  * references savedir_abspath (multiple times)
-//
-// fn 0046371F:
-//  * references savedir_abspath (multiple times)
-//
-// fn 00484BBB (winmain)
-//  *  references savedir_abspath (a lot)
-//  * .text:00484B44 only run if GetDriveType(NULL) == DRIVE_CDROM
+#include "patches.hpp"
+#include "util.hpp"
 
-#include <array>
-#include <cstdint>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <cerrno>
+#include <cstdlib>
 
 namespace {
 
@@ -47,29 +23,6 @@ constexpr auto Title_FindSaveGame_addr = 0x004190AEu;
 
 char larger_savedir_abspath[MAX_PATH]{'\0'};
 char GM_LoadGame_larger_save_abspath[MAX_PATH]{'\0'};
-
-constexpr uint8_t nop_opcode = 0x90;
-constexpr uint8_t call_opcode = 0xE8;
-constexpr uint8_t jmp_opcode = 0xE9;
-constexpr uint8_t push_opcode = 0x68;
-
-//
-// Helpers
-//
-
-template <typename T>
-bool patch(void* addr_to_patch, T new_val)
-{
-    // If we don't turn the .text address to be PAGE_EXECUTE_READWRITE then the game crashes
-    DWORD oldProtect = 0;
-    if (!VirtualProtect(addr_to_patch, sizeof(T), PAGE_EXECUTE_READWRITE, &oldProtect)) {
-        printf("%s: failed to mark address +xrw: 0x%X\n", __func__, addr_to_patch);
-        return false;
-    }
-    // Do the actual patch
-    *(T*)(addr_to_patch) = new_val;
-    return true;
-}
 
 //
 // Hooks

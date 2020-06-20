@@ -2,14 +2,14 @@
 
 #include "version.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <cstring>
 
 namespace {
 auto version = reinterpret_cast<char*>(0x004AA6F4);
+constexpr auto version_size = 17; // strlen("Pre-Release Demo")
 } // namespace
 
 void version_override_main()
 {
-    strncpy(version, PRDE_VERSION, 17);
+    strncpy(version, PRDE_VERSION, version_size);
 }
