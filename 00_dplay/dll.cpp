@@ -1,11 +1,10 @@
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-#include <windows.h>
-
+#include "patches.hpp"
 #include "version.h"
 
-namespace {
-char* version = reinterpret_cast<char*>(0x004AA6F4);
-} // namespace
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include <cstdio>
 
 extern "C"
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -16,7 +15,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        strncpy(version, PRDE_VERSION, 17);
+        AllocConsole();
+        freopen("CONOUT$", "wb", stdout);
+
+        version_override_main();
+        savegame_patch_fix_main();
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
