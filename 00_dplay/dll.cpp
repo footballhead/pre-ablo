@@ -15,8 +15,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+#ifndef NDEBUG
         AllocConsole();
         freopen("CONOUT$", "wb", stdout);
+#endif
 
         version_override_main();
         savegame_patch_fix_main();
