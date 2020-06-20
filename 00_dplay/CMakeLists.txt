@@ -18,6 +18,8 @@ add_library(dplay SHARED
     fake_ordinals.def
     src/dllmain.cpp
     src/fake_ordinals.cpp
+    src/util.cpp
+    src/patches/always_load_flare.cpp
     src/patches/cheat.cpp
     src/patches/devmode.cpp
     src/patches/fullgame.cpp

@@ -7,9 +7,6 @@
 #include <windows.h>
 
 constexpr uint8_t nop_opcode = 0x90;
-constexpr uint8_t call_opcode = 0xE8;
-constexpr uint8_t jmp_opcode = 0xE9;
-constexpr uint8_t push_opcode = 0x68;
 
 template <typename T>
 bool patch(void* addr_to_patch, T new_val)
@@ -30,3 +27,13 @@ bool patch(uint32_t address, T new_val)
 {
     return patch((void*)address, new_val);
 }
+
+// [start, end)
+bool nop(uint32_t address_start, uint32_t address_end);
+
+// Overwrites the contents starting at the given address with `call fn`
+bool patch_call(uint32_t address, void* fn);
+// Overwrites the contents starting at the given address with `jmp to`
+bool patch_jmp(uint32_t address, void* to);
+// Overwrites the contents starting at the given address with `push global_var`
+bool patch_push(uint32_t address, void* global_var);

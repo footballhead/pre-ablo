@@ -11,5 +11,6 @@ constexpr auto version_size = 17; // strlen("Pre-Release Demo")
 
 void version_override_main()
 {
+    // This is the data segment, no need to adjust permissions
     strncpy(version, PRDE_VERSION, version_size);
 }

@@ -80,46 +80,42 @@ void savegame_patch_fix_main()
     bool ok = true;
 
     // Fix Title_FindSaveGame by redirecting to our own fixed function
-    ok &= patch((void*)(Title_FindSaveGame_addr), jmp_opcode);
-    ok &= patch<int>((void*)(Title_FindSaveGame_addr + 1), (int)Title_FindSaveGame_Fix - (Title_FindSaveGame_addr + 5)); // jmp operand
+    ok &= patch_jmp(Title_FindSaveGame_addr, (void*)Title_FindSaveGame_Fix);
 
     // Fix WinMain to use larger_savedir_abspath
     // Call our GetCurrentDirectory
-    ok &= patch((void*)(0x00484BF4), call_opcode);
-    ok &= patch((void*)(0x00484BF4 + 1), (int)WinMain_GetCurrentDirectoryA_Hook - (0x00484BF4 + 5));
-    ok &= patch((void*)(0x00484BF4 + 5), nop_opcode);
+    ok &= patch_call(0x00484BF4, (void*)WinMain_GetCurrentDirectoryA_Hook);
+    ok &= patch(0x00484BF4 + 5, nop_opcode);
     // Fix call sprintf arguments
-    ok &= patch((void*)(0x00484BFA + 1), larger_savedir_abspath);
-    ok &= patch((void*)(0x00484C04 + 1), larger_savedir_abspath);
+    ok &= patch_push(0x00484BFA, larger_savedir_abspath);
+    ok &= patch_push(0x00484C04, larger_savedir_abspath);
     // Fix call chdir arguments
-    ok &= patch((void*)(0x00484C11 + 1), larger_savedir_abspath);
+    ok &= patch_push(0x00484C11, larger_savedir_abspath);
     // TODO: Fix GetDriveType(NULL) == DRIVE_CDROM branch?
 
     // Fix GM_LoadGame
-    ok &= patch((void*)(0x00460D63 + 1), larger_savedir_abspath);
+    ok &= patch_push(0x00460D63, larger_savedir_abspath);
     // Replace small local buffer with our own larger one.
     // Turn `lea eax, [ebp+var]` and `push eax` into only `push GM_LoadGame_larger_save_abspath`
     // Patch is smaller than existing machine code so pad the rest with nops
-    ok &= patch((void*)(0x00460D6D), push_opcode);
-    ok &= patch((void*)(0x00460D6D + 1), GM_LoadGame_larger_save_abspath); // push operand
-    ok &= patch((void*)(0x00460D6D + 5), nop_opcode);
-    ok &= patch((void*)(0x00460D73), nop_opcode);
+    ok &= patch_push(0x00460D6D, GM_LoadGame_larger_save_abspath);
+    ok &= patch(0x00460D6D + 5, nop_opcode);
+    ok &= patch(0x00460D73, nop_opcode);
     // Same thing again for other usage
-    ok &= patch((void*)(0x00460D7E), push_opcode); // push opcode
-    ok &= patch((void*)(0x00460D7E + 1), GM_LoadGame_larger_save_abspath); // push operand
-    ok &= patch((void*)(0x00460D7E + 5), nop_opcode);
-    ok &= patch((void*)(0x00460D84), nop_opcode);
+    ok &= patch_push(0x00460D7E, GM_LoadGame_larger_save_abspath);
+    ok &= patch(0x00460D7E + 5, nop_opcode);
+    ok &= patch(0x00460D84, nop_opcode);
 
     // Fix save_game
-    ok &= patch((void*)(0x00462A4C + 1), larger_savedir_abspath);
+    ok &= patch_push(0x00462A4C, larger_savedir_abspath);
 
     // Fix SaveLevel (normal level and setlevel)
-    ok &= patch((void*)(0x00462A4C + 1), larger_savedir_abspath);
-    ok &= patch((void*)(0x00463622 + 1), larger_savedir_abspath);
+    ok &= patch_push(0x00462A4C, larger_savedir_abspath);
+    ok &= patch_push(0x00463622, larger_savedir_abspath);
 
     // Fix LoadLevel (normal level and setlevel)
-    ok &= patch((void*)(0x0046373E + 1), larger_savedir_abspath);
-    ok &= patch((void*)(0x0046375F + 1), larger_savedir_abspath);
+    ok &= patch_push(0x0046373E, larger_savedir_abspath);
+    ok &= patch_push(0x0046375F, larger_savedir_abspath);
 
     printf("%s %s\n", __func__, ok ? "success" : "fail");
 }

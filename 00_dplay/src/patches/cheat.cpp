@@ -4,5 +4,6 @@
 
 void cheat_main()
 {
-    patch<uint32_t>(0x004BC168, TRUE);
+    // This is the data segment, no need to adjust permissions
+    *(uint32_t*)0x004BC168 = TRUE;
 }

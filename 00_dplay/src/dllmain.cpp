@@ -15,8 +15,9 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         freopen("CONOUT$", "wb", stdout);
 #endif
 
+        always_load_flare_main();
         cheat_main();
-        devmode_main();
+        //devmode_main();
         fullgame_main();
         music_nompq_fix_main();
         savegame_patch_fix_main();
