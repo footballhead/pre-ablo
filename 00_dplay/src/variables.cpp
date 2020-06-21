@@ -1,3 +1,5 @@
 #include "variables.hpp"
 
 MonsterData* const monsterdata = reinterpret_cast<MonsterData*>(0x004AE410);
+MonsterStruct* const monster = reinterpret_cast<MonsterStruct*>(0x004BE4E8);
+QuestStruct* const quests = reinterpret_cast<QuestStruct* const>(0x00615F40);

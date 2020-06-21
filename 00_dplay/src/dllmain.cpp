@@ -19,7 +19,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         automap_fix_main();
 #ifndef NDEBUG
         // cheat_main(); // should be off
-        // devmode_main(); // should be off
+        devmode_main(); // should be off
 #endif
         fullgame_main();
         infraring_fix_main();
@@ -30,6 +30,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         skip_intros_main();
         snake_frame_fix_main();
         thunder_demon_missile_fix_main();
+        undead_crown_main();
         version_override_main();
         // window_main(); // should be off
         break;
