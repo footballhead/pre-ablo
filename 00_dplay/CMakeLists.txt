@@ -32,6 +32,7 @@ add_library(dplay SHARED
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/snake_frame_fix.cpp
+    src/patches/thunder_demon_missile_fix.cpp
     src/patches/version_override.cpp
     )
 target_include_directories(dplay
