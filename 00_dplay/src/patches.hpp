@@ -6,6 +6,7 @@ void cheat_main();
 void devmode_main();
 void fullgame_main();
 void infraring_fix_main();
+void mega_fix_main();
 void music_nompq_fix_main();
 void savegame_patch_fix_main();
 void skip_intros_main();

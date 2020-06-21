@@ -25,6 +25,7 @@ add_library(dplay SHARED
     src/patches/devmode.cpp
     src/patches/fullgame.cpp
     src/patches/infraring_fix.cpp
+    src/patches/mega_fix.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
