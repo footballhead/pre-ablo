@@ -26,13 +26,17 @@ void __fastcall onSkelKingDeath(int m)
 
 void undead_crown_main()
 {
+    bool ok = true;
+
     // Disable broken drop entry (so it doesn't drop the rift bow)
     // This technically means the skeleton king drops 2 things (the undead crown and a random drop)
     monsterdata[48].mTreasure = 0;
 
     // Patch CheckQuestKill for sking death
-    nop(0x004719FB, 0x00471A16); // nop existing code for a blank canvas
+    ok &= nop(0x004719FB, 0x00471A16); // nop existing code for a blank canvas
     constexpr uint8_t mov_ecx_m[] = {0x8B, 0x4D, 0xFC};
-    patch_bytes(0x004719FB, mov_ecx_m, sizeof(mov_ecx_m)); // m is first param for onSkelKingDeath, __fastcall means put it in ECX
-    patch_call(0x004719FB + sizeof(mov_ecx_m), (void*)onSkelKingDeath); // do onSkelKingDeath
+    ok &= patch_bytes(0x004719FB, mov_ecx_m, sizeof(mov_ecx_m)); // m is first param for onSkelKingDeath, __fastcall means put it in ECX
+    ok &= patch_call(0x004719FB + sizeof(mov_ecx_m), (void*)onSkelKingDeath); // do onSkelKingDeath
+
+    printf("%s %s\n", __func__, ok ? "success" : "fail");
 }

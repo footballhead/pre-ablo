@@ -12,11 +12,15 @@ constexpr auto version_size = 17; // strlen("Pre-Release Demo") + 1
 
 void version_override_main()
 {
+    bool ok = true;
+
+    // TODO: If we wanted to be extra safe, we could use our own local variable and get to set the size
     strncpy(version, PRDE_VERSION, version_size);
 
     // Always show this on main menu (regardless of fullgame/demo mode)
-    patch_push(0x0041920F, version);
-
+    ok &= patch_push(0x0041920F, version);
     // Always show this in-game when pressing V (again, regardless of demo mode)
-    patch_push(0x004873CB, version);
+    ok &= patch_push(0x004873CB, version);
+
+    printf("%s %s\n", __func__, ok ? "success" : "fail");
 }

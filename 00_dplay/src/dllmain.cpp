@@ -14,6 +14,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         AllocConsole();
         freopen("CONOUT$", "wb", stdout);
 #endif
+        // TODO: redirect to file if ndebug?
 
         always_load_flare_main();
         automap_fix_main();

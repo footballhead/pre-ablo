@@ -107,30 +107,34 @@ void free_flare_gfx()
 
 void always_load_flare_main()
 {
+    bool ok = true;
+
     // In each case we keep the mtype check but redirect loading/freeing to our own code.
     // To hook, we first nop the problem code, then we patch in a call to our fixed code.
 
     // Load magball
-    nop(0x004018F4, 0x00401940);
-    patch_call(0x004018FA, (void*)load_magball);
+    ok &= nop(0x004018F4, 0x00401940);
+    ok &= patch_call(0x004018FA, (void*)load_magball);
 
     // Free magball
-    nop(0x0040B78B, 0x0040B7CD);
-    patch_call(0x0040B78E, (void*)free_magball);
+    ok &= nop(0x0040B78B, 0x0040B7CD);
+    ok &= patch_call(0x0040B78E, (void*)free_magball);
 
     // Load thin lightning
-    nop(0x0040195A, 0x00401969);
-    patch_call(0x0040195A, (void*)load_thin_lightning);
+    ok &= nop(0x0040195A, 0x00401969);
+    ok &= patch_call(0x0040195A, (void*)load_thin_lightning);
     
     // Free thin lightning
-    nop(0x0040B7E1, 0x0040B807);
-    patch_call(0x0040B7E1, (void*)free_thin_lightning);
+    ok &= nop(0x0040B7E1, 0x0040B807);
+    ok &= patch_call(0x0040B7E1, (void*)free_thin_lightning);
 
     // load flare
-    nop(0x00401983, 0x004019A1);
-    patch_call(0x00401983, (void*)load_flare_gfx);
+    ok &= nop(0x00401983, 0x004019A1);
+    ok &= patch_call(0x00401983, (void*)load_flare_gfx);
 
     // Free flare
-    nop(0x0040B81B, 0x0040B867);
-    patch_call(0x0040B81B, (void*)free_flare_gfx);
+    ok &= nop(0x0040B81B, 0x0040B867);
+    ok &= patch_call(0x0040B81B, (void*)free_flare_gfx);
+
+    printf("%s %s\n", __func__, ok ? "success" : "fail");
 }
