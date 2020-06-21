@@ -17,14 +17,16 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
 
         always_load_flare_main();
         automap_fix_main();
-        cheat_main();
+        //cheat_main();
         //devmode_main();
         fullgame_main();
         infraring_fix_main();
+        //max_monsters_main();
         mega_fix_main();
         music_nompq_fix_main();
         savegame_patch_fix_main();
         skip_intros_main();
+        snake_frame_fix_main();
         version_override_main();
         break;
     case DLL_THREAD_ATTACH:

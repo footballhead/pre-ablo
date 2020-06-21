@@ -19,16 +19,19 @@ add_library(dplay SHARED
     src/dllmain.cpp
     src/fake_ordinals.cpp
     src/util.cpp
+    src/variables.cpp
     src/patches/always_load_flare.cpp
     src/patches/automap_fix.cpp
     src/patches/cheat.cpp
     src/patches/devmode.cpp
     src/patches/fullgame.cpp
     src/patches/infraring_fix.cpp
+    src/patches/max_monsters.cpp
     src/patches/mega_fix.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
+    src/patches/snake_frame_fix.cpp
     src/patches/version_override.cpp
     )
 target_include_directories(dplay
