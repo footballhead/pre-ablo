@@ -1,6 +1,7 @@
 #pragma once
 
 void always_load_flare_main();
+void automap_fix_main();
 void cheat_main();
 void devmode_main();
 void fullgame_main();

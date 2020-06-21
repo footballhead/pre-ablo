@@ -16,6 +16,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
 #endif
 
         always_load_flare_main();
+        automap_fix_main();
         cheat_main();
         //devmode_main();
         fullgame_main();

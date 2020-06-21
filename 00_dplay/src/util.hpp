@@ -37,3 +37,5 @@ bool patch_call(uint32_t address, void* fn);
 bool patch_jmp(uint32_t address, void* to);
 // Overwrites the contents starting at the given address with `push global_var`
 bool patch_push(uint32_t address, void* global_var);
+
+bool patch_bytes(uint32_t address, uint8_t const* patch, size_t size);

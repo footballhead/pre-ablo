@@ -6,7 +6,7 @@
 
 namespace {
 auto version = reinterpret_cast<char*>(0x004AA6F4);
-constexpr auto version_size = 17; // strlen("Pre-Release Demo")
+constexpr auto version_size = 17; // strlen("Pre-Release Demo") + 1
 } // namespace
 
 void version_override_main()

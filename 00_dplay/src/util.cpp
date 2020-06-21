@@ -1,5 +1,7 @@
 #include "util.hpp"
 
+#include <algorithm>
+
 namespace {
 
 constexpr uint8_t call_opcode = 0xE8;
@@ -53,5 +55,16 @@ bool patch_push(uint32_t address, void* global_var)
     }
     *(uint8_t*)(address) = push_opcode;
     *(uint32_t*)(address + 1) = (uint32_t)global_var;
+    return true;
+}
+
+bool patch_bytes(uint32_t address, uint8_t const* patch, size_t size)
+{
+    DWORD oldProtect = 0;
+    if (!VirtualProtect((void*)address, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
+        printf("%s: failed to mark address +xrw: 0x%X\n", __func__, address);
+        return false;
+    }
+    std::copy(patch, patch + size, (uint8_t*)address);
     return true;
 }
