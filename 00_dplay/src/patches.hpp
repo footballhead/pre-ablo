@@ -14,3 +14,4 @@ void skip_intros_main();
 void snake_frame_fix_main();
 void thunder_demon_missile_fix_main();
 void version_override_main();
+void window_main();

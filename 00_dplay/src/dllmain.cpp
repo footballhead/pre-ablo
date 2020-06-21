@@ -18,12 +18,12 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         always_load_flare_main();
         automap_fix_main();
 #ifndef NDEBUG
-        cheat_main(); // should be off
+        // cheat_main(); // should be off
         //devmode_main(); // should be off
 #endif
         fullgame_main();
         infraring_fix_main();
-        max_monsters_main(); // should be off
+        // max_monsters_main(); // should be off
         mega_fix_main();
         //music_nompq_fix_main();  // should be off
         savegame_patch_fix_main();
@@ -31,6 +31,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         snake_frame_fix_main();
         thunder_demon_missile_fix_main();
         version_override_main(); // TODO incomplete
+        // window_main(); // should be off
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:

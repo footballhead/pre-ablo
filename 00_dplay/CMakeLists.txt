@@ -34,6 +34,7 @@ add_library(dplay SHARED
     src/patches/snake_frame_fix.cpp
     src/patches/thunder_demon_missile_fix.cpp
     src/patches/version_override.cpp
+    src/patches/window.cpp
     )
 target_include_directories(dplay
     PRIVATE

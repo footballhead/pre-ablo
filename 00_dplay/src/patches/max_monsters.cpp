@@ -13,4 +13,5 @@ void max_monsters_main()
 // others:
 // max magic find
 // boost unique monsters
-// randomize level types?
+// randomize level types (would this mess with quests?)
+// randomize uniques
