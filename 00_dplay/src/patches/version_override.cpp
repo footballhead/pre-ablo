@@ -1,5 +1,6 @@
 #include "patches.hpp"
 
+#include "util.hpp"
 #include "version.h"
 
 #include <cstring>
@@ -11,6 +12,11 @@ constexpr auto version_size = 17; // strlen("Pre-Release Demo") + 1
 
 void version_override_main()
 {
-    // This is the data segment, no need to adjust permissions
     strncpy(version, PRDE_VERSION, version_size);
+
+    // Always show this on main menu (regardless of fullgame/demo mode)
+    patch_push(0x0041920F, version);
+
+    // Always show this in-game when pressing V (again, regardless of demo mode)
+    patch_push(0x004873CB, version);
 }
