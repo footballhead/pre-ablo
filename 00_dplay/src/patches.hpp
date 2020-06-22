@@ -12,6 +12,7 @@ void music_nompq_fix_main();
 void savegame_patch_fix_main();
 void skip_intros_main();
 void snake_frame_fix_main();
+void stone_curse_missile_fix_main();
 void thunder_demon_missile_fix_main();
 void too_much_hp_crash_main();
 void tp_setlevel_fix_main();

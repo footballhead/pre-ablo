@@ -32,6 +32,7 @@ add_library(dplay SHARED
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/snake_frame_fix.cpp
+    src/patches/stone_curse_missile_fix.cpp
     src/patches/thunder_demon_missile_fix.cpp
     src/patches/too_much_hp_crash.cpp
     src/patches/tp_setlevel_fix.cpp

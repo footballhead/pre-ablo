@@ -30,6 +30,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         // savegame_patch_fix_main(); // TODO apparently this doesn't work with town portals (esp setlevels)
         skip_intros_main();
         snake_frame_fix_main();
+        stone_curse_missile_fix_main();
         thunder_demon_missile_fix_main();
         too_much_hp_crash_main();
         tp_setlevel_fix_main();
