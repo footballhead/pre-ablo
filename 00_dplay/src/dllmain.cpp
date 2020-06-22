@@ -31,6 +31,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         skip_intros_main();
         snake_frame_fix_main();
         thunder_demon_missile_fix_main();
+        too_much_hp_crash_main();
         tp_setlevel_fix_main();
         undead_crown_main();
         version_override_main();

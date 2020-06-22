@@ -1,6 +1,7 @@
 #include "patches.hpp"
 
 #include "util.hpp"
+#include "variables.hpp"
 
 namespace {
 
@@ -10,8 +11,6 @@ namespace {
 
 constexpr auto GetSpellLevel_addr = 0x00453CDB;
 auto const GetSpellLevel = reinterpret_cast<int (__fastcall *)(int id, int sn)>(GetSpellLevel_addr);
-
-auto* const myplr = reinterpret_cast<int* const>(0x00615E38);
 
 //
 // Hooks
