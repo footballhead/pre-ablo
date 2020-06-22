@@ -35,70 +35,32 @@ it was being developed.
  3. **This is important:** Copy the extracted `DIABLO` folder to `C:\DIABLO`. After this, you should find the launcher at `C:\DIABLO\launcher.exe`.
       * This is to work around an issue where the pre-release demo crashes on long pathes (i.e. your Downloads folder).
       * You can choose any folder in `C:\` (I'm partial to `C:\PRDEMO`) if you already have Diablo installed.
- 4. Run `launcher.exe`. This is a custom launcher that allows you to mix-and-match patches. The items checked by default are what we recommend to get the best possible experience.
- 5. Choose patches (again, we recommend _Select Recommended_), then click _Launch!_ This will produce a patched `DIABLO.EXE` and run it.
+ 4. Run `DIABLO.EXE`
 
-If you like your last configuration, you can bypass the launcher and run `DIABLO.EXE` directly.
+> NOTE: Patch customization has been temporarily disabled as we adjust the structure of the repo.
 
 ## Developing
 
-### !!! WARNING: This repo uses submodules, please clone recursively!
+> WARNING: This repo uses submodules, please clone recursively if you want the tools!
 
 _Diablo Pre-release Demo ENHANCED_ (PRDE) is a project that consists of many parts:
 
-  * Individual fixes (this repo)
+  * Individual fixes, packaged in a custom dplay.dll (this repo)
   * A custom launcher for applying the fixes (https://gitlab.com/moralbacteria/prde_patcher)
+      * NOTE: Has not been updated to support toggling dplay.dll features! So it is not bundled for the time being.
   * A custom CLI for packaging files in the final MPQ (https://gitlab.com/moralbacteria/mpqadd)
   * A custom ddraw.dll for better graphics support and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
-  * A custom dplay.dll (https://gitlab.com/moralbacteria/dplaywrapper)
   * A CI/CD pipeline for producing builds for release (see [.gitlab-ci.yml](.gitlab-ci.yml))
 
 ### diablo-prdemo-patches (this repo!)
 
-Each patch directory has the following structure:
+Patches are compiled into a phony dplay.dll. They are applied when the DLL is loaded by DIABLO.EXE
 
-  * `patch_name/`
-      * `diablo.exe.vcdiff`: This is the actual patch, encoded in VCDIFF format
-      * `meta.xml`: This file contains information used by the launcher
-      * `README.md`: An in-depth developer explanation of the problem and fix
+Each patch is stored under [00_dplay/src/patches](00_dplay/src/patches) in its own `patch_name.cpp.`. It has a `void patch_name_main(void)` which is designed to run on DLL load. This is accomplished by calling it from `DllMain()`.
 
-#### diablo.exe.vcdiff
+This replaces the old method of binary patching with VCDIFF. The old patches are stored (for now) in [old_patches](old_patches). The README's will migrate into the patch C++ code at some point.
 
-This is the actual binary of the patch. It is in VCDIFF format produced by [open-vcdiff](https://github.com/google/open-vcdiff). A pre-built copy for Windows can be found in [!Tools/vcdiff.exe](!Tools/vcdiff.exe).
-
-Patches are produced by:
-
- 1. Starting with an intial DIABLO.EXE binary, which I like to call `before.exe`
- 2. Making a copy of `before.exe` and modifying the machine code, which I like to call `DIABLO.EXE`. This can be made by Ghidra, IDA, manual hex editing, or any tool of your choice.
- 3. Running `vcdiff encode --dictionary before.exe --target DIABLO.exe --delta diablo.exe.vcdiff`
-
-This is the hard part of the process and requires knowledge of x86 assembly and Diablo internals. For reference on the latter, I'd recommend [Devilution](https://github.com/diasurgical/devilution).
-
-#### meta.xml
-
-This file describes the patch to our launcher.
-
-It has the following structure:
-
-```xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>(int)</order>
-    <recommended>true/false</recommended>
-    <description>(string)</description>.
-</patch>
-```
-
-  * `order`: Some patches must be applied before others. This is a limitation of the binary patching approach. If not applied in the right order then certain patches won't work correctly. To combat this, we impose a global ordering on patches.
-      * Patches that don't have ordering restrictions can get away with `0`.
-  * `recommended`: If `true` then this patch will be checked by default. If `false` then this patch will be unchecked by default.
-  * `description`: A plain-text explanation of the patch to the end-user. Shown on the right-hand textbox in the GUI.
-
-The launcher will ignore files that don't follow this format.
-
-#### README.md
-
-This is a textual description of how the developer made the patch. This is useful for reproducing the patch or understanding the patch if changes need to be made.
+The DLL is cross-compiled in Docker with mingw. See [00_dplay/README.md](00_dplay/README.md) for more details.
 
 ### prde_patcher
 
@@ -120,12 +82,6 @@ Initially created by Strange Bytes, we forked it to add our own modifications.
 
 This implements a subset of DirectDraw (the parts used by Diablo) to use a DirectX 9 backend. This works better on modern Windows than the default DirectDraw implementation. It also allows for window mode and other graphics related customizations.
 
-### dplaywrapper
-
-We have a custom dplay.dll: https://gitlab.com/moralbacteria/dplaywrapper
-
-This is a DLL without any functionality. It replaces the need for the official DPLAY.DLL. It's also intended that this will house custom patches in the future.
-
 ### CI/CD Pipeline
 
 The CI/CD Pipeline is hosted by GitLab on this repo: https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/pipelines
@@ -139,10 +95,8 @@ It has several components:
       * `mpqadd`
   * A script run on every commit and tag, stored in [.gitlab-ci.yml](.gitlab-ci.yml). This
       * Downloads a release of ddraw.dll  and puts it into the release folder
-      * Downloads a release of the launcher and puts it into the release folder
-      * Copiess the missing DirectPlay DLL
+      * Copies our custom dplay.dll with the patches
       * Adds all missing graphics to the MPQ
-      * Adds all patches to the release
       * Exposes the release as a downloadable artifact
 
-All releases must come from the CI/CD pipeline. Not only is it convenient, but it's reproducible.
+All releases must come from the CI/CD pipeline. Not only is it convenient and it's reproducible, but it also acts as a file host.

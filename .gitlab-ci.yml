@@ -22,9 +22,6 @@ package:
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
     - cp ddrawwrapper/ddraw.dll /root/DIABLO/
-    - curl -L "https://drive.google.com/uc?export=download&id=1YvQ-Di1aXSotaRr3wE55lp6UXU9K0LB_" > prde_patcher.zip
-    - unzip prde_patcher.zip -d prde_patcher
-    - cp -R prde_patcher/* /root/DIABLO/
     - cp _DOCS/README.txt /root/DIABLO/
     - cp 00_dplay/build/dplay.dll /root/DIABLO/
     - cd 02_missing_gfx
@@ -32,25 +29,6 @@ package:
     - find monsters/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
     - find plrgfx/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
     - cd ..
-    - mkdir /root/DIABLO/patches
-    - mv /root/DIABLO/DIABLO.EXE /root/DIABLO/patches/DIABLO.EXE
-    - cp -R always_load_flare /root/DIABLO/patches/
-    - cp -R automap_fix /root/DIABLO/patches/
-    - cp -R cheat /root/DIABLO/patches/
-    - cp -R devmode /root/DIABLO/patches/
-    - cp -R fullgame /root/DIABLO/patches/
-    - cp -R infraring_fix /root/DIABLO/patches/
-    - cp -R mega_fix /root/DIABLO/patches/
-    - cp -R no_tp_light /root/DIABLO/patches/
-    - cp -R old_drlg /root/DIABLO/patches/
-    - cp -R skip_intros /root/DIABLO/patches/
-    - cp -R snake_frame_fix /root/DIABLO/patches/
-    - cp -R stone-curse-missile-fix /root/DIABLO/patches/
-    - cp -R thunder-demon-missile-fix /root/DIABLO/patches/
-    - cp -R too_much_hp_crash /root/DIABLO/patches/
-    - cp -R tp_setlvl_fix /root/DIABLO/patches/
-    - cp -R undead_crown /root/DIABLO/patches/
-    - cp -R version_override /root/DIABLO/patches/
     - mv /root/DIABLO .
   artifacts:
     name: "prdemo_enhanced_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
