@@ -30,6 +30,7 @@ add_library(dplay SHARED
     src/patches/mega_fix.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/no_tp_light.cpp
+    src/patches/old_drlg.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/snake_frame_fix.cpp
@@ -47,11 +48,12 @@ target_include_directories(dplay
         src
     )
 
+# TODO should be "anyone that supports -s for stripping (gcc, clang (maybe))"
 if (MINGW)
     set_target_properties(dplay
         PROPERTIES
             PREFIX "" # produce dplay.dll (not libdplay.dll)
             LINK_FLAGS_RELEASE "-s" # strip Release binaries to reduce size
             LINK_FLAGS_MINSIZEREL "-s" # ditto for MinSizeRel
-            )
+        )
 endif()

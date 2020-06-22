@@ -113,6 +113,26 @@ struct MonsterStruct {
 };
 static_assert(sizeof(MonsterStruct) == 0xC4, "MonsterStruct compiled to wrong size");
 
+struct ObjDataStruct {
+    char oload;
+    char ofindex;
+    char ominlvl;
+    char omaxlvl;
+    char olvltype;
+    char otheme;
+    int oAnimFlag;
+    int oAnimDelay;
+    int oAnimLen;
+    int oAnimWidth;
+    int oSolidFlag;
+    int oMissFlag;
+    int oLightFlag;
+    char oBreak;
+    char oSelFlag;
+    int oTrapFlag;
+};
+static_assert(sizeof(ObjDataStruct) == 0x2C, "MonsterStruct compiled to wrong size");
+
 struct QuestStruct {
     BYTE _qlevel;
     BYTE _qtype;

@@ -28,6 +28,7 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         mega_fix_main();
         // music_nompq_fix_main();  // should be off
         no_tp_light_main();
+        // old_drlg_main(); // should default off
         // savegame_patch_fix_main(); // TODO apparently this doesn't work with town portals (esp setlevels)
         skip_intros_main();
         snake_frame_fix_main();
