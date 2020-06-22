@@ -29,6 +29,7 @@ add_library(dplay SHARED
     src/patches/max_monsters.cpp
     src/patches/mega_fix.cpp
     src/patches/music_nompq_fix.cpp
+    src/patches/no_tp_light.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/snake_frame_fix.cpp

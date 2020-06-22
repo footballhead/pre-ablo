@@ -9,6 +9,7 @@ void infraring_fix_main();
 void max_monsters_main();
 void mega_fix_main();
 void music_nompq_fix_main();
+void no_tp_light_main();
 void savegame_patch_fix_main();
 void skip_intros_main();
 void snake_frame_fix_main();
