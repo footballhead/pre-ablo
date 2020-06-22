@@ -33,6 +33,7 @@ add_library(dplay SHARED
     src/patches/skip_intros.cpp
     src/patches/snake_frame_fix.cpp
     src/patches/thunder_demon_missile_fix.cpp
+    src/patches/tp_setlevel_fix.cpp
     src/patches/undead_crown.cpp
     src/patches/version_override.cpp
     src/patches/window.cpp

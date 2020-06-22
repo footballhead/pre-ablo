@@ -27,10 +27,11 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
         // max_monsters_main(); // should be off
         mega_fix_main();
         // music_nompq_fix_main();  // should be off
-        savegame_patch_fix_main();
+        // savegame_patch_fix_main(); // TODO apparently this doesn't work with town portals (esp setlevels)
         skip_intros_main();
         snake_frame_fix_main();
         thunder_demon_missile_fix_main();
+        tp_setlevel_fix_main();
         undead_crown_main();
         version_override_main();
         // window_main(); // should be off

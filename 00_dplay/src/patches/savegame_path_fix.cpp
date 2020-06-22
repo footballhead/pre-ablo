@@ -110,10 +110,12 @@ void savegame_patch_fix_main()
     ok &= patch_push(0x00462A4C, larger_savedir_abspath);
 
     // Fix SaveLevel (normal level and setlevel)
+    // TODO fix local var
     ok &= patch_push(0x00462A4C, larger_savedir_abspath);
     ok &= patch_push(0x00463622, larger_savedir_abspath);
 
     // Fix LoadLevel (normal level and setlevel)
+    // TODO fix local var
     ok &= patch_push(0x0046373E, larger_savedir_abspath);
     ok &= patch_push(0x0046375F, larger_savedir_abspath);
 
