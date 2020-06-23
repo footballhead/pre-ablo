@@ -11,6 +11,7 @@ void mega_fix_main();
 void music_nompq_fix_main();
 void no_tp_light_main();
 void old_drlg_main();
+void options_menu_main();
 void savegame_patch_fix_main();
 void skip_intros_main();
 void snake_frame_fix_main();

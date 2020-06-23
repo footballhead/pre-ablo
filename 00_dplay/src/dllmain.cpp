@@ -16,6 +16,8 @@ extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPV
 #endif
         // TODO: redirect to file if ndebug?
 
+        options_menu_main();
+
         always_load_flare_main();
         automap_fix_main();
 #ifndef NDEBUG
