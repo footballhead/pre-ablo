@@ -2,7 +2,7 @@
 
 #include "util.hpp"
 
-void window_main()
+bool window_main()
 {
     bool ok = true;
 
@@ -10,5 +10,5 @@ void window_main()
     // nop the instruction in WinMain that initializes this variable
     ok &= nop(0x00484A33, 0x00484A3D);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

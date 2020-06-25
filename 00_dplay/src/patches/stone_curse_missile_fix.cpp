@@ -62,7 +62,7 @@ void __fastcall CDrawSlabCelI_wrapper(long xp, long yp, BYTE *pCelBuff, long nCe
 
 } // namespace
 
-void stone_curse_missile_fix_main()
+bool stone_curse_missile_fix_main()
 {
     bool ok = true;
 
@@ -75,5 +75,5 @@ void stone_curse_missile_fix_main()
     ok &= patch_call(0x0047C4D7, (void*)CDrawSlabCelL_wrapper);
     ok &= patch_call(0x0047C51F, (void*)CDrawSlabCel_wrapper);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

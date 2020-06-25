@@ -25,10 +25,10 @@ void __fastcall DrawUniqeInfo_Wrapper()
 
 } // namespace
 
-void infraring_fix_main()
+bool infraring_fix_main()
 {
     bool ok = true;
     ok &= patch_call(0x00448C2B, (void*)DrawUniqeInfo_Wrapper);
     ok &= patch_call(0x004812F9, (void*)DrawUniqeInfo_Wrapper);
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

@@ -18,6 +18,7 @@ add_library(dplay SHARED
     fake_ordinals.def
     src/dllmain.cpp
     src/fake_ordinals.cpp
+    src/patches.cpp
     src/util.cpp
     src/variables.cpp
     src/patches/always_load_flare.cpp
@@ -56,5 +57,9 @@ if (MINGW)
             PREFIX "" # produce dplay.dll (not libdplay.dll)
             LINK_FLAGS_RELEASE "-s" # strip Release binaries to reduce size
             LINK_FLAGS_MINSIZEREL "-s" # ditto for MinSizeRel
+        )
+    target_link_libraries(dplay
+        "-static-libstdc++"
+        "-static-libgcc"
         )
 endif()

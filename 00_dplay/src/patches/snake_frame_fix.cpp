@@ -10,7 +10,7 @@ constexpr int new_Frames[] = {12, 11, 13, 5, 18, 16}; // only [1] and [2] differ
 
 } // namespace
 
-void snake_frame_fix_main()
+bool snake_frame_fix_main()
 {
     // This is the data segment, no need to adjust permissions
     for (auto i = 70; i <= 73; ++i) {
@@ -18,4 +18,5 @@ void snake_frame_fix_main()
             monsterdata[i].Frames[j] = new_Frames[j];
         }
     }
+    return true;
 }

@@ -32,10 +32,10 @@ constexpr uint8_t DrawAutomap_patch[] = {
 
 } // namespace
 
-void automap_fix_main()
+bool automap_fix_main()
 {
     bool ok = true;
     ok &= patch_bytes(0x00451e51, InitAutomap_patch, sizeof(InitAutomap_patch));
     ok &= patch_bytes(0x004532d2, DrawAutomap_patch, sizeof(DrawAutomap_patch));
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

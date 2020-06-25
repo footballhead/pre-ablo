@@ -70,7 +70,7 @@ void __stdcall WinMain_GetCurrentDirectoryA_Hook(DWORD /*ignored*/, LPSTR /*igno
 // Init patch
 //
 
-void savegame_patch_fix_main()
+bool savegame_patch_fix_main()
 {
     // Since the existing save game directory buffer is too small (64 chars), we patch it to use our bigger buffer.
     // The only restriction on buffer size right now is in WinMain where the buffer size is `push`'d to GetCurrentDirectory.
@@ -119,7 +119,7 @@ void savegame_patch_fix_main()
     ok &= patch_push(0x0046373E, larger_savedir_abspath);
     ok &= patch_push(0x0046375F, larger_savedir_abspath);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }
 
 //

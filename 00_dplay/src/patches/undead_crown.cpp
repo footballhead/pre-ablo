@@ -24,7 +24,7 @@ void __fastcall onSkelKingDeath(int m)
 
 } // namespace
 
-void undead_crown_main()
+bool undead_crown_main()
 {
     bool ok = true;
 
@@ -38,5 +38,5 @@ void undead_crown_main()
     ok &= patch_bytes(0x004719FB, mov_ecx_m, sizeof(mov_ecx_m)); // m is first param for onSkelKingDeath, __fastcall means put it in ECX
     ok &= patch_call(0x004719FB + sizeof(mov_ecx_m), (void*)onSkelKingDeath); // do onSkelKingDeath
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

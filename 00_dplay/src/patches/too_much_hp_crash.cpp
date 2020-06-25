@@ -28,7 +28,7 @@ void validate_eax()
 
 } // namespace
 
-void too_much_hp_crash_main()
+bool too_much_hp_crash_main()
 {
     bool ok = true;
 
@@ -40,5 +40,5 @@ void too_much_hp_crash_main()
     constexpr uint8_t move_eax_dv[] = {0x89, 0x45, 0xFC};
     ok &= patch_bytes(0x00410348 + 5, move_eax_dv, sizeof(move_eax_dv));
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

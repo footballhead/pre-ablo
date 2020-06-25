@@ -10,7 +10,7 @@ auto version = reinterpret_cast<char*>(0x004AA6F4);
 constexpr auto version_size = 17; // strlen("Pre-Release Demo") + 1
 } // namespace
 
-void version_override_main()
+bool version_override_main()
 {
     bool ok = true;
 
@@ -22,5 +22,5 @@ void version_override_main()
     // Always show this in-game when pressing V (again, regardless of demo mode)
     ok &= patch_push(0x004873CB, version);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

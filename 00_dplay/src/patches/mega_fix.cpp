@@ -11,7 +11,7 @@ constexpr int new_Rate[] = {3, 0, 0, 0, 2, 0};
 
 } // namespace
 
-void mega_fix_main()
+bool mega_fix_main()
 {
     // This is the data segment, no need to adjust permissions
     for (auto i = 83; i <= 86; ++i) {
@@ -23,4 +23,5 @@ void mega_fix_main()
             monsterdata[i].Rate[j] = new_Rate[j];
         }
     }
+    return true;
 }

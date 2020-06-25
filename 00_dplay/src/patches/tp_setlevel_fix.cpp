@@ -33,7 +33,7 @@ void GetPortalLevel_companion_fix()
 
 } // namespace
 
-void tp_setlevel_fix_main()
+bool tp_setlevel_fix_main()
 {
     // TODO also need to store loctaion for setlevels
     bool ok = true;
@@ -41,5 +41,5 @@ void tp_setlevel_fix_main()
     ok &= nop(0x0040DFA1, 0x0040DFCC);
     ok &= patch_call(0x0040DFA1, (void*)GetPortalLevel_companion_fix);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }

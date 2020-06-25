@@ -105,7 +105,7 @@ void free_flare_gfx()
 
 } // namespace
 
-void always_load_flare_main()
+bool always_load_flare_main()
 {
     bool ok = true;
 
@@ -136,5 +136,5 @@ void always_load_flare_main()
     ok &= nop(0x0040B81B, 0x0040B867);
     ok &= patch_call(0x0040B81B, (void*)free_flare_gfx);
 
-    printf("%s %s\n", __func__, ok ? "success" : "fail");
+    return ok;
 }
