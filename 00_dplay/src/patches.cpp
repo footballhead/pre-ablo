@@ -4,6 +4,33 @@
 #include <fstream>
 #include <string>
 
+// At global scope so the extern can resolve.
+// While the extern isn't really safe, it prevents the entire code base from recompiling with every new patch.
+#define DECLARE_PATCH(id) extern bool id##_main()
+DECLARE_PATCH(always_load_flare);
+DECLARE_PATCH(automap_fix);
+DECLARE_PATCH(cheat);
+DECLARE_PATCH(devmode);
+DECLARE_PATCH(fullgame);
+DECLARE_PATCH(infraring_fix);
+DECLARE_PATCH(max_monsters);
+DECLARE_PATCH(mega_fix);
+DECLARE_PATCH(music_nompq_fix);
+DECLARE_PATCH(no_tp_light);
+DECLARE_PATCH(old_drlg);
+DECLARE_PATCH(options_menu);
+DECLARE_PATCH(savegame_patch_fix);
+DECLARE_PATCH(skip_intros);
+DECLARE_PATCH(skip_outro);
+DECLARE_PATCH(snake_frame_fix);
+DECLARE_PATCH(stone_curse_missile_fix);
+DECLARE_PATCH(thunder_demon_missile_fix);
+DECLARE_PATCH(too_much_hp_crash);
+DECLARE_PATCH(tp_setlevel_fix);
+DECLARE_PATCH(undead_crown);
+DECLARE_PATCH(version_override);
+DECLARE_PATCH(window);
+
 namespace {
 
 #define REGISTER_PATCH(id) {#id, id##_main, false}
@@ -24,6 +51,7 @@ constexpr Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(options_menu),
     REGISTER_PATCH(savegame_patch_fix),
     REGISTER_PATCH_RECOMMENDED(skip_intros),
+    REGISTER_PATCH_RECOMMENDED(skip_outro),
     REGISTER_PATCH_RECOMMENDED(snake_frame_fix),
     REGISTER_PATCH_RECOMMENDED(stone_curse_missile_fix),
     REGISTER_PATCH_RECOMMENDED(thunder_demon_missile_fix),

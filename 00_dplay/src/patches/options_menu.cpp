@@ -1,5 +1,7 @@
 #include "patches.hpp"
 
+#include "functions.hpp"
+#include "macros.hpp"
 #include "util.hpp"
 #include "version.h"
 
@@ -18,6 +20,10 @@ auto const palette_update = reinterpret_cast<void (__fastcall *)()>(0x004826F0);
 auto const PlayRndSFX = reinterpret_cast<void (__fastcall *)(int)>(0x0046491F);
 auto const PaletteFadeOut = reinterpret_cast<void (__fastcall *)(int)>(0x0048237B);
 auto const PaletteFadeIn = reinterpret_cast<void (__fastcall *)(int)>(0x0048233A);
+auto const LoadPalette = reinterpret_cast<void (__fastcall *)(const char*, BYTE*)>(0x00481FB0);
+auto const CopyPalette = reinterpret_cast<void (__fastcall *)(PALETTEENTRY*, BYTE*)>(0x004823BC);
+auto const ClearScreenBuffer = reinterpret_cast<void (__fastcall *)()>(0x004813C2);
+auto const SetCursor_ = reinterpret_cast<void (__fastcall *)(int)>(0x00479CAF);
 
 BYTE** const pMenuBackgroundCel = reinterpret_cast<BYTE**>(0x005DE8F0);
 BYTE** const pDiabFrCel = reinterpret_cast<BYTE**>(0x005DE900);
@@ -30,6 +36,13 @@ int* const MouseY = reinterpret_cast<int*>(0x0061B734);
 bool* const bActive = reinterpret_cast<bool*>(0x0061BF68);
 UINT* const Msg_on_fadeout_done = reinterpret_cast<UINT*>(0x00061A950);
 BYTE* const fade_param = reinterpret_cast<BYTE*>(0x005DE8E0);
+BYTE* palette_buffer = reinterpret_cast<BYTE*>(0x0061AD60);
+PALETTEENTRY* const menu_palette = reinterpret_cast<PALETTEENTRY*>(0x0061B1E8);
+int* const force_redraw = reinterpret_cast<int*>(0x00419F0C);
+//BYTE* const title_text_ascii2frame = reinterpret_cast<BYTE*>(0x004AA608);
+//BYTE* const mfontkern = reinterpret_cast<BYTE*>(0x004A2668);
+BYTE* const smalText_ascii2frame = reinterpret_cast<BYTE*>(0x004A34D0);
+BYTE* const smalText_kern = reinterpret_cast<BYTE*>(0x004A3550);
 
 //
 // Locals
@@ -38,22 +51,181 @@ BYTE* const fade_param = reinterpret_cast<BYTE*>(0x005DE8E0);
 bool options_menu_open = false;
 int options_selection = 0;
 int scrollview_patch_top = 0;
-constexpr int scrollview_size = 20;
-constexpr int font_small_height = 22; // from gendata/titleqtxt.cel
+constexpr int scrollview_size = 30;
 
-void adjust_scrollview()
+BYTE* pPentSpn2Cel = nullptr;
+constexpr auto pentSpn2Size = 12;
+
+BYTE* pTextSlidCel = nullptr;
+
+inline void free_cel_graphics(BYTE** cel)
 {
-    // if (options_selection < scrollview_patch_top) {
-    //     scrollview_patch_top = options_selection;
-    // } else if (options_selection >= scrollview_patch_top + scrollview_size - 1) {
-    //     scrollview_patch_top = options_selection - scrollview_size - 1;
-    // }
+    GlobalUnlock(GlobalHandle(*cel));
+    GlobalFree(GlobalHandle(*cel));
+    *cel = nullptr;
 }
+
+void load_and_use_palette(char const* filename)
+{
+    // Load .PAL file into existing buffer in the data partition
+    LoadPalette(filename, palette_buffer);
+    // Turn .PAL into RGB color
+    CopyPalette(menu_palette, palette_buffer);
+    // Start using the palette. Yes, the fade out/fade in routines make this happen for some reason...
+    PaletteFadeOut(0x20);
+    PaletteFadeIn(0x20);
+}
+
+struct font {
+    // CEL data straight from MPQ
+    BYTE* cel = nullptr;
+    // Horizontal size of an individual frame
+    int frameWidth;
+    // Vertical size of an individual frame
+    int frameHeight;
+    // Amount to advance x position for each character
+    BYTE* kerning;
+    // Function to translate ascii character to CEL specific frame
+    BYTE* ascii2frame;
+    // Extra kerning/whitespace between chars
+    int letterSpacing = 0;
+    int lineSpacing = 0;
+
+    bool is_loaded() const { return cel; }
+    void load_gfx(const char* filename) { cel = LoadFileInMem(filename); }
+    void free_gfx() {
+        if (cel) {
+            free_cel_graphics(&cel);
+        }
+    }
+
+    // This is a loose decompilation of print_title_str_small
+    // (x,y) are top-left coords
+    void draw_string(int x, int y, const char* text) const {
+        if (!is_loaded()) {
+            printf("Refusing to draw font with unloaded graphics!\n");
+            return;
+        }
+        y += frameHeight; // origin is bottom-left corner, but I like top-left interfaces
+
+        auto const textlen = strlen(text);
+        for (int i = 0; i < textlen; ++i) {
+            auto frame = ascii2frame[text[i]];
+            if (frame > 0) {
+                DrawCel(x, y, cel, frame, frameWidth);
+            }
+            x += kerning[frame] + letterSpacing;
+        }
+    }
+
+    // (x,y) are top-left coords
+    void draw_multiline_string(int x, int y, const char* text, int width) const {
+        if (!is_loaded()) {
+            printf("Refusing to draw font with unloaded graphics!\n");
+            return;
+        }
+        y += frameHeight; // origin is bottom-left corner, but I like top-left interfaces
+
+        int xoff = 0;
+        int yoff = 0;
+        auto const textlen = strlen(text);
+        for (auto i = 0; i < textlen; ++i) {
+            auto c = text[i];
+            auto frame = ascii2frame[c];
+
+            // New line characters cause newline and carriage return
+            if (c == '\n') {
+                xoff = 0;
+                yoff += frameHeight;
+            }
+
+            // Kerning exceeding bounds causes newline and carriage return
+            auto const totalkern = kerning[frame] + letterSpacing;
+            if (xoff + totalkern > width) {
+                xoff = 0;
+                yoff += frameHeight + lineSpacing;
+            }
+
+            if (frame > 0) {
+                DrawCel(x + xoff, y + yoff, cel, frame, frameWidth);
+            }
+            xoff += totalkern;
+        }
+    }
+};
+// font bigTextFont = {nullptr, 22, 18, mfontkern, title_text_ascii2frame, 2}; // gendata\\bigtext.cel
+font smalText = {nullptr, 13, 11, smalText_kern, smalText_ascii2frame, 1, 1}; // ctrlpan\\smaltext.cel
+
+void open_menu()
+{
+    options_menu_open = true;
+    SetCursor_(1); // Armored glove, with in-game palette
+    // Load on demand (can't do in main because MPQ not open yet)
+    if (!smalText.is_loaded()) {
+        smalText.load_gfx("ctrlpan\\smaltext.cel");
+    }
+    if (!pPentSpn2Cel) {
+        pPentSpn2Cel = LoadFileInMem("data\\pentspn2.cel");
+    }
+    if (!pTextSlidCel) {
+        pTextSlidCel = LoadFileInMem("data\\textslid.cel");
+    }
+    load_and_use_palette("gendata\\create.pal");
+}
+
+void close_menu()
+{
+    options_menu_open = false;
+    SetCursor_(2);// Armored glove, with title.pal palette
+    if (smalText.is_loaded()) {
+        smalText.free_gfx();
+    }
+    if (pPentSpn2Cel) {
+        free_cel_graphics(&pPentSpn2Cel);
+    }
+    if (pTextSlidCel) {
+        free_cel_graphics(&pTextSlidCel);
+    }
+    load_and_use_palette("gendata\\title.pal");
+}
+
+/// @remark Depends on pTextSlidCel being loaded.
+/// @remark Dimensions must be multiples of 12
+/// @remark (x,y) specifies top-left
+void draw_box(int x, int y, int width, int height)
+{
+    // Because of the gfx origin being bottom left, we need to do some pixel manip to be within desired bounds
+    width -= 12;
+    y += 12;
+    height -= 12;
+
+    // Draw corners
+    DrawCel(x, y, pTextSlidCel, 1, 12);
+    DrawCel(x, y + height, pTextSlidCel, 2, 12);
+    DrawCel(x + width, y + height, pTextSlidCel, 3, 12);
+    DrawCel(x + width, y, pTextSlidCel, 4, 12);
+
+    // Draw sides. Corners already cover some of the sides
+    for (auto drawx = 12; drawx < width; drawx += 12) {
+        DrawCel(x + drawx, y, pTextSlidCel, 5, 12);
+        DrawCel(x + drawx, y + height, pTextSlidCel, 7, 12);
+    }
+    for (auto drawy = 12; drawy < height; drawy += 12) {
+        DrawCel(x, y + drawy, pTextSlidCel, 6, 12);
+        DrawCel(x + width, y + drawy, pTextSlidCel, 8, 12);
+    }
+}
+
+constexpr auto lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta, risus ac ullamcorper vestibulum, est ante sagittis leo, a cursus risus leo ornare nulla. Nulla mattis tincidunt mi nec sollicitudin. Vivamus et arcu vitae nulla malesuada auctor sed sit amet sapien. Nam viverra efficitur purus vitae pharetra. Vivamus ultricies turpis a augue posuere dapibus. Pellentesque id mauris quam. Suspendisse potenti. Mauris sit amet nisi ornare, egestas erat sit amet, ultricies nisi. Suspendisse suscipit dapibus elit, et egestas massa suscipit sit amet. Integer venenatis convallis erat in auctor. Sed venenatis malesuada lobortis.";
 
 void draw_options_menu()
 {
     DrawCel(64, 639, *pMenuBackgroundCel, 1, 640);
-    // DrawCel(64, 377, *pDiabFrCel, *titleLogoFrame, 640);
+
+    constexpr auto box_margin = 8;
+    constexpr auto box_padding = 4;
+
+    draw_box(DRAW_ORIGIN_X + box_margin, DRAW_ORIGIN_Y + box_margin, 320 - 2*box_margin, 480 - 2*box_margin);
 
     for (auto i = 0; i < scrollview_size; i++) {
         auto patch_index = i + scrollview_patch_top;
@@ -61,17 +233,24 @@ void draw_options_menu()
             break;
         }
 
-        // 160 just seems to be the right X offset... there's probably a gutter or something?
-        const auto drawy = 160 + (i + 1) * font_small_height;
+        const auto drawx = DRAW_ORIGIN_Y + box_margin + box_padding;
+        const auto drawy = DRAW_ORIGIN_Y + box_margin + box_padding + i * (smalText.frameHeight + 2);
 
         if (patch_index == options_selection) {
-            print_title_str_small(64, drawy, ">"); // TODO this renders as "
+            DrawCel(DRAW_ORIGIN_X + box_margin + box_padding, drawy + pentSpn2Size, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
         }
         if (get_patches()[patch_index].checked) {
-            print_title_str_small(64 + font_small_height, drawy, "X");
+            smalText.draw_string(DRAW_ORIGIN_X + box_margin + box_padding + pentSpn2Size, drawy + smalText.frameHeight, "X");
         }
-        print_title_str_small(64 + font_small_height * 2, drawy, get_patches()[patch_index].name);
+
+        smalText.draw_string(DRAW_ORIGIN_X + box_margin + box_padding + pentSpn2Size + smalText.frameWidth, drawy, get_patches()[patch_index].name);
     }
+
+    draw_box(DRAW_ORIGIN_X + 320 + box_margin, DRAW_ORIGIN_Y + box_margin, 320 - 2*box_margin, 480 - 2*box_margin);
+    smalText.draw_multiline_string(DRAW_ORIGIN_X + 320 + box_margin + box_padding,
+        DRAW_ORIGIN_Y + box_margin + box_padding,
+        lorem,
+        320 - 2*box_margin - 2*box_padding);
 }
 
 void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -79,9 +258,7 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     // The following are incredible nessary:
     //
     // * WM_MOUSEMOVE: Assign to MouseX, MouseY otherwise the mouse will be frozen in place
-    // * WM_USR: Call menu_redraw otherwise the game looks like it's frozen
-
-    // Fade out/in is not implemented because I don't understand it 100%
+    // * WM_USER: Call menu_redraw otherwise the game looks like it's frozen
 
     // TODO: Mouse navigation
 
@@ -103,7 +280,7 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
         switch (wParam) {
         case VK_ESCAPE:
-            options_menu_open = false;
+            close_menu();
             break;
         case VK_UP:
             --options_selection;
@@ -123,7 +300,6 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
             if (options_selection >= scrollview_patch_top + scrollview_size) {
                 ++scrollview_patch_top;
             }
-            adjust_scrollview();
             PlayRndSFX(0x2F);
             break;
         case VK_RETURN: {
@@ -201,7 +377,7 @@ void __fastcall wndproc_title_newloadquit_hook(HWND hWnd, UINT Msg, WPARAM wPara
     }
 
     if (Msg == WM_KEYDOWN && wParam == VK_RETURN && *menu_selected_index == 2) {
-        options_menu_open = true;
+        open_menu();
         PlayRndSFX(0x2E);
         return;
     }
@@ -225,6 +401,7 @@ bool options_menu_main()
     ok &= patch_call(0x00488205, (void*)wndproc_title_newloadquit_hook);
 
     // TODO fix mouse navigation
+    // TODO sometimes the game can't close down properly, it gets stuck trying to free a graphic... what's up with taht?
 
     return ok;
 }

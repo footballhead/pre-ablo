@@ -18,6 +18,7 @@ add_library(dplay SHARED
     fake_ordinals.def
     src/dllmain.cpp
     src/fake_ordinals.cpp
+    src/functions.cpp
     src/patches.cpp
     src/util.cpp
     src/variables.cpp
@@ -35,6 +36,7 @@ add_library(dplay SHARED
     src/patches/options_menu.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
+    src/patches/skip_outro.cpp
     src/patches/snake_frame_fix.cpp
     src/patches/stone_curse_missile_fix.cpp
     src/patches/thunder_demon_missile_fix.cpp

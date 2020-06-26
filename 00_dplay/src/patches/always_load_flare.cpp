@@ -1,5 +1,6 @@
 #include "patches.hpp"
 
+#include "functions.hpp"
 #include "util.hpp"
 
 namespace {
@@ -12,8 +13,6 @@ auto** const pMagballCels = reinterpret_cast<BYTE**>(0x005F6F90); // array of po
 auto** const pThinLghningCel = reinterpret_cast<BYTE**>(0x005FC0A0); // pointer of pointers
 auto** const pFlareCel = reinterpret_cast<BYTE**>(0x005F71E0); // pointer to pointer
 auto** const pFlarexpCel = reinterpret_cast<BYTE**>(0x005FC89C); // pointer to pointer
-
-auto LoadFileInMem = reinterpret_cast<BYTE* (__fastcall *)(const char* pszName)>(0x00482790);
 
 //
 // Locals
