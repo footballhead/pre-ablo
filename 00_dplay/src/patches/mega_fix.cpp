@@ -3,6 +3,13 @@
 #include "util.hpp"
 #include "variables.hpp"
 
+#define PATCH_NAME mega_fix
+DESCRIBE_PATCH(R"txt(Modify Mega Demon monster data:
+
+1. Decrease mImgSize so Mega Demons appear in the caves and beyond
+
+2. Adjust number of frames for each animation to prevent a crash)txt")
+
 namespace {
 
 constexpr int new_mImgSize = 2220;
@@ -11,7 +18,7 @@ constexpr int new_Rate[] = {3, 0, 0, 0, 2, 0};
 
 } // namespace
 
-bool mega_fix_main()
+PATCH_MAIN
 {
     // This is the data segment, no need to adjust permissions
     for (auto i = 83; i <= 86; ++i) {

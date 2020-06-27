@@ -3,6 +3,9 @@
 #include "util.hpp"
 #include "variables.hpp"
 
+#define PATCH_NAME thunder_demon_missile_fix
+DESCRIBE_PATCH("Prevent a crash when Thunder Demons attack with Lightning.")
+
 namespace {
 
 //
@@ -23,7 +26,7 @@ int __fastcall GetSpellLevel_wrapper(int id, int sn)
 
 } // namespace
 
-bool thunder_demon_missile_fix_main()
+PATCH_MAIN
 {
     bool ok = true;
 

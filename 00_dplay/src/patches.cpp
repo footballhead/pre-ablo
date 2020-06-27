@@ -6,7 +6,7 @@
 
 // At global scope so the extern can resolve.
 // While the extern isn't really safe, it prevents the entire code base from recompiling with every new patch.
-#define DECLARE_PATCH(id) extern bool id##_main()
+#define DECLARE_PATCH(id) extern bool id##_main(); extern char const* id##_description;
 DECLARE_PATCH(always_load_flare);
 DECLARE_PATCH(automap_fix);
 DECLARE_PATCH(cheat);
@@ -33,10 +33,10 @@ DECLARE_PATCH(window);
 
 namespace {
 
-#define REGISTER_PATCH(id) {#id, id##_main, false}
-#define REGISTER_PATCH_RECOMMENDED(id) {#id, id##_main, true}
+#define REGISTER_PATCH(id) {#id, id##_description, id##_main, false}
+#define REGISTER_PATCH_RECOMMENDED(id) {#id, id##_description, id##_main, true}
 
-constexpr Patch patches_registry[] = {
+const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(always_load_flare),
     REGISTER_PATCH_RECOMMENDED(automap_fix),
     REGISTER_PATCH(cheat),
@@ -45,13 +45,19 @@ constexpr Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(infraring_fix),
     REGISTER_PATCH(max_monsters),
     REGISTER_PATCH_RECOMMENDED(mega_fix),
+#ifndef NDEBUG
     REGISTER_PATCH(music_nompq_fix),
+#endif
     REGISTER_PATCH_RECOMMENDED(no_tp_light),
     REGISTER_PATCH(old_drlg),
     REGISTER_PATCH_RECOMMENDED(options_menu),
+#ifndef NDEBUG
     REGISTER_PATCH(savegame_patch_fix),
+#endif
     REGISTER_PATCH_RECOMMENDED(skip_intros),
-    REGISTER_PATCH_RECOMMENDED(skip_outro),
+#ifndef NDEBUG
+    REGISTER_PATCH(skip_outro),
+#endif
     REGISTER_PATCH_RECOMMENDED(snake_frame_fix),
     REGISTER_PATCH_RECOMMENDED(stone_curse_missile_fix),
     REGISTER_PATCH_RECOMMENDED(thunder_demon_missile_fix),
@@ -59,7 +65,9 @@ constexpr Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(tp_setlevel_fix),
     REGISTER_PATCH_RECOMMENDED(undead_crown),
     REGISTER_PATCH_RECOMMENDED(version_override),
+#ifndef NDEBUG
     REGISTER_PATCH(window),
+#endif
 };
 
 #define NUM_PATCHES (sizeof(patches_registry) / sizeof(Patch))

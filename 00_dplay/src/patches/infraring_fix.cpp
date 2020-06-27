@@ -2,6 +2,9 @@
 
 #include "util.hpp"
 
+#define PATCH_NAME infraring_fix
+DESCRIBE_PATCH("Fix crash when hovering over Infravision Ring or Undead Crown in inventory. Makes it easier to equip those items.")
+
 namespace {
 
 //
@@ -25,7 +28,7 @@ void __fastcall DrawUniqeInfo_Wrapper()
 
 } // namespace
 
-bool infraring_fix_main()
+PATCH_MAIN
 {
     bool ok = true;
     ok &= patch_call(0x00448C2B, (void*)DrawUniqeInfo_Wrapper);

@@ -2,7 +2,10 @@
 
 #include "util.hpp"
 
-bool window_main()
+#define PATCH_NAME window
+DESCRIBE_PATCH("BROKEN! DO NOT USE!\n\nTurn on old windowed mode. Doesn't work on Windows 10!")
+
+PATCH_MAIN
 {
     bool ok = true;
 

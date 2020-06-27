@@ -5,6 +5,11 @@
 #include "util.hpp"
 #include "version.h"
 
+#define PATCH_NAME options_menu
+DESCRIBE_PATCH(R"txt(DO NOT TURN OFF! If you do, delete last_patch.txt in game directory.
+
+Insert an options menu on the main menu to customize patches.)txt");
+
 namespace {
 
 //
@@ -102,13 +107,16 @@ struct font {
     // This is a loose decompilation of print_title_str_small
     // (x,y) are top-left coords
     void draw_string(int x, int y, const char* text) const {
+        draw_string(x, y, text, strlen(text));
+    }
+
+    void draw_string(int x, int y, char const* text, size_t textlen) const {
         if (!is_loaded()) {
             printf("Refusing to draw font with unloaded graphics!\n");
             return;
         }
         y += frameHeight; // origin is bottom-left corner, but I like top-left interfaces
 
-        auto const textlen = strlen(text);
         for (int i = 0; i < textlen; ++i) {
             auto frame = ascii2frame[text[i]];
             if (frame > 0) {
@@ -119,37 +127,62 @@ struct font {
     }
 
     // (x,y) are top-left coords
-    void draw_multiline_string(int x, int y, const char* text, int width) const {
+    /// @param width A size constraint on the horizontal axis
+    void draw_multiline_string(int x, int y, char const* text, int width) const {
         if (!is_loaded()) {
             printf("Refusing to draw font with unloaded graphics!\n");
             return;
         }
-        y += frameHeight; // origin is bottom-left corner, but I like top-left interfaces
+
+        /// @param[out] len Number of letters in the word
+        /// @param[out] width The width of the next word as drawn on-screen
+        /// @returns true if more words, false otherwise
+        auto next_word = [this](char const* text, size_t& len, int& width) -> bool {
+            if (*text == '\0') {
+                return false;
+            }
+
+            width = 0;
+            auto iter = text;
+            for (/*empty*/; *iter != '\n' && *iter != ' ' && *iter != '\0'; ++iter) {
+                width += kerning[ascii2frame[*iter]] + letterSpacing;
+            }
+            len = iter - text;
+            return true;
+        };
 
         int xoff = 0;
         int yoff = 0;
-        auto const textlen = strlen(text);
-        for (auto i = 0; i < textlen; ++i) {
-            auto c = text[i];
-            auto frame = ascii2frame[c];
 
-            // New line characters cause newline and carriage return
-            if (c == '\n') {
-                xoff = 0;
-                yoff += frameHeight;
-            }
-
-            // Kerning exceeding bounds causes newline and carriage return
-            auto const totalkern = kerning[frame] + letterSpacing;
-            if (xoff + totalkern > width) {
+        size_t wordlen = 0;
+        int wordwidth = 0;
+        while (next_word(text, wordlen, wordwidth)) {
+            // Word width overflowing bounds causes newline and carriage return. Do before drawing so the word appears
+            // properly on the next line.
+            if (xoff + wordwidth > width) {
                 xoff = 0;
                 yoff += frameHeight + lineSpacing;
             }
 
-            if (frame > 0) {
-                DrawCel(x + xoff, y + yoff, cel, frame, frameWidth);
+            // Draw just the word
+            draw_string(x + xoff, y + yoff, text, wordlen);
+            text += wordlen;
+            xoff += wordwidth;
+
+            // The word separator still needs to be dealt with (if there are more words)
+            if (*text == '\0') {
+                break;
+            } else if (*text == '\n') {
+                xoff = 0;
+                yoff += frameHeight + lineSpacing;
+            } else if (*text == ' ') {
+                // Since spaces contain no visual data, we don't care if this pushes xoff > width. The next loop
+                // iteration will deal with the consequences.
+                xoff += kerning[ascii2frame[*text]] + letterSpacing;
             }
-            xoff += totalkern;
+
+            // Advance past word separator
+            ++text;
         }
     }
 };
@@ -216,11 +249,9 @@ void draw_box(int x, int y, int width, int height)
     }
 }
 
-constexpr auto lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta, risus ac ullamcorper vestibulum, est ante sagittis leo, a cursus risus leo ornare nulla. Nulla mattis tincidunt mi nec sollicitudin. Vivamus et arcu vitae nulla malesuada auctor sed sit amet sapien. Nam viverra efficitur purus vitae pharetra. Vivamus ultricies turpis a augue posuere dapibus. Pellentesque id mauris quam. Suspendisse potenti. Mauris sit amet nisi ornare, egestas erat sit amet, ultricies nisi. Suspendisse suscipit dapibus elit, et egestas massa suscipit sit amet. Integer venenatis convallis erat in auctor. Sed venenatis malesuada lobortis.";
-
 void draw_options_menu()
 {
-    DrawCel(64, 639, *pMenuBackgroundCel, 1, 640);
+    ClearScreenBuffer();
 
     constexpr auto box_margin = 8;
     constexpr auto box_padding = 4;
@@ -249,7 +280,7 @@ void draw_options_menu()
     draw_box(DRAW_ORIGIN_X + 320 + box_margin, DRAW_ORIGIN_Y + box_margin, 320 - 2*box_margin, 480 - 2*box_margin);
     smalText.draw_multiline_string(DRAW_ORIGIN_X + 320 + box_margin + box_padding,
         DRAW_ORIGIN_Y + box_margin + box_padding,
-        lorem,
+        get_patches()[options_selection].description,
         320 - 2*box_margin - 2*box_padding);
 }
 
@@ -386,7 +417,7 @@ void __fastcall wndproc_title_newloadquit_hook(HWND hWnd, UINT Msg, WPARAM wPara
 
 } // namespace
 
-bool options_menu_main()
+PATCH_MAIN
 {
     bool ok = true;
 

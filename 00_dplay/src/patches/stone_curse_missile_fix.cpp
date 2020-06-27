@@ -2,6 +2,9 @@
 
 #include "util.hpp"
 
+#define PATCH_NAME stone_curse_missile_fix
+DESCRIBE_PATCH("Prevents crashing when a missile (e.g. Lightning) overlaps a Stone Cursed enemy.")
+
 namespace {
 
 auto const DrawSlabCel = reinterpret_cast<void (__fastcall *)(long xp, long yp, BYTE *pCelBuff, long nCel, long nCelW, long ostart, long oend)>(0x00482BFB);
@@ -62,7 +65,7 @@ void __fastcall CDrawSlabCelI_wrapper(long xp, long yp, BYTE *pCelBuff, long nCe
 
 } // namespace
 
-bool stone_curse_missile_fix_main()
+PATCH_MAIN
 {
     bool ok = true;
 

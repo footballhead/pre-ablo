@@ -2,6 +2,9 @@
 
 #include "util.hpp"
 
+#define PATCH_NAME tp_setlevel_fix
+DESCRIBE_PATCH("Fixes town portals in Skeleton King Lair (level 3) and the Bone Chamber (level 7). Allows returning from town without the game still thinking that you're in town (which typically ends in a crash or a hang).")
+
 namespace {
 
 int* const setlevel = reinterpret_cast<int* const>(0x005765F8);
@@ -33,7 +36,7 @@ void GetPortalLevel_companion_fix()
 
 } // namespace
 
-bool tp_setlevel_fix_main()
+PATCH_MAIN
 {
     // TODO also need to store loctaion for setlevels
     bool ok = true;

@@ -1,6 +1,9 @@
+#include "util.hpp"
+
 #include "patches.hpp"
 
-#include "util.hpp"
+#define PATCH_NAME automap_fix
+DESCRIBE_PATCH("Enables the minimap in Hell and the old Alpha DRLG.")
 
 namespace {
 
@@ -32,7 +35,7 @@ constexpr uint8_t DrawAutomap_patch[] = {
 
 } // namespace
 
-bool automap_fix_main()
+PATCH_MAIN
 {
     bool ok = true;
     ok &= patch_bytes(0x00451e51, InitAutomap_patch, sizeof(InitAutomap_patch));

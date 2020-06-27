@@ -4,6 +4,11 @@
 #include <cerrno>
 #include <cstdlib>
 
+#define PATCH_NAME savegame_patch_fix
+DESCRIBE_PATCH(R"txt(BROKEN! DO NOT USE!
+
+Allow the game to be launched from pathes longer than 48 characters. Useful if you want to run out of your Downloads folder)txt");
+
 namespace {
 
 //
@@ -70,7 +75,7 @@ void __stdcall WinMain_GetCurrentDirectoryA_Hook(DWORD /*ignored*/, LPSTR /*igno
 // Init patch
 //
 
-bool savegame_patch_fix_main()
+PATCH_MAIN
 {
     // Since the existing save game directory buffer is too small (64 chars), we patch it to use our bigger buffer.
     // The only restriction on buffer size right now is in WinMain where the buffer size is `push`'d to GetCurrentDirectory.

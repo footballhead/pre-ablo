@@ -3,6 +3,9 @@
 #include "util.hpp"
 #include "variables.hpp"
 
+#define PATCH_NAME undead_crown
+DESCRIBE_PATCH("Forces the Skeleton King to drop the Undead Crown on death. It is also recommended to apply 'infraring_fix' so that the game will not crash when the item is inspected in the inventory.")
+
 namespace {
 
 auto* const sfxdelay = reinterpret_cast<int* const>(0x0060535C);
@@ -24,7 +27,7 @@ void __fastcall onSkelKingDeath(int m)
 
 } // namespace
 
-bool undead_crown_main()
+PATCH_MAIN
 {
     bool ok = true;
 

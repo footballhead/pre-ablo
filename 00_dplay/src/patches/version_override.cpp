@@ -5,12 +5,15 @@
 
 #include <cstring>
 
+#define PATCH_NAME version_override
+DESCRIBE_PATCH("Replaces the version number on the main menu and in-game (press V) with the PR Demo Enhanced release number. Purely cosmetic and vain.")
+
 namespace {
 auto version = reinterpret_cast<char*>(0x004AA6F4);
 constexpr auto version_size = 17; // strlen("Pre-Release Demo") + 1
 } // namespace
 
-bool version_override_main()
+PATCH_MAIN
 {
     bool ok = true;
 

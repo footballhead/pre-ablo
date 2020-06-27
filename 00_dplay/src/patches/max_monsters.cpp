@@ -2,7 +2,10 @@
 
 #include "util.hpp"
 
-bool max_monsters_main()
+#define PATCH_NAME max_monsters
+DESCRIBE_PATCH("Removes the graphics size limitation on monster types, allowing up to 16 monsters per level.")
+
+PATCH_MAIN
 {
     bool ok = true;
     // nop monstimgtot checks

@@ -3,6 +3,12 @@
 #include "functions.hpp"
 #include "util.hpp"
 
+#define PATCH_NAME always_load_flare
+DESCRIBE_PATCH(R"txt(This patch addresses two things related to monster missiles:
+
+- Always load the Succubi missile graphics. This fixes a crash encountering Blightfire, the unique Fire Clan archer, on level 7.
+- Avoid loading missile graphics multiple times per dungeon level. This fixes a potential memory leak and double-free.)txt");
+
 namespace {
 
 //
@@ -104,36 +110,35 @@ void free_flare_gfx()
 
 } // namespace
 
-bool always_load_flare_main()
+PATCH_MAIN
 {
     bool ok = true;
 
-    // In each case we keep the mtype check but redirect loading/freeing to our own code.
+    // For magma demons and thunder demons, keep the mtype check but redirect loading/freeing to our own code.
     // To hook, we first nop the problem code, then we patch in a call to our fixed code.
 
-    // Load magball
+    // Load magball. nop starting offset != patch offset because of the loop increment
     ok &= nop(0x004018F4, 0x00401940);
     ok &= patch_call(0x004018FA, (void*)load_magball);
-
-    // Free magball
+    // Free magball. nop starting offset != patch offset because of the loop increment
     ok &= nop(0x0040B78B, 0x0040B7CD);
     ok &= patch_call(0x0040B78E, (void*)free_magball);
 
     // Load thin lightning
     ok &= nop(0x0040195A, 0x00401969);
     ok &= patch_call(0x0040195A, (void*)load_thin_lightning);
-    
     // Free thin lightning
     ok &= nop(0x0040B7E1, 0x0040B807);
     ok &= patch_call(0x0040B7E1, (void*)free_thin_lightning);
 
-    // load flare
-    ok &= nop(0x00401983, 0x004019A1);
-    ok &= patch_call(0x00401983, (void*)load_flare_gfx);
+    // For Succubi, however, need to remove mtype check altogether.
 
+    // load flare
+    ok &= nop(0x00401969, 0x004019A1);
+    ok &= patch_call(0x00401969, (void*)load_flare_gfx);
     // Free flare
-    ok &= nop(0x0040B81B, 0x0040B867);
-    ok &= patch_call(0x0040B81B, (void*)free_flare_gfx);
+    ok &= nop(0x0040B807, 0x0040B867);
+    ok &= patch_call(0x0040B807, (void*)free_flare_gfx);
 
     return ok;
 }

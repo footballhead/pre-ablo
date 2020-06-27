@@ -2,8 +2,11 @@
 
 #include "util.hpp"
 
+#define PATCH_NAME skip_outro
+DESCRIBE_PATCH("BROKEN! DO NOT USE!\n\nSkip the outro slideshow on the main menu. Makes quitting faster.")
+
 // unfortunately I think this causes a rare hang on shutdown trying to free gfx...
-bool skip_outro_main()
+PATCH_MAIN
 {
     bool ok = true;
     // Remove all logic related to cycling through screenshots, skip straight to free & quit
