@@ -35,9 +35,6 @@ PATCH_MAIN
 {
     bool ok = true;
 
-    // This is the data segment, no need to adjust permissions
-    *(uint32_t*)0x004BC168 = TRUE;
-
     ok &= nop(0x00410348, 0x00410354); // displaces 3 instructions but we only need the one (the mov_eax_dv patch we apply later)
     ok &= patch_call(0x00410348, (void*)validate_eax);
     constexpr uint8_t move_eax_dv[] = {0x89, 0x45, 0xFC};

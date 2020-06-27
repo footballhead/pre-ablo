@@ -490,6 +490,7 @@ void wndproc_submenu_mainview(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         {
             auto& patch = get_patches()[listview_selection];
             patch.checked = !patch.checked;
+            save_checked_patches();
             PlayRndSFX(0x2E);
         }
 
