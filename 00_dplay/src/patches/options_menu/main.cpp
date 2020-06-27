@@ -39,8 +39,6 @@ int* const pentSpinFrame = reinterpret_cast<int*>(0x005DE8E8);
 int* const MouseX = reinterpret_cast<int*>(0x0061B730);
 int* const MouseY = reinterpret_cast<int*>(0x0061B734);
 bool* const bActive = reinterpret_cast<bool*>(0x0061BF68);
-UINT* const Msg_on_fadeout_done = reinterpret_cast<UINT*>(0x00061A950);
-BYTE* const fade_param = reinterpret_cast<BYTE*>(0x005DE8E0);
 BYTE* palette_buffer = reinterpret_cast<BYTE*>(0x0061AD60);
 PALETTEENTRY* const menu_palette = reinterpret_cast<PALETTEENTRY*>(0x0061B1E8);
 int* const force_redraw = reinterpret_cast<int*>(0x00419F0C);
@@ -53,15 +51,16 @@ BYTE* const smalText_kern = reinterpret_cast<BYTE*>(0x004A3550);
 // Locals
 //
 
-bool options_menu_open = false;
 int options_selection = 0;
-int scrollview_patch_top = 0;
-constexpr int scrollview_size = 30;
 
 BYTE* pPentSpn2Cel = nullptr;
 constexpr auto pentSpn2Size = 12;
 
 BYTE* pTextSlidCel = nullptr;
+
+//
+// Helpers
+//
 
 inline void free_cel_graphics(BYTE** cel)
 {
@@ -80,6 +79,10 @@ void load_and_use_palette(char const* filename)
     PaletteFadeOut(0x20);
     PaletteFadeIn(0x20);
 }
+
+//
+// font
+//
 
 struct font {
     // CEL data straight from MPQ
@@ -104,12 +107,12 @@ struct font {
         }
     }
 
-    // This is a loose decompilation of print_title_str_small
     // (x,y) are top-left coords
     void draw_string(int x, int y, const char* text) const {
         draw_string(x, y, text, strlen(text));
     }
 
+    // (x,y) are top-left coords
     void draw_string(int x, int y, char const* text, size_t textlen) const {
         if (!is_loaded()) {
             printf("Refusing to draw font with unloaded graphics!\n");
@@ -189,6 +192,41 @@ struct font {
 // font bigTextFont = {nullptr, 22, 18, mfontkern, title_text_ascii2frame, 2}; // gendata\\bigtext.cel
 font smalText = {nullptr, 13, 11, smalText_kern, smalText_ascii2frame, 1, 1}; // ctrlpan\\smaltext.cel
 
+//
+// box
+//
+
+/// @remark Depends on pTextSlidCel being loaded.
+/// @remark Dimensions must be multiples of 12
+/// @remark (x,y) specifies top-left
+void draw_box(int x, int y, int width, int height)
+{
+    // Because of the gfx origin being bottom left, we need to do some pixel manip to be within desired bounds
+    width -= 12;
+    y += 12;
+    height -= 12;
+
+    // Draw corners
+    DrawCel(x, y, pTextSlidCel, 1, 12);
+    DrawCel(x, y + height, pTextSlidCel, 2, 12);
+    DrawCel(x + width, y + height, pTextSlidCel, 3, 12);
+    DrawCel(x + width, y, pTextSlidCel, 4, 12);
+
+    // Draw sides. Corners already cover some of the sides
+    for (auto drawx = 12; drawx < width; drawx += 12) {
+        DrawCel(x + drawx, y, pTextSlidCel, 5, 12);
+        DrawCel(x + drawx, y + height, pTextSlidCel, 7, 12);
+    }
+    for (auto drawy = 12; drawy < height; drawy += 12) {
+        DrawCel(x, y + drawy, pTextSlidCel, 6, 12);
+        DrawCel(x + width, y + drawy, pTextSlidCel, 8, 12);
+    }
+}
+
+//
+// ... the rest
+//
+
 void open_menu()
 {
     options_menu_open = true;
@@ -220,33 +258,6 @@ void close_menu()
         free_cel_graphics(&pTextSlidCel);
     }
     load_and_use_palette("gendata\\title.pal");
-}
-
-/// @remark Depends on pTextSlidCel being loaded.
-/// @remark Dimensions must be multiples of 12
-/// @remark (x,y) specifies top-left
-void draw_box(int x, int y, int width, int height)
-{
-    // Because of the gfx origin being bottom left, we need to do some pixel manip to be within desired bounds
-    width -= 12;
-    y += 12;
-    height -= 12;
-
-    // Draw corners
-    DrawCel(x, y, pTextSlidCel, 1, 12);
-    DrawCel(x, y + height, pTextSlidCel, 2, 12);
-    DrawCel(x + width, y + height, pTextSlidCel, 3, 12);
-    DrawCel(x + width, y, pTextSlidCel, 4, 12);
-
-    // Draw sides. Corners already cover some of the sides
-    for (auto drawx = 12; drawx < width; drawx += 12) {
-        DrawCel(x + drawx, y, pTextSlidCel, 5, 12);
-        DrawCel(x + drawx, y + height, pTextSlidCel, 7, 12);
-    }
-    for (auto drawy = 12; drawy < height; drawy += 12) {
-        DrawCel(x, y + drawy, pTextSlidCel, 6, 12);
-        DrawCel(x + width, y + drawy, pTextSlidCel, 8, 12);
-    }
 }
 
 void draw_options_menu()
@@ -350,6 +361,40 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         break;
     }
 }
+
+class root_panel : public IComponent {
+public:
+    bool is_shown() const {
+        return _shown;
+    }
+
+    void show() {
+        if (_shown) {
+            return;
+        }
+        _shown = true;
+
+        // Load on demand (can't do in main because MPQ not open yet)
+        if (!smalText.is_loaded()) {
+            smalText.load_gfx("ctrlpan\\smaltext.cel");
+        }
+        if (!pPentSpn2Cel) {
+            pPentSpn2Cel = LoadFileInMem("data\\pentspn2.cel");
+        }
+        if (!pTextSlidCel) {
+            pTextSlidCel = LoadFileInMem("data\\textslid.cel");
+        }
+
+        SetCursor_(1); // Armored glove, with in-game palette
+        load_and_use_palette("gendata\\create.pal");
+    }
+
+    void _hide() {
+
+    }
+private:
+    bool _shown{false};
+};
 
 //
 // Hooks
