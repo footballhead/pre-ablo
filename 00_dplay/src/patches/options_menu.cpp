@@ -39,13 +39,13 @@ int* const pentSpinFrame = reinterpret_cast<int*>(0x005DE8E8);
 int* const MouseX = reinterpret_cast<int*>(0x0061B730);
 int* const MouseY = reinterpret_cast<int*>(0x0061B734);
 bool* const bActive = reinterpret_cast<bool*>(0x0061BF68);
-UINT* const Msg_on_fadeout_done = reinterpret_cast<UINT*>(0x00061A950);
-BYTE* const fade_param = reinterpret_cast<BYTE*>(0x005DE8E0);
 BYTE* palette_buffer = reinterpret_cast<BYTE*>(0x0061AD60);
 PALETTEENTRY* const menu_palette = reinterpret_cast<PALETTEENTRY*>(0x0061B1E8);
 int* const force_redraw = reinterpret_cast<int*>(0x00419F0C);
-//BYTE* const title_text_ascii2frame = reinterpret_cast<BYTE*>(0x004AA608);
-//BYTE* const mfontkern = reinterpret_cast<BYTE*>(0x004A2668);
+BYTE* const titlText_ascii2frame = reinterpret_cast<BYTE*>(0x004AA608);
+BYTE* const titlText_kern = reinterpret_cast<BYTE*>(0x004A2668);
+BYTE* const bigTGold_ascii2frame = reinterpret_cast<BYTE*>(0x004B8C98);
+BYTE* const bigTGold_kern = reinterpret_cast<BYTE*>(0x004B8D18);
 BYTE* const smalText_ascii2frame = reinterpret_cast<BYTE*>(0x004A34D0);
 BYTE* const smalText_kern = reinterpret_cast<BYTE*>(0x004A3550);
 
@@ -54,13 +54,49 @@ BYTE* const smalText_kern = reinterpret_cast<BYTE*>(0x004A3550);
 //
 
 bool options_menu_open = false;
-int options_selection = 0;
-int scrollview_patch_top = 0;
+
+enum submenu_id {
+    submenu_mainview,
+    submenu_restart_dialog,
+};
+int submenu = submenu_mainview;
+
+enum focus_id {
+    focus_listview,
+    focus_back_button,
+};
+int focus = focus_listview;
+
+int listview_selection = 0;
+
 constexpr int scrollview_size = 30;
+
+constexpr auto screen_width = 640;
+constexpr auto screen_height = 480;
+
+constexpr auto standard_box_margin = 8;
+constexpr auto standard_box_padding = 4;
+
+// constexpr auto bigTGold_height = 45;
+constexpr auto bigText_height = 18;
+
+constexpr auto listview_x = 0;
+constexpr auto listview_y = 0;
+constexpr auto listview_width = screen_width / 2;
+constexpr auto listview_height = screen_height - bigText_height - 2 * standard_box_padding;
+
+constexpr auto listview_content_x = listview_x + standard_box_padding + standard_box_margin;
+constexpr auto listview_content_y = listview_y + standard_box_padding + standard_box_margin;
+constexpr auto listview_content_width  = listview_width  - 2 * standard_box_padding - 2 * standard_box_margin;
+constexpr auto listview_content_height = listview_height - 2 * standard_box_padding - 2 * standard_box_margin;
+
+constexpr auto textbox_x = screen_width / 2;
+constexpr auto textbox_y = 0;
+constexpr auto textbox_width = screen_width / 2;
+constexpr auto textbox_height = listview_height;
 
 BYTE* pPentSpn2Cel = nullptr;
 constexpr auto pentSpn2Size = 12;
-
 BYTE* pTextSlidCel = nullptr;
 
 inline void free_cel_graphics(BYTE** cel)
@@ -80,6 +116,19 @@ void load_and_use_palette(char const* filename)
     PaletteFadeOut(0x20);
     PaletteFadeIn(0x20);
 }
+
+// void wait_for_debugger()
+// {
+//     // It's useful to wait until after we've patched the binary before attaching a debugger.
+//     // At least, I know that IDA will freak out when the patching is performed.
+//     // https://stackoverflow.com/questions/663449/what-is-the-best-way-to-attach-a-debugger-to-a-process-in-vc-at-just-the-right
+//     printf("%s: Waiting for debugger...\n", __func__);
+//     while (!IsDebuggerPresent()) {
+//         Sleep(100);
+//     }
+//     printf("%s: Got debugger!\n", __func__);
+//     DebugBreak();
+// }
 
 struct font {
     // CEL data straight from MPQ
@@ -104,12 +153,22 @@ struct font {
         }
     }
 
+    int calculate_string_width(const char* text) const {
+        int result = 0;
+        while (*text) {
+            result += kerning[ascii2frame[*text]] + letterSpacing;
+            ++text;
+        }
+        return result;
+    }
+
     // This is a loose decompilation of print_title_str_small
     // (x,y) are top-left coords
     void draw_string(int x, int y, const char* text) const {
         draw_string(x, y, text, strlen(text));
     }
 
+    // (x,y) are top-left coords
     void draw_string(int x, int y, char const* text, size_t textlen) const {
         if (!is_loaded()) {
             printf("Refusing to draw font with unloaded graphics!\n");
@@ -186,16 +245,24 @@ struct font {
         }
     }
 };
-// font bigTextFont = {nullptr, 22, 18, mfontkern, title_text_ascii2frame, 2}; // gendata\\bigtext.cel
+font bigText = {nullptr, 22, bigText_height, titlText_kern, titlText_ascii2frame, 2, 2}; // gendata\\bigtext.cel
 font smalText = {nullptr, 13, 11, smalText_kern, smalText_ascii2frame, 1, 1}; // ctrlpan\\smaltext.cel
+font hugeText = {nullptr, 46, 45, bigTGold_kern, bigTGold_ascii2frame, 0, 0}; // data\\hugetext.cel
 
 void open_menu()
 {
     options_menu_open = true;
-    SetCursor_(1); // Armored glove, with in-game palette
+    submenu = submenu_mainview;
+
     // Load on demand (can't do in main because MPQ not open yet)
     if (!smalText.is_loaded()) {
         smalText.load_gfx("ctrlpan\\smaltext.cel");
+    }
+    if (!bigText.is_loaded()) {
+        bigText.load_gfx("gendata\\bigtext.cel");
+    }
+    if (!hugeText.is_loaded()) {
+        hugeText.load_gfx("data\\hugetext.cel");
     }
     if (!pPentSpn2Cel) {
         pPentSpn2Cel = LoadFileInMem("data\\pentspn2.cel");
@@ -203,15 +270,23 @@ void open_menu()
     if (!pTextSlidCel) {
         pTextSlidCel = LoadFileInMem("data\\textslid.cel");
     }
+
+    SetCursor_(1); // Armored glove, with in-game palette
     load_and_use_palette("gendata\\create.pal");
 }
 
 void close_menu()
 {
     options_menu_open = false;
-    SetCursor_(2);// Armored glove, with title.pal palette
+
     if (smalText.is_loaded()) {
         smalText.free_gfx();
+    }
+    if (bigText.is_loaded()) {
+        bigText.free_gfx();
+    }
+    if (hugeText.is_loaded()) {
+        hugeText.free_gfx();
     }
     if (pPentSpn2Cel) {
         free_cel_graphics(&pPentSpn2Cel);
@@ -219,6 +294,8 @@ void close_menu()
     if (pTextSlidCel) {
         free_cel_graphics(&pTextSlidCel);
     }
+
+    SetCursor_(2);// Armored glove, with title.pal palette
     load_and_use_palette("gendata\\title.pal");
 }
 
@@ -249,49 +326,118 @@ void draw_box(int x, int y, int width, int height)
     }
 }
 
-void draw_options_menu()
+void draw_submenu_restart_dialog()
 {
     ClearScreenBuffer();
 
-    constexpr auto box_margin = 8;
-    constexpr auto box_padding = 4;
+    constexpr auto text_restart = "Restart to apply patches";
+    hugeText.draw_string(DRAW_ORIGIN_X + (screen_width - hugeText.calculate_string_width(text_restart)) / 2,
+        DRAW_ORIGIN_Y + (screen_height - hugeText.frameHeight) / 2,
+        text_restart);
 
-    draw_box(DRAW_ORIGIN_X + box_margin, DRAW_ORIGIN_Y + box_margin, 320 - 2*box_margin, 480 - 2*box_margin);
+    constexpr auto ok_label = "OK";
+    auto const ok_label_width = bigText.calculate_string_width(ok_label);
+    auto const ok_label_x = DRAW_ORIGIN_X + (screen_width - ok_label_width) / 2;
+    auto const ok_label_y = DRAW_ORIGIN_Y + (screen_height - bigText.frameHeight) / 2 + hugeText.frameHeight + bigText.frameHeight;
+    bigText.draw_string(ok_label_x, ok_label_y, ok_label);
+
+    DrawCel(ok_label_x - 2 * pentSpn2Size, ok_label_y + pentSpn2Size + 2, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
+    DrawCel(ok_label_x + ok_label_width + pentSpn2Size, ok_label_y + pentSpn2Size + 2, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
+}
+
+void wndproc_submenu_restart_dialog(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (Msg) {
+    case WM_ACTIVATEAPP:
+        *bActive = wParam;
+        if (bActive) {
+            palette_update();
+        }
+        break;
+    case WM_DESTROY:
+        // TODO: Do other things need to be here?
+        ShowCursor(true);
+        PostQuitMessage(0);
+        break;
+    case WM_MOUSEMOVE: {
+        *MouseX = lParam & 0xFFFF;
+        *MouseY = lParam >> 16;
+        break;
+    }
+    case WM_LBUTTONDOWN:
+        // fall-through
+    case WM_KEYDOWN:
+        close_menu();
+        PlayRndSFX(0x2E);
+        break;
+    case WM_USER:
+        menu_redraw(hWnd);
+        break;
+    default:
+        DefWindowProcA(hWnd, Msg, wParam, lParam);
+        break;
+    }
+}
+
+void draw_submenu_mainview()
+{
+    ClearScreenBuffer();
+
+    // Draw LHS panel (listview)
+    draw_box(DRAW_ORIGIN_X + listview_x + standard_box_margin,
+        DRAW_ORIGIN_Y + listview_x + standard_box_margin,
+        listview_width - 2 * standard_box_margin,
+        listview_height - 2 * standard_box_margin);
 
     for (auto i = 0; i < scrollview_size; i++) {
-        auto patch_index = i + scrollview_patch_top;
+        auto const patch_index = i;
         if (patch_index >= get_patches().size()) {
             break;
         }
 
-        const auto drawx = DRAW_ORIGIN_Y + box_margin + box_padding;
-        const auto drawy = DRAW_ORIGIN_Y + box_margin + box_padding + i * (smalText.frameHeight + 2);
+        auto const listview_item_height = smalText.frameHeight + smalText.lineSpacing;
+        auto const drawx = DRAW_ORIGIN_X + listview_content_x;
+        auto const drawy = DRAW_ORIGIN_Y + listview_content_y + i * listview_item_height;
 
-        if (patch_index == options_selection) {
-            DrawCel(DRAW_ORIGIN_X + box_margin + box_padding, drawy + pentSpn2Size, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
+        if (focus == focus_listview && patch_index == listview_selection) {
+            DrawCel(drawx, drawy + pentSpn2Size, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
         }
         if (get_patches()[patch_index].checked) {
-            smalText.draw_string(DRAW_ORIGIN_X + box_margin + box_padding + pentSpn2Size, drawy + smalText.frameHeight, "X");
+            smalText.draw_string(drawx + pentSpn2Size, drawy, "X");
         }
 
-        smalText.draw_string(DRAW_ORIGIN_X + box_margin + box_padding + pentSpn2Size + smalText.frameWidth, drawy, get_patches()[patch_index].name);
+        smalText.draw_string(drawx + pentSpn2Size + smalText.frameWidth, drawy, get_patches()[patch_index].name);
     }
 
-    draw_box(DRAW_ORIGIN_X + 320 + box_margin, DRAW_ORIGIN_Y + box_margin, 320 - 2*box_margin, 480 - 2*box_margin);
-    smalText.draw_multiline_string(DRAW_ORIGIN_X + 320 + box_margin + box_padding,
-        DRAW_ORIGIN_Y + box_margin + box_padding,
-        get_patches()[options_selection].description,
-        320 - 2*box_margin - 2*box_padding);
+    // Draw RHS panel (textbox)
+    draw_box(DRAW_ORIGIN_X + textbox_x + standard_box_margin,
+        DRAW_ORIGIN_Y + textbox_y + standard_box_margin,
+        textbox_width - 2 * standard_box_margin,
+        textbox_height - 2 * standard_box_margin);
+    auto const textbox_text = focus == focus_listview ? get_patches()[listview_selection].description : "Accept chosen patches.\n\nRestart to apply patches.";
+    smalText.draw_multiline_string(DRAW_ORIGIN_X + textbox_x + standard_box_margin + standard_box_padding,
+        DRAW_ORIGIN_Y + textbox_y + standard_box_margin + standard_box_padding,
+        textbox_text,
+        textbox_width - 2 * standard_box_margin - 2 * standard_box_padding);
+
+    // Draw text at bottom
+    constexpr auto back_label = "Apply";
+    auto const back_label_width = bigText.calculate_string_width(back_label);
+    auto const back_label_x = DRAW_ORIGIN_X + (screen_width - back_label_width) / 2;
+    auto const back_label_y = DRAW_ORIGIN_Y + screen_height - bigText.frameHeight - 8;
+    bigText.draw_string(back_label_x, back_label_y, back_label);
+    if (focus == focus_back_button) {
+        DrawCel(back_label_x - 2 * pentSpn2Size, back_label_y + pentSpn2Size + 2, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
+        DrawCel(back_label_x + back_label_width + pentSpn2Size, back_label_y + pentSpn2Size + 2, pPentSpn2Cel, *pentSpinFrame, pentSpn2Size);
+    }
 }
 
-void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+void wndproc_submenu_mainview(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    // The following are incredible nessary:
+    // The following are incredible necessary:
     //
     // * WM_MOUSEMOVE: Assign to MouseX, MouseY otherwise the mouse will be frozen in place
     // * WM_USER: Call menu_redraw otherwise the game looks like it's frozen
-
-    // TODO: Mouse navigation
 
     switch (Msg) {
     case WM_ACTIVATEAPP:
@@ -301,45 +447,110 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+        // TODO: Do other things need to be here?
         ShowCursor(true);
         PostQuitMessage(0);
         break;
-    case WM_MOUSEMOVE:
-        *MouseX = lParam & 0xFFFF;
-        *MouseY = lParam >> 16;
+    case WM_MOUSEMOVE: {
+        auto const newx = lParam & 0xFFFF;
+        auto const newy = lParam >> 16;
+        if (newx == *MouseX && newy == *MouseY) {
+            return;
+        }
+
+        *MouseX = newx;
+        *MouseY = newy;
+        if (*MouseX >= listview_content_x
+            && *MouseY >= listview_content_y
+            && *MouseX < listview_content_x + listview_content_width
+            && *MouseY < listview_content_y + listview_content_height)
+        {
+            focus = focus_listview;
+
+            auto const old_selection = listview_selection;
+            auto const listview_item_height = smalText.frameHeight + smalText.lineSpacing;
+            listview_selection = (*MouseY - listview_content_y) / listview_item_height;
+
+            auto const num_patches = get_patches().size();
+            if (listview_selection >= num_patches) {
+                listview_selection = num_patches - 1;
+            }
+
+            if (old_selection != listview_selection) {
+                PlayRndSFX(0x2F);
+            }
+        }
         break;
+    }
+    case WM_LBUTTONDOWN: {
+        if (*MouseX >= listview_content_x
+            && *MouseY >= listview_content_y
+            && *MouseX < listview_content_x + listview_content_width
+            && *MouseY < listview_content_y + listview_content_height)
+        {
+            auto& patch = get_patches()[listview_selection];
+            patch.checked = !patch.checked;
+            PlayRndSFX(0x2E);
+        }
+
+        if (*MouseY > listview_height) {
+            submenu = submenu_restart_dialog;
+            PlayRndSFX(0x2E);
+        }
+        break;
+    }
     case WM_KEYDOWN:
         switch (wParam) {
         case VK_ESCAPE:
-            close_menu();
+            submenu = submenu_restart_dialog;
             break;
         case VK_UP:
-            --options_selection;
-            if (options_selection < 0) {
-                options_selection = 0;
+            switch (focus) {
+            case focus_listview:
+                --listview_selection;
+                if (listview_selection < 0) {
+                    listview_selection = 0;
+                }
+                PlayRndSFX(0x2F);
+                break;
+            case focus_back_button:
+                focus = focus_listview;
+                break;
             }
-            if (options_selection < scrollview_patch_top) {
-                --scrollview_patch_top;
-            }
-            PlayRndSFX(0x2F);
             break;
-        case VK_DOWN:
-            ++options_selection;
-            if (options_selection >= get_patches().size()) {
-                options_selection = get_patches().size() - 1;
+        case VK_DOWN: {
+            switch (focus) {
+            case focus_listview: {
+                auto const num_patches = get_patches().size();
+                ++listview_selection;
+                if (listview_selection >= num_patches) {
+                    listview_selection = num_patches - 1;
+                    focus = focus_back_button;
+                }
+                PlayRndSFX(0x2F);
+                break;
             }
-            if (options_selection >= scrollview_patch_top + scrollview_size) {
-                ++scrollview_patch_top;
+            case focus_back_button:
+                // Do nothing, at bottom of screen
+                break;
             }
-            PlayRndSFX(0x2F);
-            break;
-        case VK_RETURN: {
-            auto& patch = get_patches()[options_selection];
-            patch.checked = !patch.checked;
-            save_checked_patches();
-            PlayRndSFX(0x2E);
             break;
         }
+        case VK_RETURN:
+            switch (focus) {
+            case focus_listview: {
+                auto& patch = get_patches()[listview_selection];
+                patch.checked = !patch.checked;
+                save_checked_patches();
+                PlayRndSFX(0x2E);
+                break;
+            }
+            case focus_back_button:
+                submenu = submenu_restart_dialog;
+                PlayRndSFX(0x2E);
+                break;
+            }
+            break;
         }
         break;
     case WM_USER:
@@ -357,19 +568,15 @@ void wndproc_options(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 void draw_main_menu_hook()
 {
-#ifndef NDEBUG
-    // It's useful to wait until after we've patched the binary before attaching a debugger.
-    // At least, I know that IDA will freak out when the patching is performed.
-    // https://stackoverflow.com/questions/663449/what-is-the-best-way-to-attach-a-debugger-to-a-process-in-vc-at-just-the-right
-    // printf("%s: Waiting for debugger...\n", __func__);
-    // while (!IsDebuggerPresent()) {
-    //     Sleep(100);
-    // }
-    // printf("%s: Got debugger!\n", __func__);
-    // DebugBreak();
-#endif
     if (options_menu_open) {
-        draw_options_menu();
+        switch (submenu) {
+        case submenu_mainview:
+            draw_submenu_mainview();
+            break;
+        case submenu_restart_dialog:
+            draw_submenu_restart_dialog();
+            break;
+        }
         return;
     }
 
@@ -379,7 +586,7 @@ void draw_main_menu_hook()
     constexpr char const* options[] = {
         "New Game",
         "Load Game",
-        "Options", // TODO make selectable
+        "Options", // TODO make selectable by mouse
         "Quit",
     };
     constexpr int options_text_width[] = {
@@ -403,9 +610,18 @@ void draw_main_menu_hook()
 void __fastcall wndproc_title_newloadquit_hook(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
     if (options_menu_open) {
-        wndproc_options(hWnd, Msg, wParam, lParam);
+        switch (submenu) {
+        case submenu_mainview:
+            wndproc_submenu_mainview(hWnd, Msg, wParam, lParam);
+            break;
+        case submenu_restart_dialog:
+            wndproc_submenu_restart_dialog(hWnd, Msg, wParam, lParam);
+            break;
+        }
         return;
     }
+
+    // TODO: Mouse navigation
 
     if (Msg == WM_KEYDOWN && wParam == VK_RETURN && *menu_selected_index == 2) {
         open_menu();
@@ -430,6 +646,7 @@ PATCH_MAIN
     ok &= patch<uint8_t>(0x0041A486 + 3, 0x03);
     // intercept wndproc logic
     ok &= patch_call(0x00488205, (void*)wndproc_title_newloadquit_hook);
+    // 
 
     // TODO fix mouse navigation
     // TODO sometimes the game can't close down properly, it gets stuck trying to free a graphic... what's up with taht?
