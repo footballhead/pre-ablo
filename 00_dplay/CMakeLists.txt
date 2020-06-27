@@ -33,7 +33,7 @@ add_library(dplay SHARED
     src/patches/music_nompq_fix.cpp
     src/patches/no_tp_light.cpp
     src/patches/old_drlg.cpp
-    src/patches/options_menu.cpp
+    src/patches/options_menu/main.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/skip_outro.cpp
