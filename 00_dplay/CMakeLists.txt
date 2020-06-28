@@ -30,6 +30,7 @@ add_library(dplay SHARED
     src/patches/goofy.cpp
     src/patches/infraring_fix.cpp
     src/patches/mega_fix.cpp
+    src/patches/more_music.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/no_tp_light.cpp
     src/patches/old_drlg.cpp

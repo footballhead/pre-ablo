@@ -15,6 +15,7 @@ DECLARE_PATCH(fullgame);
 DECLARE_PATCH(goofy);
 DECLARE_PATCH(infraring_fix);
 DECLARE_PATCH(mega_fix);
+DECLARE_PATCH(more_music);
 DECLARE_PATCH(music_nompq_fix);
 DECLARE_PATCH(no_tp_light);
 DECLARE_PATCH(old_drlg);
@@ -47,6 +48,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(infraring_fix),
     REGISTER_PATCH_RECOMMENDED(mega_fix),
 #ifndef NDEBUG
+    REGISTER_PATCH(more_music),
     REGISTER_PATCH(music_nompq_fix),
 #endif
     REGISTER_PATCH_RECOMMENDED(no_tp_light),
