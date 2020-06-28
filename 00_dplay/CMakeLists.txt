@@ -27,8 +27,8 @@ add_library(dplay SHARED
     src/patches/cheat.cpp
     src/patches/devmode.cpp
     src/patches/fullgame.cpp
+    src/patches/goofy.cpp
     src/patches/infraring_fix.cpp
-    src/patches/max_monsters.cpp
     src/patches/mega_fix.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/no_tp_light.cpp

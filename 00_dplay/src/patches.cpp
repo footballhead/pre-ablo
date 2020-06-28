@@ -12,13 +12,14 @@ DECLARE_PATCH(automap_fix);
 DECLARE_PATCH(cheat);
 DECLARE_PATCH(devmode);
 DECLARE_PATCH(fullgame);
+DECLARE_PATCH(goofy);
 DECLARE_PATCH(infraring_fix);
-DECLARE_PATCH(max_monsters);
 DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(music_nompq_fix);
 DECLARE_PATCH(no_tp_light);
 DECLARE_PATCH(old_drlg);
 DECLARE_PATCH(options_menu);
+DECLARE_PATCH(randomizer);
 DECLARE_PATCH(savegame_patch_fix);
 DECLARE_PATCH(skip_intros);
 DECLARE_PATCH(skip_outro);
@@ -42,8 +43,8 @@ const Patch patches_registry[] = {
     REGISTER_PATCH(cheat),
     REGISTER_PATCH(devmode),
     REGISTER_PATCH_RECOMMENDED(fullgame),
+    REGISTER_PATCH(goofy),
     REGISTER_PATCH_RECOMMENDED(infraring_fix),
-    REGISTER_PATCH(max_monsters),
     REGISTER_PATCH_RECOMMENDED(mega_fix),
 #ifndef NDEBUG
     REGISTER_PATCH(music_nompq_fix),
