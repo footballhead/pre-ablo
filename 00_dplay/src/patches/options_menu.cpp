@@ -370,10 +370,25 @@ void wndproc_submenu_restart_dialog(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM l
     }
     case WM_LBUTTONDOWN:
         // fall-through
-    case WM_KEYDOWN:
+    case WM_KEYDOWN: {
         close_menu();
         PlayRndSFX(0x2E);
+
+        auto si = STARTUPINFO{};
+        auto pi = PROCESS_INFORMATION{};
+        if (!CreateProcess("DIABLO.EXE", nullptr, nullptr, nullptr, false, 0, nullptr, nullptr, &si, &pi)) {
+            printf("Failed to restart for the user: err=%d\n", GetLastError());
+            return;
+        }
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        CloseHandle(si.hStdError);
+        CloseHandle(si.hStdInput);
+        CloseHandle(si.hStdOutput);
+        ExitProcess(0);
+
         break;
+    }
     case WM_USER:
         menu_redraw(hWnd);
         break;
