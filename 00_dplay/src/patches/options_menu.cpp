@@ -48,6 +48,10 @@ BYTE* const bigTGold_ascii2frame = reinterpret_cast<BYTE*>(0x004B8C98);
 BYTE* const bigTGold_kern = reinterpret_cast<BYTE*>(0x004B8D18);
 BYTE* const smalText_ascii2frame = reinterpret_cast<BYTE*>(0x004A34D0);
 BYTE* const smalText_kern = reinterpret_cast<BYTE*>(0x004A3550);
+int* const fade_state = reinterpret_cast<int*>(0x0061B5E8); // 0 == no fade, 1 == fade in, 2 == fade out
+int* const fade_param = reinterpret_cast<int*>(0x005DE8E0);
+bool* const title_allow_loadgame = reinterpret_cast<bool*>(0x00603F10);
+DWORD* const Msg_delayed_on_fadeout = reinterpret_cast<DWORD*>(0x0061A950);
 
 //
 // Locals
@@ -622,7 +626,35 @@ void __fastcall wndproc_title_newloadquit_hook(HWND hWnd, UINT Msg, WPARAM wPara
         return;
     }
 
-    // TODO: Mouse navigation
+    if (Msg == WM_LBUTTONDOWN && *fade_state == 0) {
+        PlayRndSFX(0x2E);
+
+        if (*MouseY < 290) {
+            *menu_selected_index = 0;
+            *fade_param |= 0x40; // free GFX on fade out
+            *fade_state = 2;
+            *Msg_delayed_on_fadeout = WM_USER + 9;
+            return;
+        } else if (*MouseY < 335) { // +45
+            if (*title_allow_loadgame) {
+                *menu_selected_index = 1;
+                *fade_param |= 0x40; // free GFX on fade out
+                *fade_state = 2;
+                *Msg_delayed_on_fadeout = WM_USER + 9;
+            }
+            return;
+        } else if (*MouseY < 380) { // +45
+            *menu_selected_index = 2; // Not sure if this will cause other issues...
+            open_menu();
+            return;
+        } else {
+            *menu_selected_index = 3;
+            PaletteFadeOut(0x20);
+            *fade_state = 2;
+            *Msg_delayed_on_fadeout = WM_USER + 9;
+            return;
+        }
+    }
 
     if (Msg == WM_KEYDOWN && wParam == VK_RETURN && *menu_selected_index == 2) {
         open_menu();
