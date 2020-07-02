@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.3.0
+DIABLO PR DEMO ENHANCED v0.4.0
 ================================================================================
 
 Website: https://gitlab.com/moralbacteria/diablo-prdemo-patches  
@@ -28,24 +28,34 @@ Bugs are expected since, in August 1996, the game was actively under
 development. These bugs are left in to be faithful to the state of the game as
 it was being developed.
 
+Installing
+--------------------------------------------------------------------------------
+
+First, install the Visual Studio 2019 redistributable. See this page:
+https://support.microsoft.com/en-ca/help/2977003/the-latest-supported-visual-c-downloads
+
+Next, extract the zip to C:\PRDEMO. It can be any folder, really, as long as
+it's shorter than 48 letters. Otherwise, the game might crash on startup.
+
 Running
 --------------------------------------------------------------------------------
 
-We've include a custom launcher so you can choose your own adventure.
+Run DIABLO.EXE.
 
-After extracting this zip to C:\PRDEMO, run launcher.exe. This will open a
-window with a list of checkboxes down the left-hand side. Click on the
-individual labels to get a description on the right-hand side.
+Patches can be customized on the main menu by selecting Options. Hovering over
+a patch on the left-hand side will display a description on the right-hand side.
+Clicking a patch will toggle it on/off and save your selection. Clicking apply
+will relaunch the game in order to apply your selected patches.
 
-Select individual patches by clicking the checkboxes. The patches checked by 
-default are the ones that we recommend. After choosing patches, click Launch!
-This will apply the chosen patches and start the game.
-
-Your previous choices are saved as DIABLO.EXE. If you like the patches you chose
-last time, you can run DIABLO.EXE instead of the launcher.
+If you encounter an issue, delete last_patch.txt to reset your selections.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.0
+
+  * Migrate all binary patches to C++ code in custom dplay.dll
+  * Replace external launcher with in-game Options menu (on main menu)
 
 v0.3.0
 

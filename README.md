@@ -2,7 +2,7 @@
 
 ![Banner](_DOCS/banner.png)
 
-**Download latest release:** [v0.3.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
+**Download latest release:** [v0.4.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
@@ -37,7 +37,7 @@ it was being developed.
       * You can choose any folder in `C:\` (I'm partial to `C:\PRDEMO`) if you already have Diablo installed.
  4. Run `DIABLO.EXE`
 
-> NOTE: Patch customization has been temporarily disabled as we adjust the structure of the repo.
+Patches can be toggled in the Options menu on the main menu. The game will automatically restart after confirming chosen patches.
 
 ## Developing
 
@@ -46,27 +46,23 @@ it was being developed.
 _Diablo Pre-release Demo ENHANCED_ (PRDE) is a project that consists of many parts:
 
   * Individual fixes, packaged in a custom dplay.dll (this repo)
-  * A custom launcher for applying the fixes (https://gitlab.com/moralbacteria/prde_patcher)
-      * NOTE: Has not been updated to support toggling dplay.dll features! So it is not bundled for the time being.
   * A custom CLI for packaging files in the final MPQ (https://gitlab.com/moralbacteria/mpqadd)
   * A custom ddraw.dll for better graphics support and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
   * A CI/CD pipeline for producing builds for release (see [.gitlab-ci.yml](.gitlab-ci.yml))
 
-### diablo-prdemo-patches (this repo!)
+### diablo-prdemo-patches / dplay.dll (this repo!)
 
-Patches are compiled into a phony dplay.dll. They are applied when the DLL is loaded by DIABLO.EXE
+Patches are compiled into a phony `dplay.dll` and are applied when the DLL is loaded by DIABLO.EXE
 
-Each patch is stored under [00_dplay/src/patches](00_dplay/src/patches) in its own `patch_name.cpp.`. It has a `void patch_name_main(void)` which is designed to run on DLL load. This is accomplished by calling it from `DllMain()`.
+Each patch is stored under [00_dplay/src/patches](00_dplay/src/patches) in its own `patch_name.cpp.`. It has a `PATCH_MAIN` (`void patch_name_main(void)`) which is designed to run on DLL load. This is accomplished by calling it from `DllMain()`.
+
+A master list of all patches is in [00_dplay/src/patches.cpp](00_dplay/src/patches.cpp). The patch must be defined and registered there.
+
+Users toggle patches through the Options menu on the main menu. Selections are saved in `last_patch.txt`. If no `last_patch.txt` is present then recommendations are applied instead.
 
 This replaces the old method of binary patching with VCDIFF. The old patches are stored (for now) in [old_patches](old_patches). The README's will migrate into the patch C++ code at some point.
 
 The DLL is cross-compiled in Docker with mingw. See [00_dplay/README.md](00_dplay/README.md) for more details.
-
-### prde_patcher
-
-We have a custom launcher: https://gitlab.com/moralbacteria/prde_patcher
-
-The launcher has it's own versioning scheme. Binaries are hand-produced and uploaded to a file hosting site like Google Drive. Then, the CI/CD pipeline downloads it and include it in the release.
 
 ### mpqadd
 
@@ -93,7 +89,8 @@ It has several components:
   * A Docker image called `moralbacteria/diablo-prdemo-patches`. This is produced from [!Tools/docker-pipeline](!Tools/docker-pipeline) and is hosted at https://gitlab.com/moralbacteria/diablo-prdemo-patches/container_registry/. This Docker image contains anything needed by a CI agent to produce the final ZIP. Currently, it contains:
       * Extracted version of the base PR Demo
       * `mpqadd`
-  * A script run on every commit and tag, stored in [.gitlab-ci.yml](.gitlab-ci.yml). This
+  * A script run on every commit and tag, stored in [.gitlab-ci.yml](.gitlab-ci.yml). This:
+      * Cross-compiles DPLAY.DLL
       * Downloads a release of ddraw.dll  and puts it into the release folder
       * Copies our custom dplay.dll with the patches
       * Adds all missing graphics to the MPQ
