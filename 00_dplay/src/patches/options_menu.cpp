@@ -73,7 +73,7 @@ int focus = focus_listview;
 
 int listview_selection = 0;
 
-constexpr int scrollview_size = 30;
+constexpr int scrollview_size = 34;
 
 constexpr auto screen_width = 640;
 constexpr auto screen_height = 480;

@@ -27,14 +27,22 @@ add_library(dplay SHARED
     src/patches/cheat.cpp
     src/patches/devmode.cpp
     src/patches/fullgame.cpp
-    src/patches/goofy.cpp
+    src/patches/infinite_mana.cpp
     src/patches/infraring_fix.cpp
+    src/patches/instacast.cpp
+    src/patches/magic_find_x3.cpp
+    src/patches/max_monster_types.cpp
     src/patches/mega_fix.cpp
+    src/patches/monster_density_x2.cpp
     src/patches/more_music.cpp
     src/patches/music_nompq_fix.cpp
+    src/patches/no_death_anim.cpp
     src/patches/no_tp_light.cpp
     src/patches/old_drlg.cpp
+    src/patches/only_magma_demons.cpp
     src/patches/options_menu.cpp
+    src/patches/panic_teleport.cpp
+    src/patches/randomize_leveltype.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
     src/patches/skip_outro.cpp
@@ -42,10 +50,12 @@ add_library(dplay SHARED
     src/patches/stone_curse_missile_fix.cpp
     src/patches/thunder_demon_missile_fix.cpp
     src/patches/too_much_hp_crash.cpp
+    src/patches/towncast.cpp
     src/patches/tp_setlevel_fix.cpp
     src/patches/undead_crown.cpp
     src/patches/version_override.cpp
     src/patches/window.cpp
+    src/patches/z_hook.cpp
     )
 target_include_directories(dplay
     PRIVATE
