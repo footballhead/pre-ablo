@@ -1,10 +1,11 @@
 On Windows, open me in WordPad!
 
-DIABLO PR DEMO ENHANCED v0.4.0
+PRE-ABLO v0.4.0
 ================================================================================
 
 Website: https://moralbacteria.gitlab.io/diablo-prdemo-patches/  
-Discord: https://discord.gg/2btAntp
+Discord: https://discord.gg/2btAntp  
+ModDB: https://www.moddb.com/mods/pre-ablo
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
 purposes, they produced a build to be distributed as shareware called the Pre-
