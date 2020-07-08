@@ -1,0 +1,8 @@
+pages:
+  script:
+    - cp -R pages public
+  artifacts:
+    paths:
+      - public
+  only: 
+    - pages
