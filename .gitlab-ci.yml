@@ -1,13 +1,3 @@
-pages:
-  stage: deploy
-  script:
-    - cp -R pages public
-  artifacts:
-    paths:
-      - public
-  only: 
-    - pages
-
 build_dplay:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
   stage: build
