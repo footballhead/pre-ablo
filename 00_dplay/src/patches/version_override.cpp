@@ -6,7 +6,7 @@
 #include <cstring>
 
 #define PATCH_NAME version_override
-DESCRIBE_PATCH("Replaces the version number on the main menu and in-game (press V) with the PR Demo Enhanced release number. Purely cosmetic and vain.")
+DESCRIBE_PATCH("Replaces the version number on the main menu and in-game (press V) with the Pre-ablo release number. Purely cosmetic and vain.")
 
 namespace {
 auto version = reinterpret_cast<char*>(0x004AA6F4);

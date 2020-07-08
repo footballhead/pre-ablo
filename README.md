@@ -1,9 +1,11 @@
-# Diablo Pre-Release Demo ENHANCED
+# Pre-ablo
 
 ![Banner](_DOCS/banner.png)
 
 **Download latest release:** [v0.4.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
+
+<a href="https://www.moddb.com/mods/pre-ablo" title="View Pre-ablo on Mod DB" target="_blank"><img src="https://button.moddb.com/rating/medium/mods/46670.png" alt="Pre-ablo" /></a>
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
 purposes, they produced a build to be distributed as shareware called the Pre-
@@ -31,7 +33,7 @@ it was being developed.
 
  1. Download the latest release from: https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases
       * Look for the _Download Now!_ link
- 2. Extract `prdemo_enhanced_XYZ.zip`. This should produce a folder called `DIABLO`.
+ 2. Extract `pre-ablo_XYZ.zip`. This should produce a folder called `DIABLO`.
  3. **This is important:** Copy the extracted `DIABLO` folder to `C:\DIABLO`. After this, you should find the launcher at `C:\DIABLO\launcher.exe`.
       * This is to work around an issue where the pre-release demo crashes on long pathes (i.e. your Downloads folder).
       * You can choose any folder in `C:\` (I'm partial to `C:\PRDEMO`) if you already have Diablo installed.
@@ -43,12 +45,13 @@ Patches can be toggled in the Options menu on the main menu. The game will autom
 
 > WARNING: This repo uses submodules, please clone recursively if you want the tools!
 
-_Diablo Pre-release Demo ENHANCED_ (PRDE) is a project that consists of many parts:
+_Pre-ablo_ is a project that consists of many parts:
 
   * Individual fixes, packaged in a custom dplay.dll (this repo)
   * A custom CLI for packaging files in the final MPQ (https://gitlab.com/moralbacteria/mpqadd)
   * A custom ddraw.dll for better graphics support and other goodies (https://github.com/footballhead/diablo-ddrawwrapper/tree/prde)
   * A CI/CD pipeline for producing builds for release (see [.gitlab-ci.yml](.gitlab-ci.yml))
+  * A simple website on the [pages](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/tree/pages) branch. Hosted with GitLab pages at https://moralbacteria.gitlab.io/diablo-prdemo-patches/
 
 ### diablo-prdemo-patches / dplay.dll (this repo!)
 
