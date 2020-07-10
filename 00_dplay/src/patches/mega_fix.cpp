@@ -6,9 +6,9 @@
 #define PATCH_NAME mega_fix
 DESCRIBE_PATCH(R"txt(Modify Mega Demon monster data:
 
-1. Decrease mImgSize so Mega Demons appear in the caves and beyond
+- Decrease mImgSize so Mega Demons appear in the caves and beyond
 
-2. Adjust number of frames for each animation to prevent a crash)txt")
+- Adjust number of frames for each animation to prevent a crash)txt")
 
 namespace {
 

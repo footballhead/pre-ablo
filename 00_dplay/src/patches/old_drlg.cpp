@@ -9,6 +9,7 @@ DESCRIBE_PATCH(R"txt(Enable the old Alpha DRLG for the cathedral levels 1-4.
 Known issues:
 
 - The Tome does not generate on dlvl 4, which means you cannot progress to the catacombs. This will be fixed at some point.
+
 - The entrance to the Skeleton King's Lair does not generate on dlvl 3. This probably wasn't implemented at this point in development so this will not be fixed.)txt")
 
 PATCH_MAIN

@@ -7,6 +7,7 @@
 DESCRIBE_PATCH(R"txt(This patch addresses two things related to monster missiles:
 
 - Always load the Succubi missile graphics. This fixes a crash encountering Blightfire, the unique Fire Clan archer, on level 7.
+
 - Avoid loading missile graphics multiple times per dungeon level. This fixes a potential memory leak and double-free.)txt");
 
 namespace {
