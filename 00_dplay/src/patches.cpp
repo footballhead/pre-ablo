@@ -6,7 +6,10 @@
 
 // At global scope so the extern can resolve.
 // While the extern isn't really safe, it prevents the entire code base from recompiling with every new patch.
+// (The alternate approach is to declare in a header which all patches include, which will cause a recompile of everything on a single modification)
 #define DECLARE_PATCH(id) extern bool id##_main(); extern char const* id##_description;
+
+// Order alphabetically!
 DECLARE_PATCH(always_load_flare);
 DECLARE_PATCH(automap_fix);
 DECLARE_PATCH(cheat);
@@ -19,7 +22,6 @@ DECLARE_PATCH(magic_find_x3);
 DECLARE_PATCH(max_monster_types);
 DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(monster_density_x2);
-DECLARE_PATCH(more_music);
 DECLARE_PATCH(music_nompq_fix);
 DECLARE_PATCH(no_death_anim);
 DECLARE_PATCH(no_tp_light);
@@ -28,6 +30,7 @@ DECLARE_PATCH(only_magma_demons);
 DECLARE_PATCH(options_menu);
 DECLARE_PATCH(panic_teleport);
 DECLARE_PATCH(randomize_leveltype);
+DECLARE_PATCH(retail_musuc);
 DECLARE_PATCH(savegame_patch_fix);
 DECLARE_PATCH(skip_intros);
 DECLARE_PATCH(skip_outro);
@@ -53,6 +56,9 @@ namespace {
 #define REGISTER_PATCH_DEBUG(id)
 #endif
 
+// If a patch is not registered here then it does not exist, i.e. it can't be toggled. Probably shouldn't even be compiled...
+// To be registered, the patch must first be declared above (at global scope).
+// Order alphabetically!
 const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(always_load_flare)
     REGISTER_PATCH_RECOMMENDED(automap_fix)
@@ -101,6 +107,7 @@ std::vector<Patch>& get_patches()
 {
     static std::vector<Patch> patches;
 
+    // Lazy load patches on first call and store in static. Subsequent calls return the cached load.
     if (loaded_patches) {
         return patches;
     }
