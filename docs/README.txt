@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.0
+PRE-ABLO v0.4.1
 ================================================================================
 
 Website: https://moralbacteria.gitlab.io/diablo-prdemo-patches/  
@@ -8,9 +8,9 @@ Discord: https://discord.gg/2btAntp
 ModDB: https://www.moddb.com/mods/pre-ablo
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
-purposes, they produced a build to be distributed as shareware called the Pre-
-Release Demo. Blizzard intended this build to be locked down: players would be
-restricted to the Warrior class and the first level of the cathedral.
+purposes, they produced a build to be distributed as shareware called the
+Pre-Release Demo. Blizzard intended this build to be locked down: players would
+be restricted to the Warrior class and the first level of the cathedral.
 
 It is well known that these restrictions are easy to bypass. Doing so gives
 access to a snapshot of the entire game as it existed four months before launch.
@@ -52,6 +52,12 @@ If you encounter an issue, delete last_patch.txt to reset your selections.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.1
+
+  * Fix some missed Pre-ablo rebranding
+  * Reformat some patch descriptions to be slightly more legible
+  * Remove compression for new files in MPQ, makes ZIP smaller
 
 v0.4.0
 

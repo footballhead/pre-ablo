@@ -1,14 +1,14 @@
 ![Pre-ablo Banner](docs/banner.png)
 
-**Download latest release:** [v0.4.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
+**Download latest release:** [v0.4.1](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
 
 <a href="https://www.moddb.com/mods/pre-ablo" title="View Pre-ablo on Mod DB" target="_blank"><img src="https://button.moddb.com/rating/medium/mods/46670.png" alt="View Pre-ablo on Mod DB" /></a>
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
-purposes, they produced a build to be distributed as shareware called the Pre-
-Release Demo. Blizzard intended this build to be locked down: players would be
-restricted to the Warrior class and the first level of the cathedral.
+purposes, they produced a build to be distributed as shareware called the
+Pre-Release Demo. Blizzard intended this build to be locked down: players would
+be restricted to the Warrior class and the first level of the cathedral.
 
 It is well known that these restrictions are easy to bypass. Doing so gives
 access to a snapshot of the entire game as it existed four months before launch.
