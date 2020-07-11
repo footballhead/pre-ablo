@@ -4,3 +4,6 @@
 [submodule "!Tools/open-vcdiff"]
 	path = !Tools/open-vcdiff
 	url = https://github.com/google/open-vcdiff.git
+[submodule "!Tools/diabutil/StormLib"]
+	path = !Tools/diabutil/StormLib
+	url = https://github.com/ladislav-zezula/StormLib.git

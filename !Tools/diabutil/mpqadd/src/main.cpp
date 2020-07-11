@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     auto const mpq_filename = argv[1];
 
     //
-    // open MPQ
+    // open or create MPQ
     //
 
     HANDLE mpq = NULL;
