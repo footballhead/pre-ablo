@@ -1,9 +1,3 @@
-[submodule "!Tools/vcdiff-gooey"]
-	path = !Tools/vcdiff-gooey
-	url = https://gitlab.com/moralbacteria/vcdiff-gooey
-[submodule "!Tools/open-vcdiff"]
-	path = !Tools/open-vcdiff
-	url = https://github.com/google/open-vcdiff.git
 [submodule "!Tools/diabutil/StormLib"]
 	path = !Tools/diabutil/StormLib
 	url = https://github.com/ladislav-zezula/StormLib.git

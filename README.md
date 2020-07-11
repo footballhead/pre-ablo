@@ -69,9 +69,9 @@ The DLL is cross-compiled in Docker with mingw. See [00_dplay/README.md](00_dpla
 
 ### mpqadd
 
-We have a custom MPQ packer: https://gitlab.com/moralbacteria/mpqadd
+We have a custom MPQ packer: [!Tools/diabutil/mpqadd](!Tools/diabutil/mpqadd)
 
-This CLI is designed to add/replace files in the PR Demo MPQ. It is included in the Docker image (see [!Tools/docker-pipeline](!Tools/docker-pipeline)) used by the CI/CD pipeline. Any changes here require rebuilding the Docker image.
+This CLI is designed to add/replace files in the PR Demo MPQ. It's used by CI to pack the final MPQ.
 
 ### ddrawwrapper
 

@@ -22,20 +22,10 @@ This works under Wine 5.0 (Ubuntu 20.04) provided that [Visual Basic Community R
 
 _Set Game Compatibility to_ Diablo I _!_ Only v3.5.1.795 (and maybe earlier) will be able to create/modify MPQs in a way that PR Demo can read.
 
-### open-vcdiff
-
-**Folder:** open-vcdiff (submodule, clone recursively)  
-**File:** [vcdiff.exe](vcdiff.exe)  
-**Homepage**: https://github.com/google/open-vcdiff
-
-This is a binary diff creator/applicator. It's the backbone of the entire operation.
-
 ## Internal Tools
 
 Tools made by me for this project:
 
-  * vcdiff-gooey: A Python Gooey front-end for open-vcdiff.
-  * [apply.bat](apply.bat)/[apply.sh](apply.sh): a sample script of using VCDIFF to apply patches in order.
   * [diabutil](diabutil): Various file format helper programs
       * [splitcel](diabutil/splitcel): A C++ program that explodes a CEL file into one file per frame ("celparts").
       * [joincel](diabutil/joincel): A C++ program that combines "celparts" back into a CEL file.
