@@ -18,7 +18,7 @@ You have two options for using these files:
 
 If DIABDAT.MPQ is missing (e.g. if you delete it) then the game will load the files from subdirectories instead. This is useful for development or debugging where you are constantly modifying and inspecting the 
 
-1. Extract DIABDAT.MPQ into the same directory as DIABLO.EXE. Any version of Ladik's MPQ Editor will work for extraction, but I've included a specific known working version in [../!Tools/mpqediten32_3.5.1.795](../!Tools/mpqediten32_3.5.1.795)
+1. Extract DIABDAT.MPQ into the same directory as DIABLO.EXE. Any version of Ladik's MPQ Editor will work for extraction, but I've included a specific known working version in [../tools/mpqediten32_3.5.1.795](../tools/mpqediten32_3.5.1.795)
 2. Delete DIABDAT.MPQ
 3. Merge these directories with the ones you just extracted.
 
@@ -26,7 +26,7 @@ This will break music. To get music working, check out [music-nompq-fix](../musi
 
 ### Modify the MPQ
 
-**The latest Ladik's MPQ Editor will not work.** Prefer the known working version I've included in [../!Tools/mpqediten32_3.5.1.795](../!Tools/mpqediten32_3.5.1.795)
+**The latest Ladik's MPQ Editor will not work.** Prefer the known working version I've included in [../tools/mpqediten32_3.5.1.795](../tools/mpqediten32_3.5.1.795)
 
 Open the MPQ, then drag & drop these folders into the right place.
 

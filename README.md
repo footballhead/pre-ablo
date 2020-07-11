@@ -69,7 +69,7 @@ The DLL is cross-compiled in Docker with mingw. See [00_dplay/README.md](00_dpla
 
 ### mpqadd
 
-We have a custom MPQ packer: [!Tools/diabutil/mpqadd](!Tools/diabutil/mpqadd)
+We have a custom MPQ packer: [tools/diabutil/mpqadd](tools/diabutil/mpqadd)
 
 This CLI is designed to add/replace files in the PR Demo MPQ. It's used by CI to pack the final MPQ.
 
@@ -89,7 +89,7 @@ This is responsible for producing releasable ZIP files.
 
 It has several components:
 
-  * A Docker image called `moralbacteria/diablo-prdemo-patches`. This is produced from [!Tools/docker-pipeline](!Tools/docker-pipeline) and is hosted at https://gitlab.com/moralbacteria/diablo-prdemo-patches/container_registry/. This Docker image contains anything needed by a CI agent to produce the final ZIP. Currently, it contains:
+  * A Docker image called `moralbacteria/diablo-prdemo-patches`. This is produced from [tools/docker-pipeline](tools/docker-pipeline) and is hosted at https://gitlab.com/moralbacteria/diablo-prdemo-patches/container_registry/. This Docker image contains anything needed by a CI agent to produce the final ZIP. Currently, it contains:
       * Extracted version of the base PR Demo
       * `mpqadd`
   * A script run on every commit and tag, stored in [.gitlab-ci.yml](.gitlab-ci.yml). This:

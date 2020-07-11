@@ -8,7 +8,7 @@ then
 	exit 1
 fi
 
-mpqadd="../!Tools/mpqadd/build/mpqadd"
+mpqadd="../tools/mpqadd/build/mpqadd"
 
 find levels/ -type f | "${mpqadd}" "$1"
 find monsters/ -type f | "${mpqadd}" "$1"
