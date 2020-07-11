@@ -41,7 +41,7 @@ int main(int argc, char **argv)
             return 1;
         }
 
-        std::cout << mpq_filename << " doesn't exist, creating...";
+        std::cout << mpq_filename << " doesn't exist, creating...\n";
         constexpr auto max_files = 1024; // Arbitrary...
         if (!SFileCreateArchive(mpq_filename, MPQ_CREATE_ARCHIVE_V1, max_files, &mpq))
         {
@@ -69,8 +69,8 @@ int main(int argc, char **argv)
             }
         }
 
-        // Add file. Implode reduces MPQ size but for the game to recognize the files they also need to be encrypted.
-        if (!SFileAddFileEx(mpq, line.c_str(), winpath.c_str(), MPQ_FILE_IMPLODE | MPQ_FILE_ENCRYPTED, 0, 0))
+        // Add file. Don't bother compressing, the game loads fine and the ZIP is actually smaller
+        if (!SFileAddFileEx(mpq, line.c_str(), winpath.c_str(), 0, 0, 0))
         {
             std::cerr << "Failed to add file: " << line << " (" << winpath << ")\n";
         }
