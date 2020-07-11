@@ -21,14 +21,3 @@ This works under Wine 5.0 (Ubuntu 20.04) provided that [Visual Basic Community R
 **Homepage:** http://www.zezula.net/en/mpq/download.html
 
 _Set Game Compatibility to_ Diablo I _!_ Only v3.5.1.795 (and maybe earlier) will be able to create/modify MPQs in a way that PR Demo can read.
-
-## Internal Tools
-
-Tools made by me for this project:
-
-  * [diabutil](diabutil): Various file format helper programs
-      * [splitcel](diabutil/splitcel): A C++ program that explodes a CEL file into one file per frame ("celparts").
-      * [joincel](diabutil/joincel): A C++ program that combines "celparts" back into a CEL file.
-      * [splitgroups](diabutil/splitgroups): A C++ program that explodes a CEL file with a group header (e.g. player animations)
-      * [joingroups](diabutil/joingroups): A C++ program that joins CEL files with a group header
-      * [retail2prdemo](diabutil/retail2prdemo): A C++ program for converting retail `l*data` into PR demo `l*data`.
