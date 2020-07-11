@@ -4,6 +4,7 @@
 #include <diabutil/file.hpp>
 #include <diabutil/palette.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cstdio>
 #include <string>
