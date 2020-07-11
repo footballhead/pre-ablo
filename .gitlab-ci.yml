@@ -13,6 +13,8 @@ mpqadd:
       - diabutil/build/mpqadd/mpqadd
   except:
     - pages
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
 
 dplay:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
