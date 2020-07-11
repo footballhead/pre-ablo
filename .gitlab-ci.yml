@@ -1,8 +1,24 @@
-build_dplay:
+mpqadd:
+  image: "ubuntu:latest"
+  stage: build
+  script:
+    - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y g++ make cmake zlib1g-dev libbz2-dev
+    - cd diabutil
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make -j$(nproc)
+  artifacts:
+    paths:
+      - diabutil/build/mpqadd/mpqadd
+  except:
+    - pages
+
+dplay:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
   stage: build
   script:
-    - cd 00_dplay
+    - cd dplay
     - mkdir build
     - cd build
     - "PRDE_VERSION=\"v${CI_COMMIT_TAG}\""
@@ -11,30 +27,34 @@ build_dplay:
     - make -j $(nproc)
   artifacts:
     paths:
-      - 00_dplay/build/dplay.dll
+      - dplay/build/dplay.dll
   except:
     - pages
 
 package:
-  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/package:latest"
+  image: "ubuntu:latest"
   stage: deploy
   dependencies:
-    - build_dplay
+    - dplay
+    - mpqadd
   script:
+    - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y curl p7zip unzip ca-certificates
+    - curl -L "https://drive.google.com/uc?export=download&id=1E-AC21QMiOao8hVun-McROsfYBeEW20y" > prereleasedemo.7z
+    - 7zr x prereleasedemo.7z
+    - mv DIABLO PRE-ABLO
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
-    - cp ddrawwrapper/ddraw.dll /root/DIABLO/
-    - cp docs/README.txt /root/DIABLO/
-    - cp 00_dplay/build/dplay.dll /root/DIABLO/
-    - cd 02_missing_gfx
-    - find levels/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
-    - find monsters/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
-    - find plrgfx/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ
+    - cp ddrawwrapper/ddraw.dll PRE-ABLO/
+    - cp docs/README.txt PRE-ABLO/
+    - cp dplay/build/dplay.dll PRE-ABLO/
+    - cd missing_gfx
+    - find levels/ -type f | ./diabutil/build/mpqadd/mpqadd PRE-ABLO/DIABDAT.MPQ
+    - find monsters/ -type f | ./diabutil/build/mpqadd/mpqadd PRE-ABLO/DIABDAT.MPQ
+    - find plrgfx/ -type f | ./diabutil/build/mpqadd/mpqadd PRE-ABLO/DIABDAT.MPQ
     - cd ..
-    - mv /root/DIABLO .
   artifacts:
     name: "pre-ablo_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
     paths:
-      - DIABLO/
+      - PRE-ABLO/
   except:
     - pages
