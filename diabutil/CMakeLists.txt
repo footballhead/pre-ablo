@@ -11,7 +11,7 @@ add_subdirectory(stb_image_write)
 
 # StormLib wasn't designed to compile with cmake on Windows... so we have to hack around it
 # Compile static also because there's no DLL-with-exports config
-set(WITH_STATIC ON)
+option(WITH_STATIC ON)
 add_subdirectory(StormLib)
 # Prefer that clients use our hack header to avoid some linker problems
 target_include_directories(storm_static
