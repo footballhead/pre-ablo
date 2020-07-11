@@ -24,7 +24,7 @@ package:
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
     - cp ddrawwrapper/ddraw.dll /root/DIABLO/
-    - cp _DOCS/README.txt /root/DIABLO/
+    - cp docs/README.txt /root/DIABLO/
     - cp 00_dplay/build/dplay.dll /root/DIABLO/
     - cd 02_missing_gfx
     - find levels/ -type f | mpqadd /root/DIABLO/DIABDAT.MPQ

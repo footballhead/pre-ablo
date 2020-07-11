@@ -1,6 +1,6 @@
 # Pre-ablo
 
-![Banner](_DOCS/banner.png)
+![Banner](docs/banner.png)
 
 **Download latest release:** [v0.4.0](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
