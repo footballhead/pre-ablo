@@ -31,11 +31,11 @@ it was being developed.
 
  1. Download the latest release from [GitLab Releases](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases) or [ModDB](https://www.moddb.com/mods/pre-ablo/downloads)
  2. Extract `pre-ablo_XYZ.zip`. This should produce a folder called `PRE-ABLO`.
- 3. **This is important:** Copy the extracted `PRE-ABLO` folder to `C:\PRE-ABLO`. After this, you should find the launcher at `C:\PRE-ABLO\launcher.exe`.
+ 3. **This is important:** Copy the extracted `PRE-ABLO` folder to `C:\PRE-ABLO`. After this, you should find the game at `C:\PRE-ABLO\DIABLO.exe`.
       * This is to work around an issue where the pre-release demo crashes on long pathes (i.e. your Downloads folder).
  4. Run `DIABLO.EXE`
 
-Patches can be toggled in the Options menu on the main menu. The game will automatically restart after confirming chosen patches.
+Patches can be toggled in the Options submenu on the main menu. The game will automatically restart after confirming chosen patches.
 
 ## Developing
 
