@@ -34,7 +34,6 @@ add_library(dplay SHARED
     src/patches/max_monster_types.cpp
     src/patches/mega_fix.cpp
     src/patches/monster_density_x2.cpp
-    src/patches/more_music.cpp
     src/patches/music_nompq_fix.cpp
     src/patches/no_death_anim.cpp
     src/patches/no_tp_light.cpp
@@ -42,6 +41,7 @@ add_library(dplay SHARED
     src/patches/only_magma_demons.cpp
     src/patches/options_menu.cpp
     src/patches/panic_teleport.cpp
+    src/patches/retail_music.cpp
     src/patches/randomize_leveltype.cpp
     src/patches/savegame_path_fix.cpp
     src/patches/skip_intros.cpp
