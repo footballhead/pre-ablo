@@ -10,7 +10,7 @@ mpqadd:
     - make -j$(nproc)
   artifacts:
     paths:
-      - diabutil/build/mpqadd/mpqadd
+      - diabutil/build/
   except:
     - pages
   variables:
@@ -29,16 +29,13 @@ dplay:
     - make -j $(nproc)
   artifacts:
     paths:
-      - dplay/build/dplay.dll
+      - dplay/build/
   except:
     - pages
 
 package:
   image: "ubuntu:latest"
   stage: deploy
-  dependencies:
-    - dplay
-    - mpqadd
   script:
     - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y curl p7zip unzip ca-certificates
     - curl -L "https://drive.google.com/uc?export=download&id=1E-AC21QMiOao8hVun-McROsfYBeEW20y" > prereleasedemo.7z
