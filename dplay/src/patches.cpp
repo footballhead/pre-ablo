@@ -30,7 +30,7 @@ DECLARE_PATCH(only_magma_demons);
 DECLARE_PATCH(options_menu);
 DECLARE_PATCH(panic_teleport);
 DECLARE_PATCH(randomize_leveltype);
-DECLARE_PATCH(retail_musuc);
+DECLARE_PATCH(retail_music);
 DECLARE_PATCH(savegame_patch_fix);
 DECLARE_PATCH(skip_intros);
 DECLARE_PATCH(skip_outro);
@@ -72,7 +72,6 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(max_monster_types)
     REGISTER_PATCH_RECOMMENDED(mega_fix)
     REGISTER_PATCH_DEBUG(monster_density_x2)
-    REGISTER_PATCH_DEBUG(more_music)
     REGISTER_PATCH_DEBUG(music_nompq_fix)
     REGISTER_PATCH_DEBUG(no_death_anim)
     REGISTER_PATCH_RECOMMENDED(no_tp_light)
@@ -81,6 +80,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(options_menu)
     REGISTER_PATCH_DEBUG(panic_teleport)
     REGISTER_PATCH_DEBUG(randomize_leveltype)
+    REGISTER_PATCH_DEBUG(retail_music)
     REGISTER_PATCH_DEBUG(savegame_patch_fix)
     REGISTER_PATCH_RECOMMENDED(skip_intros)
     REGISTER_PATCH_DEBUG(skip_outro)
