@@ -10,6 +10,23 @@ namespace {
 
 void validate_eax()
 {
+#ifdef _MSC_VER
+    __asm {
+        cmp eax, 80
+        jg over_max_fix
+        test eax, eax
+        jl under_min_fix
+        jmp done
+    over_max_fix:
+        mov eax, 80
+        jmp done
+    under_min_fix:
+        xor eax, eax
+        jmp done
+    done:
+        nop
+    };
+#else
     // Depends on eax being the raw output of (hpmax / hp) * 80
     // Wow this GCC asm syntax sucks... give me MSVC __asm
     asm (".intel_syntax noprefix\n\t"
@@ -27,6 +44,7 @@ void validate_eax()
     "ret:\n\t"
         "nop\n\t"
     ".att_syntax noprefix\n\t");
+#endif
 }
 
 } // namespace
