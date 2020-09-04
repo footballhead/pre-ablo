@@ -53,13 +53,15 @@ If you encounter an issue, delete last_patch.txt to reset your selections.
 Running (Linux)
 --------------------------------------------------------------------------------
 
-Pre-ablo has been tested with Wine 5.0 on Ubuntu 20.04. For the custom DLLs to
-load properly, set the WINEDLLOVERRIDES variable to specify dplay and ddraw as
-native:
+While not extensively tested, Pre-ablo has been confirmed to run with Wine 5.0
+on Ubuntu 20.04. For the custom DLLs to load properly, set the WINEDLLOVERRIDES
+variable to specify dplay and ddraw as native:
 
   WINEDLLOVERRIDES="dplay,ddraw=n" wine DIABLO.EXE
 
 It is also recommended to turn off Virtual Desktop in winecfg.
+
+If you encounter any issues, please reach out via Discord (link at the top).
 
 Changelog
 --------------------------------------------------------------------------------
