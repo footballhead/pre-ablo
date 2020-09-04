@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.1
+PRE-ABLO v0.4.2
 ================================================================================
 
 Website: https://moralbacteria.gitlab.io/diablo-prdemo-patches/  
@@ -65,6 +65,10 @@ If you encounter any issues, please reach out via Discord (link at the top).
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.2
+
+  * Add basic Linux/Wine instructions to the README
 
 v0.4.1
 
