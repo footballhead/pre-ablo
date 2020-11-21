@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>5</order>
-    <recommended>true</recommended>
-    <description>Prevent a crash when Thunder Demons attack with Lightning.</description>
-</patch>

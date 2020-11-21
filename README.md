@@ -59,8 +59,6 @@ A master list of all patches is in [dplay/src/patches.cpp](dplay/src/patches.cpp
 
 Users toggle patches through the Options menu on the main menu. Selections are saved in `last_patch.txt`. If no `last_patch.txt` is present then recommendations are applied instead.
 
-This replaces the old method of binary patching with VCDIFF. The old patches are stored (for now) in [old_patches](old_patches). The README's will migrate into the patch C++ code at some point.
-
 The DLL is cross-compiled in Docker with mingw. See [dplay/README.md](dplay/README.md) for more details.
 
 ### mpqadd

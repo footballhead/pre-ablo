@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>0</order>
-    <recommended>true</recommended>
-    <description>Modify Mega Demon monster data to:
-
-1. Allow Mega Demons to appear in the caves and beyond by adjusting the total image size field to be within the threshold.
-2. Prevent a crash when trying to draw Mega Demons by adjusting the number of frames for each animation to match the graphics we have.</description>
-</patch>

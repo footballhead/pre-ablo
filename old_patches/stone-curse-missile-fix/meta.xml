@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>0</order>
-    <recommended>true</recommended>
-    <description>Prevents crashing when a missile (e.g. Lightning) overlaps with a Stone Cursed enemy.</description>
-</patch>

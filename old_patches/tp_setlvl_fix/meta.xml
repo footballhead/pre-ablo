@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>4</order>
-    <recommended>true</recommended>
-    <description>Fixes town portals in Skeleton King Lair (level 3) and the Bone Chamber (level 7). Allows returning from town without the game still thinking that you're in town (which typically ends in a crash or a hang).</description>
-</patch>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>6</order>
-    <recommended>true</recommended>
-    <description>Prevents a crash in situations where the player has more life than max (e.g. from Blood Boil), or less life than 0 (as is typical with Mana Shield).</description>.
-</patch>

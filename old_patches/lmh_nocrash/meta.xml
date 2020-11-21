@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>0</order>
-    <recommended>false</recommended>
-    <description>This is an old patch to disable the Warrior medium/heavy graphics. Since we have those graphics now, this is not recommended. It's only kept around as a backup in case issues crop up with the replacement Beta assets.</description>
-</patch>

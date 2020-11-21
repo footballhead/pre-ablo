@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<patch>
-    <order>3</order>
-    <recommended>true</recommended>
-    <description>Forces the Skeleton King to drop the Undead Crown on death. It is also recommended to apply infraring_fix so that the game will not crash when the item is inspected in the inventory.</description>
-</patch>
