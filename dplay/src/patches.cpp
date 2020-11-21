@@ -23,6 +23,7 @@ DECLARE_PATCH(max_monster_types);
 DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(monster_density_x2);
 DECLARE_PATCH(music_nompq_fix);
+DECLARE_PATCH(no_cpu_hog);
 DECLARE_PATCH(no_death_anim);
 DECLARE_PATCH(no_tp_light);
 DECLARE_PATCH(old_drlg);
