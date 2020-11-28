@@ -4,3 +4,6 @@
 #include <windows.h>
 
 extern BYTE* (__fastcall * LoadFileInMem)(const char* pszName);
+
+extern void (__fastcall * AddL1Objs)(int, int, int, int);
+extern void (__fastcall * AddMazeBook)(int, int, int, int, int, int, int, int, int);
