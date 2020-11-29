@@ -43,7 +43,7 @@ PATCH_MAIN
 
     // fix Tome for catacombs not spawning on level 4
     ok &= nop(0x0045957E, 0x0045958B); // Dsiplace AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
-    ok &= patch_call(0x0045957E, InitObjects_patch);
+    ok &= patch_call(0x0045957E, (void*)InitObjects_patch);
 
     // TODO mark the skeleton king quest as completed? at least so you can do magic rock
 
