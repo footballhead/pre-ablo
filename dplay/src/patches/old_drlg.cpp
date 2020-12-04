@@ -45,7 +45,10 @@ PATCH_MAIN
     ok &= nop(0x0045957E, 0x0045958B); // Dsiplace AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
     ok &= patch_call(0x0045957E, (void*)InitObjects_patch);
 
-    // TODO mark the skeleton king quest as completed? at least so you can do magic rock
+    // Since DRLG doesn't spawn sking entrace, can't complete sking. Blacksmith has a sking check for magic rock though.
+    // Replace the sking check so the magic rock can still be started.
+    // DOESN'T WORK, items not spawning?
+    ok &= nop(0x0044A9F7, 0x0044A9FF); // if (quests[Q_SKELKING]._qactive == QUEST_DONE)
 
     return ok;
 }
