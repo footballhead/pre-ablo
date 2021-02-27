@@ -146,3 +146,38 @@ struct QuestStruct {
     BYTE unknown_0F;
 };
 static_assert(sizeof(QuestStruct) == 0x10, "QuestStruct compiled to wrong size");
+
+// Copied from DevilutionX
+struct ObjectStruct {
+	int _otype;
+	int _ox;
+	int _oy;
+	int _oLight;
+	int _oAnimFlag;
+	unsigned char *_oAnimData;
+	int _oAnimDelay; // Tick length of each frame in the current animation
+	int _oAnimCnt;   // Increases by one each game tick, counting how close we are to _pAnimDelay
+	int _oAnimLen;   // Number of frames in current animation
+	int _oAnimFrame; // Current frame of animation.
+	int _oAnimWidth;
+	int _oAnimWidth2;
+	BOOL _oDelFlag;
+	char _oBreak; // check
+	BOOL _oSolidFlag;
+	BOOL _oMissFlag;
+	char _oSelFlag; // check
+	BOOL _oPreFlag;
+	BOOL _oTrapFlag;
+	BOOL _oDoorFlag;
+	int _olid;
+	// int _oRndSeed; // Not in PR Demo
+	int _oVar1;
+	int _oVar2;
+	int _oVar3;
+	int _oVar4;
+	int _oVar5;
+	int _oVar6;
+	int _oVar7;
+	int _oVar8;
+};
+static_assert(sizeof(ObjectStruct) == 0x74, "ObjectStruct compiled to wrong size");
