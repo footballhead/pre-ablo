@@ -1,11 +1,12 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.2
+PRE-ABLO v0.4.3
 ================================================================================
 
-Website: https://moralbacteria.gitlab.io/diablo-prdemo-patches/  
+Website: https://www.pre-ablo.com/  
+Source:  https://moralbacteria.gitlab.io/diablo-prdemo-patches/  
 Discord: https://discord.gg/2btAntp  
-ModDB: https://www.moddb.com/mods/pre-ablo
+ModDB:   https://www.moddb.com/mods/pre-ablo
 
 In August 1996, Blizzard was hard at work developing Diablo. For promotional
 purposes, they produced a build to be distributed as shareware called the
@@ -65,6 +66,11 @@ If you encounter any issues, please reach out via Discord (link at the top).
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.3
+
+  * old_drlg: Always generate the Tome on dlvl 4 to prevent getting stuck
+      * Still looking into how this affects catacombs quests
 
 v0.4.2
 
