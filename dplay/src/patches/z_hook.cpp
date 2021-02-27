@@ -5,6 +5,8 @@
 #include "util.hpp"
 #include "variables.hpp"
 
+#include <cstdlib>
+
 #define PATCH_NAME z_hook
 DESCRIBE_PATCH("Do something when Z is pressed")
 
