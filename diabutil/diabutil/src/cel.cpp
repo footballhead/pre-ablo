@@ -1,6 +1,7 @@
 #include <diabutil/cel.hpp>
 
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 
 namespace
