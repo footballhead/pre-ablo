@@ -69,8 +69,8 @@ Changelog
 
 v0.4.4
 
- * Introduce plrgfx_frame_fix
- * Fix wludt.cel header
+  * Introduce plrgfx_frame_fix
+  * Fix wludt.cel header
 
 v0.4.3
 
@@ -179,14 +179,14 @@ Thanks
 
 This project could not happen without the help and efforts of many people:
 
- * Mystery
- * qndel
- * mewmew
- * nitekat
- * xavier_sb
- * All contributors to diablo-evolution.net:
-   https://diablo-evolution.net
- * All contributors to Alpha4:
-   https://diablo-evolution.net/index.php?pageid=alpha4
- * Strange Bytes for their ddraw wrapper:
-   https://github.com/strangebytes/diablo-ddrawwrapper
+  * Mystery
+  * qndel
+  * mewmew
+  * nitekat
+  * xavier_sb
+  * All contributors to diablo-evolution.net:
+    https://diablo-evolution.net
+  * All contributors to Alpha4:
+    https://diablo-evolution.net/index.php?pageid=alpha4
+  * Strange Bytes for their ddraw wrapper:
+    https://github.com/strangebytes/diablo-ddrawwrapper
