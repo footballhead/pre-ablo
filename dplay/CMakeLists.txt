@@ -41,6 +41,7 @@ add_library(dplay SHARED
     src/patches/only_magma_demons.cpp
     src/patches/options_menu.cpp
     src/patches/panic_teleport.cpp
+    src/patches/plrgfx_frame_fix.cpp
     src/patches/retail_music.cpp
     src/patches/randomize_leveltype.cpp
     src/patches/savegame_path_fix.cpp
