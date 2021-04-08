@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.3
+PRE-ABLO v0.4.4
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -66,6 +66,11 @@ If you encounter any issues, please reach out via Discord (link at the top).
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.4
+
+ * Introduce plrgfx_frame_fix
+ * Fix wludt.cel header
 
 v0.4.3
 
@@ -175,6 +180,10 @@ Thanks
 This project could not happen without the help and efforts of many people:
 
  * Mystery
+ * qndel
+ * mewmew
+ * nitekat
+ * xavier_sb
  * All contributors to diablo-evolution.net:
    https://diablo-evolution.net
  * All contributors to Alpha4:
