@@ -20,8 +20,12 @@ int main(int argc, char **argv)
 {
     if (argc != 2)
     {
-        std::cerr << "Usage: " << argv[0] << " file.mpq\n";
-        std::cerr << "Reads listfile from stdin\n";
+        std::cerr << "Usage: " << argv[0] << " file.mpq\n"
+                  << "Reads listfile from stdin then, for each line in stdin, try to add that file to the MPQ.\n"
+                  << "The file is found by joining the listfile line with the current working directory.\n"
+                  << "\n"
+                  << "Suggested usage (on Linux):\n"
+                  << "    find plrgfx/ -type f | mpqadd DIABDAT.MPQ\n";
         return 1;
     }
 
