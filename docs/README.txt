@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.4
+PRE-ABLO v0.4.5
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -66,6 +66,10 @@ If you encounter any issues, please reach out via Discord (link at the top).
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.5
+
+  * enable_fireman: Incinerator (cut monster) now shows up on dlvl 8-10
 
 v0.4.4
 
