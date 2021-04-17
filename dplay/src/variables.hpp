@@ -3,6 +3,7 @@
 #include "structs.hpp"
 
 extern MonsterData* const monsterdata;
+extern char* const MonstAvailTbl;
 extern MonsterStruct* const monster;
 extern ObjDataStruct* const AllObjects;
 extern ObjectStruct* const object; // array size == 127

@@ -1,6 +1,7 @@
 #include "variables.hpp"
 
 MonsterData* const monsterdata = reinterpret_cast<MonsterData*>(0x004AE410);
+char* const MonstAvailTbl = reinterpret_cast<char*>(0x004B0D20);
 MonsterStruct* const monster = reinterpret_cast<MonsterStruct*>(0x004BE4E8);
 ObjDataStruct* const AllObjects = reinterpret_cast<ObjDataStruct* const>(0x004AB578);
 ObjectStruct* const object = reinterpret_cast<ObjectStruct* const>(0x006002B0);

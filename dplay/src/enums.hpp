@@ -1,5 +1,11 @@
 #pragma once
 
+enum monster_availability {
+    MAT_NO = 0,
+    MAT_SW = 1,
+    MAT_YES = 2
+};
+
 // Index into monsterdata, MonstConvTbl, MonstAvailTbl
 enum _monster_id
 {
@@ -95,5 +101,6 @@ enum _monster_id
   MT_UNRAV = 0x59,
   MT_LRDSAYTR = 0x5A,
   MT_INVILORD = 0x5B,
-  MT_DIABLO = 0x5C
+  MT_DIABLO = 0x5C,
+  NUM_MTYPES,
 };
