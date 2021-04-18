@@ -11,6 +11,7 @@ mpqadd:
   artifacts:
     paths:
       - diabutil/build/mpqadd/mpqadd
+      - diabutil/build/mpqextract/mpqextract
   except:
     - pages
   variables:
@@ -40,17 +41,20 @@ package:
     - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y curl p7zip unzip ca-certificates
     - curl -L "https://drive.google.com/uc?export=download&id=1E-AC21QMiOao8hVun-McROsfYBeEW20y" > prereleasedemo.7z
     - 7zr x prereleasedemo.7z
+    - mkdir mpq_staging
+    - cd mpq_staging
+    - cat ../tools/listfile.txt | ../diabutil/build/mpqextract/mpqextract ../DIABLO/DIABDAT.MPQ
+    - for dir in $(cd ../missing_gfx/ && ls -d */); do cp -R "../missing_gfx/$dir" .; done
+    - for dir in *; do find "$dir" -type f >> new_listfile.txt; done
+    - cat new_listfile.txt | ../diabutil/build/mpqadd/mpqadd DIABDAT.MPQ
+    - cd ..
     - mv DIABLO PRE-ABLO
     - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
     - unzip ddrawwrapper.zip -d ddrawwrapper
+    - cp mpq_staging/DIABDAT.MPQ PRE-ABLO/
     - cp ddrawwrapper/ddraw.dll PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
     - cp dplay/build/dplay.dll PRE-ABLO/
-    - cd missing_gfx
-    - find levels/ -type f | ../diabutil/build/mpqadd/mpqadd ../PRE-ABLO/DIABDAT.MPQ
-    - find monsters/ -type f | ../diabutil/build/mpqadd/mpqadd ../PRE-ABLO/DIABDAT.MPQ
-    - find plrgfx/ -type f | ../diabutil/build/mpqadd/mpqadd ../PRE-ABLO/DIABDAT.MPQ
-    - cd ..
   artifacts:
     name: "pre-ablo_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
     paths:
