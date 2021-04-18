@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -31,6 +32,15 @@ int main(int argc, char **argv)
 
     auto const mpq_filename = argv[1];
 
+    // For some reason, this `while(getline())` loop doesn't work after calling SFileCreateArchive.
+    // So we buffer it.
+    std::vector<std::string> listfile;
+    std::string cin_line;
+    while (std::getline(std::cin, cin_line))
+    {
+        listfile.emplace_back(std::move(cin_line));
+    }
+
     //
     // open or create MPQ
     //
@@ -58,26 +68,34 @@ int main(int argc, char **argv)
     // add files specified on stdin
     //
 
-    std::string line;
-    while (std::getline(std::cin, line))
+    for (auto listfile_line : listfile)
     {
-        auto const winpath = unix_to_windows(line);
+        auto const winpath = unix_to_windows(listfile_line);
 
         // remove the file if it already exists (we will replace)
         if (SFileHasFile(mpq, winpath.c_str()))
         {
             if (!SFileRemoveFile(mpq, winpath.c_str(), 0))
             {
-                std::cerr << "Failed to remove already existant file: " << line << " (" << winpath << ")\n";
+                std::cerr << "Failed to remove already existant file: " << listfile_line << " (" << winpath << ")\n";
                 continue;
             }
         }
 
         // Add file. Don't bother compressing, the game loads fine and the ZIP is actually smaller
-        if (!SFileAddFileEx(mpq, line.c_str(), winpath.c_str(), 0, 0, 0))
+        if (!SFileAddFileEx(mpq, listfile_line.c_str(), winpath.c_str(), 0, 0, 0))
         {
-            std::cerr << "Failed to add file: " << line << " (" << winpath << ")\n";
+            std::cerr << "Failed to add file: " << listfile_line << " (" << winpath << ")\n";
         }
+    }
+
+    //
+    // compact
+    //
+
+    if (!SFileCompactArchive(mpq, /*szListFile=*/nullptr, /*bReserved=*/false))
+    {
+        std::cerr << "Failed to compact archive: " << mpq_filename << ". This is only expected to work on archives with internal listfiles. Continuing...\n";
     }
 
     SFileCloseArchive(mpq);
