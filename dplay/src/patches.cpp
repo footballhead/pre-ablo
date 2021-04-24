@@ -14,7 +14,8 @@ DECLARE_PATCH(always_load_flare);
 DECLARE_PATCH(automap_fix);
 DECLARE_PATCH(cheat);
 DECLARE_PATCH(devmode);
-DECLARE_PATCH(enable_fireman);
+DECLARE_PATCH(enable_cut_monsters);
+DECLARE_PATCH(enable_unfinished_monsters);
 DECLARE_PATCH(fullgame);
 DECLARE_PATCH(infinite_mana);
 DECLARE_PATCH(infraring_fix);
@@ -66,7 +67,8 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(automap_fix)
     REGISTER_PATCH(cheat)
     REGISTER_PATCH(devmode)
-    REGISTER_PATCH_RECOMMENDED(enable_fireman)
+    REGISTER_PATCH_RECOMMENDED(enable_cut_monsters)
+    REGISTER_PATCH_DEBUG(enable_unfinished_monsters)
     REGISTER_PATCH_RECOMMENDED(fullgame)
     REGISTER_PATCH_DEBUG(infinite_mana)
     REGISTER_PATCH_RECOMMENDED(infraring_fix)

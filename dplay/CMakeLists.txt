@@ -26,7 +26,8 @@ add_library(dplay SHARED
     src/patches/automap_fix.cpp
     src/patches/cheat.cpp
     src/patches/devmode.cpp
-    src/patches/enable_fireman.cpp
+    src/patches/enable_cut_monsters.cpp
+    src/patches/enable_unfinished_monsters.cpp
     src/patches/fullgame.cpp
     src/patches/infinite_mana.cpp
     src/patches/infraring_fix.cpp
