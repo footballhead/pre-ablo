@@ -16,4 +16,5 @@
 #define OBJ_BOOKMAZE 0x34
 
 // TODO: Map out all net commands
-#define CMD_NEWLVL 0x15
+// 0x15 = CMD_WARP (setlvl?, dtype, dlvl)
+#define CMD_WARP 0x15

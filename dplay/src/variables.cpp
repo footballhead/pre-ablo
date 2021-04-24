@@ -10,6 +10,7 @@ QuestStruct* const quests = reinterpret_cast<QuestStruct* const>(0x00615F40);
 int* const myplr = reinterpret_cast<int* const>(0x00615E38);
 
 int* const currlevel = reinterpret_cast<int* const>(0x004CB0DC);
+int* const leveltype = reinterpret_cast<int* const>(0x004E3648);
 
 int* const setpc_x = reinterpret_cast<int* const>(0x005030EC);
 int* const setpc_y = reinterpret_cast<int* const>(0x005030F0);

@@ -12,6 +12,7 @@ extern QuestStruct* const quests;
 extern int* const myplr;
 
 extern int* const currlevel;
+extern int* const leveltype;
 
 extern int* const setpc_x;
 extern int* const setpc_y;
