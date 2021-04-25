@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.5
+PRE-ABLO v0.4.6
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -64,8 +64,34 @@ It is also recommended to turn off Virtual Desktop in winecfg.
 
 If you encounter any issues, please reach out via Discord (link at the top).
 
+Known Bugs
+--------------------------------------------------------------------------------
+
+For a full list: https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues
+
+Here are some bugs worth mentioning:
+
+  * Loading can crash depending on where the game is installed (#33)
+      * WORKAROUND: Install to short path like C:\PRE-ABLO
+  * Stairs to the bone chamber say "up to level 6", can't click (#17)
+      * WORKAROUND: Walk through stairs trigger, cast a spell when on same tile
+  * Hell dungeons look different on first load (monsters in walls, etc) (#39)
+      * WORKAROUND: Start a new game, then load
+  * Crash casting fire spells as Warrior/Sorcerer without a weapon (#79)
+  * Crash when dying as warrior wearing medium or heavy armor (#117)
+
 Changelog
 --------------------------------------------------------------------------------
+
+v0.4.6
+
+  * enable_cut_monsters: Unraveler (cut monster) now shows on dlvl 12-14
+      * This used to be called enable_fireman
+  * Prefer beta assets for Catacombs (specifically automap, bone chamber)
+  * Fix out-of-order succubus death animation frames
+  * Replace unimplemented caves automap tiles with dirt for better automap
+  * Add internal listfile to MPQ for easier inspection and iteration
+  * Remove file compression within MPQ, saves ~7MB in the final ZIP
 
 v0.4.5
 
@@ -163,20 +189,6 @@ v0.1.0
   * Fix crash when HP > max or < 0 (#40, #76)
   * Fix town portals in Skeleton King Lair and Bone Chamber (#2)
   * Fix Thunder Demon Lightning missile-related crash (#9)
-
-Known Bugs
---------------------------------------------------------------------------------
-
-For a full list: https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues
-
-Here are some bugs worth mentioning:
-
-  * File related functions don't work for paths > 64 characters (#33)
-      * WORKAROUND: Install to short path like C:\prdemo
-  * Stairs to the bone chamber say "up to level 6", can't click (#17)
-      * WORKAROUND: Walk through stairs trigger, cast a spell when on same tile
-  * Dungeon corruption in Hell on first load (#39)
-      * WORKAROUND: Start a new game until you're in Tristram, then load
 
 Thanks
 --------------------------------------------------------------------------------

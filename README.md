@@ -1,6 +1,6 @@
 ![Pre-ablo Banner](docs/banner.png)
 
-**Download latest release:** [v0.4.5](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
+**Download latest release:** [v0.4.6](https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/releases)  
 **Join our Discord:** https://discord.gg/2btAntp
 
 <a href="https://www.moddb.com/mods/pre-ablo" title="View Pre-ablo on Mod DB" target="_blank"><img src="https://button.moddb.com/rating/medium/mods/46670.png" alt="View Pre-ablo on Mod DB" /></a>
