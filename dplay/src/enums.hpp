@@ -104,3 +104,21 @@ enum _monster_id
   MT_DIABLO = 0x5C,
   NUM_MTYPES,
 };
+
+typedef enum item_type {
+	ITYPE_MISC   = 0x0,
+	ITYPE_SWORD  = 0x1,
+	ITYPE_AXE    = 0x2,
+	ITYPE_BOW    = 0x3,
+	ITYPE_MACE   = 0x4,
+	ITYPE_SHIELD = 0x5,
+	ITYPE_LARMOR = 0x6,
+	ITYPE_HELM   = 0x7,
+	ITYPE_MARMOR = 0x8,
+	ITYPE_HARMOR = 0x9,
+	ITYPE_STAFF  = 0xA,
+	ITYPE_GOLD   = 0xB,
+	ITYPE_RING   = 0xC,
+	ITYPE_FOOD   = 0xD,
+	ITYPE_NONE   = -1,
+} item_type;

@@ -6,6 +6,7 @@ MonsterStruct* const monster = reinterpret_cast<MonsterStruct*>(0x004BE4E8);
 ObjDataStruct* const AllObjects = reinterpret_cast<ObjDataStruct* const>(0x004AB578);
 ObjectStruct* const object = reinterpret_cast<ObjectStruct* const>(0x006002B0);
 QuestStruct* const quests = reinterpret_cast<QuestStruct* const>(0x00615F40);
+ItemDataStruct* const AllItemsList = reinterpret_cast<ItemDataStruct* const>(0x004A3B00);
 
 int* const myplr = reinterpret_cast<int* const>(0x00615E38);
 

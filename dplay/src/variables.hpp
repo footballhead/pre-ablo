@@ -8,6 +8,7 @@ extern MonsterStruct* const monster;
 extern ObjDataStruct* const AllObjects;
 extern ObjectStruct* const object; // array size == 127
 extern QuestStruct* const quests;
+extern ItemDataStruct* const AllItemsList;
 
 extern int* const myplr;
 

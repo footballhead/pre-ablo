@@ -1,5 +1,6 @@
 #include "patches.hpp"
 
+#include "enums.hpp"
 #include "functions.hpp"
 #include "macros.hpp"
 #include "util.hpp"
@@ -29,6 +30,16 @@ PATCH_MAIN
     ok &= nop(0x0048722B, 0x00487251);
 
     ok &= patch_call(0x0048722B, (void*)z_press_hook);
+
+    for (auto i = 0; AllItemsList[i].iLoc != -1; ++i) {
+        // Don't drop
+        AllItemsList[i].iRnd = FALSE;
+        // ... unless you're heavy armor/elixir of strength, in which case always drop
+        if (AllItemsList[i].itype == ITYPE_HARMOR || AllItemsList[i].iMiscId == 8) {
+            AllItemsList[i].iRnd = TRUE;
+            AllItemsList[i].iMinMLvl = 1;
+        }
+    }
 
     return ok;
 }

@@ -181,3 +181,35 @@ struct ObjectStruct {
 	int _oVar8;
 };
 static_assert(sizeof(ObjectStruct) == 0x74, "ObjectStruct compiled to wrong size");
+
+struct ItemDataStruct
+{
+  int iRnd;
+  char iClass;
+  char iLoc;
+  //char __padding_0[2];
+  int iCurs; // This is typically read as a byte (e.g. loaded into `al`)
+  //char __padding_1[3];
+  char itype;
+  char iItemId;
+  //char __padding_2[2];
+  const char *iName;
+  const char *iSName;
+  char iMinMLvl;
+  //char __padding_3[3];
+  int iDurability;
+  int iMinDam;
+  int iMaxDam;
+  int iMinAC;
+  int iMaxAC;
+  char iMinStr;
+  char iMinMag;
+  char iMinDex;
+  //char __padding_4;
+  int iFlags;
+  int iMiscId;
+  int iSpell;
+  BOOL iUsable;
+  int iValue;
+};
+static_assert(sizeof(ItemDataStruct) == 0x48, "ItemDataStruct compiled to wrong size");
