@@ -32,6 +32,7 @@ add_library(dplay SHARED
     src/patches/infinite_mana.cpp
     src/patches/infraring_fix.cpp
     src/patches/instacast.cpp
+    src/patches/load_mpq_customizations.cpp
     src/patches/magic_find_x3.cpp
     src/patches/max_monster_types.cpp
     src/patches/mega_fix.cpp

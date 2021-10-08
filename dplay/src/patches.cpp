@@ -20,6 +20,7 @@ DECLARE_PATCH(fullgame);
 DECLARE_PATCH(infinite_mana);
 DECLARE_PATCH(infraring_fix);
 DECLARE_PATCH(instacast);
+DECLARE_PATCH(load_mpq_customizations);
 DECLARE_PATCH(magic_find_x3);
 DECLARE_PATCH(max_monster_types);
 DECLARE_PATCH(mega_fix);
@@ -50,8 +51,8 @@ DECLARE_PATCH(z_hook);
 
 namespace {
 
-#define REGISTER_PATCH(id) {#id, id##_description, id##_main, false},
-#define REGISTER_PATCH_RECOMMENDED(id) {#id, id##_description, id##_main, true},
+#define REGISTER_PATCH(id) {#id, id##_description, id##_main, false, nullptr},
+#define REGISTER_PATCH_RECOMMENDED(id) {#id, id##_description, id##_main, true, nullptr},
 
 #ifndef NDEBUG
 #define REGISTER_PATCH_DEBUG(id) REGISTER_PATCH(id)
@@ -73,6 +74,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(infinite_mana)
     REGISTER_PATCH_RECOMMENDED(infraring_fix)
     REGISTER_PATCH_DEBUG(instacast)
+    REGISTER_PATCH_DEBUG(load_mpq_customizations)
     REGISTER_PATCH_DEBUG(magic_find_x3)
     REGISTER_PATCH_DEBUG(max_monster_types)
     REGISTER_PATCH_RECOMMENDED(mega_fix)
