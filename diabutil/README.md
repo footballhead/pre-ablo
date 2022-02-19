@@ -24,3 +24,8 @@ Works on Windows using Visual Studio Code with the CMake Tools extension.
 
 1. Build
 2. `ctest`
+
+## Contributing
+
+1. Tests must pass
+2. Must run `clang-format`

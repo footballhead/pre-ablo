@@ -1,6 +1,5 @@
-#include <diabutil/file.hpp>
-
 #include <cstdio>
+#include <diabutil/file.hpp>
 #include <fstream>
 #include <string>
 #include <unordered_set>
@@ -12,43 +11,43 @@ using namespace std::string_literals;
 
 #define MAPFLAG_DIRT 0x40 << 8
 
-int main(int argc, char **argv)
-{
-	if (argc != 2)
-	{
-		fprintf(stderr, "Usage: %s file.amp\n", argv[0]);
-		fprintf(stderr, "Mutate an AMP file to work in PR Demo\n");
-		return 1;
-	}
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    fprintf(stderr, "Usage: %s file.amp\n", argv[0]);
+    fprintf(stderr, "Mutate an AMP file to work in PR Demo\n");
+    return 1;
+  }
 
-	auto amp_file_contents = read_entire_file(argv[1]);
+  auto amp_file_contents = read_entire_file(argv[1]);
 
-	// Each entry is a WORD (16 bits)
-	for (size_t byte_index = 0; byte_index < amp_file_contents.size(); byte_index += 2)
-	{
-		auto word_index = byte_index / 2;
-		// TODO: This will only work on little endian systems
-		auto &automap_type = reinterpret_cast<unsigned short *>(amp_file_contents.data())[word_index];
+  // Each entry is a WORD (16 bits)
+  for (size_t byte_index = 0; byte_index < amp_file_contents.size();
+       byte_index += 2) {
+    auto word_index = byte_index / 2;
+    // TODO: This will only work on little endian systems
+    auto &automap_type = reinterpret_cast<unsigned short *>(
+        amp_file_contents.data())[word_index];
 
-		auto const type = automap_type & MAPFLAG_TYPE;
-		auto const flags = automap_type ^ type;
+    auto const type = automap_type & MAPFLAG_TYPE;
+    auto const flags = automap_type ^ type;
 
-		// PR demo only understands types 1-6, but retail defines types 8-12 specifically for caves
-		// e.g. 8 is "SW corner" so devilution uses two flags: do_vert = TRUE and do_cave_horz = TRUE
-		// My guess is it has something to do with caves having more TILs representing corners of different orientations.
-		switch (type)
-		{
-		case 8:	 // corner
-		case 9:	 // corner
-		case 10: // left-facing fence, etc
-		case 11: // right-facing fence, etc
-		case 12: // corner
-			automap_type = flags | MAPFLAG_DIRT;
-			break;
-		}
-	}
+    // PR demo only understands types 1-6, but retail defines types 8-12
+    // specifically for caves e.g. 8 is "SW corner" so devilution uses two
+    // flags: do_vert = TRUE and do_cave_horz = TRUE My guess is it has
+    // something to do with caves having more TILs representing corners of
+    // different orientations.
+    switch (type) {
+      case 8:   // corner
+      case 9:   // corner
+      case 10:  // left-facing fence, etc
+      case 11:  // right-facing fence, etc
+      case 12:  // corner
+        automap_type = flags | MAPFLAG_DIRT;
+        break;
+    }
+  }
 
-	dump_to_disk(amp_file_contents, argv[1]);
+  dump_to_disk(amp_file_contents, argv[1]);
 
-	return 0;
+  return 0;
 }

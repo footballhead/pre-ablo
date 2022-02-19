@@ -1,5 +1,6 @@
-#include <diabutil/palette.hpp>
 #include <gtest/gtest.h>
+
+#include <diabutil/palette.hpp>
 #include <stdexcept>
 
 TEST(palette_from_data, no_data_throws_exception) {
