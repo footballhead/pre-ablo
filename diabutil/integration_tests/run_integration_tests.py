@@ -9,11 +9,13 @@ unittest is used as the framework to describe and group tests
 from pathlib import Path
 import subprocess
 import unittest
+import sys
 
 # TODO: make BUILD_DIR configurable or smarter
 BUILD_DIR = Path('..') / 'build'
 # TODO: script to setup ASSETS_DIR
 ASSETS_DIR = Path('assets')
+OUTPUT_DIR = Path('output')
 cel2png = BUILD_DIR / 'cel2png' / 'cel2png'
 drawtext = BUILD_DIR / 'drawtext' / 'drawtext'
 drawtextpcx = BUILD_DIR / 'drawtextpcx' / 'drawtextpcx'
@@ -43,12 +45,12 @@ class TestDrawText(unittest.TestCase):
     def test_bigtgold_is_successful(self):
         bigtgold_cel = ASSETS_DIR / 'bigtgold.cel'
         mainmenu_pal = ASSETS_DIR / 'mainmenu.pal'
+        output_png = OUTPUT_DIR / 'TestDrawText_test_bigtgold_is_successful.png'
         message = "Don't have a cow, man"
         process = subprocess.run(
-            [drawtext, bigtgold_cel, mainmenu_pal, message])
+            [drawtext, bigtgold_cel, mainmenu_pal, output_png, message])
         self.assertEqual(process.returncode, 0)
         # TODO: Compare output file
-        # TODO: Configurable output file
 
 
 class TestDrawTextPcx(unittest.TestCase):
@@ -108,4 +110,5 @@ class TestSplitGroups(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    OUTPUT_DIR.mkdir(exist_ok=True)
     unittest.main()

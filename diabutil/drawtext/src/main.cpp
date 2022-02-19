@@ -45,15 +45,16 @@ constexpr auto BigTGold_height = 45;
 }  // namespace
 
 int main(int argc, char** argv) {
-  if (argc < 4) {
-    fprintf(stderr, "Usage: %s BigTGold.CEL palette.pal message\n", argv[0]);
+  if (argc < 5) {
+    fprintf(stderr, "Usage: %s BigTGold.CEL palette.pal output.png message\n", argv[0]);
     fprintf(stderr, "Only works for BigTGold.CEL\n");
     return 1;
   }
 
   auto const in_cel_file = argv[1];
   auto const in_palette_file = argv[2];
-  auto const message = std::string{argv[3]};
+  auto const out_file = std::string{argv[3]};
+  auto const message = std::string{argv[4]};
 
   //
   // Load BigTGold.cel frames and turn into image_t
@@ -127,9 +128,8 @@ int main(int argc, char** argv) {
   // Save to file
   //
 
-  auto const filename = "test.png"s;
-  if (!save_to_png(image, filename)) {
-    fprintf(stderr, "Failed to save to: %s\n", filename.c_str());
+  if (!save_to_png(image, out_file)) {
+    fprintf(stderr, "Failed to save to: %s\n", out_file.c_str());
     return 1;
   }
 
