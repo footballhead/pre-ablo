@@ -10,3 +10,7 @@ target_link_libraries(diabutil stb_image_write)
 add_executable(test_palette tests/test_palette.cpp)
 target_link_libraries(test_palette diabutil gtest gtest_main)
 add_test(NAME test_palette COMMAND test_palette)
+
+add_executable(test_color tests/test_color.cpp)
+target_link_libraries(test_color diabutil gtest gtest_main)
+add_test(NAME test_color COMMAND test_color)
