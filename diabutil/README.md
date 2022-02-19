@@ -6,6 +6,7 @@ Each directory has it's own README.
 
 ## Setup
 
+1. Install git, cmake, c++17 compiler, stormlib dependencies (zlib, bzib2)
 1. Clone submodules to get StormLib.
 
 ## Building
