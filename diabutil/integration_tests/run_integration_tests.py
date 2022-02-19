@@ -12,6 +12,8 @@ import unittest
 
 # TODO: make BUILD_DIR configurable or smarter
 BUILD_DIR = Path('..') / 'build'
+# TODO: script to setup ASSETS_DIR
+ASSETS_DIR = Path('assets')
 cel2png = BUILD_DIR / 'cel2png' / 'cel2png'
 drawtext = BUILD_DIR / 'drawtext' / 'drawtext'
 drawtextpcx = BUILD_DIR / 'drawtextpcx' / 'drawtextpcx'
@@ -37,6 +39,16 @@ class TestDrawText(unittest.TestCase):
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([drawtext])
         self.assertEqual(process.returncode, 1)
+
+    def test_bigtgold_is_successful(self):
+        bigtgold_cel = ASSETS_DIR / 'bigtgold.cel'
+        mainmenu_pal = ASSETS_DIR / 'mainmenu.pal'
+        message = "Don't have a cow, man"
+        process = subprocess.run(
+            [drawtext, bigtgold_cel, mainmenu_pal, message])
+        self.assertEqual(process.returncode, 0)
+        # TODO: Compare output file
+        # TODO: Configurable output file
 
 
 class TestDrawTextPcx(unittest.TestCase):
