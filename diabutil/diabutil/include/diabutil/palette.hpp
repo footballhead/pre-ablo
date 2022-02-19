@@ -12,4 +12,5 @@ constexpr auto palette_expected_size = palette_num_colors * palette_bytes_per_co
 
 using palette_t = std::array<color_t, palette_num_colors>;
 
+// TODO: std::byte
 palette_t palette_from_data(std::vector<uint8_t> const &data);

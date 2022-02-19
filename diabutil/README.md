@@ -19,3 +19,8 @@ make
 ```
 
 Works on Windows using Visual Studio Code with the CMake Tools extension.
+
+## Running Tests
+
+1. Build
+2. `ctest`

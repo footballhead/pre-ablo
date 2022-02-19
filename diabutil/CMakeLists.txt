@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(diabutil CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+include(CTest)
 
 #
 # External libraries
@@ -9,6 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(dr_pcx)
 add_subdirectory(stb_image_write)
 include(stormlib.cmake)
+add_subdirectory(googletest)
 
 #
 # Internal library
