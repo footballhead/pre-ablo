@@ -59,6 +59,17 @@ class TestDrawTextPcx(unittest.TestCase):
         process = subprocess.run([drawtextpcx])
         self.assertEqual(process.returncode, 1)
 
+    def test_valid_params_is_successful(self):
+        pcx_file = ASSETS_DIR / 'font42y.pcx'
+        bin_file = ASSETS_DIR / 'font42.bin'
+        out_file = OUTPUT_DIR / 'TestDrawTextPcx_test_valid_params_is_successful.png'
+        message = "Steamed hams"
+        process = subprocess.run(
+            [drawtextpcx, pcx_file, bin_file, out_file, message])
+        self.assertEqual(process.returncode, 0)
+        # TODO compare to a golden file
+        # TODO add output param
+
 
 class TestFixAmp(unittest.TestCase):
 

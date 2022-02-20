@@ -15,14 +15,15 @@ constexpr auto transparent = color_t{0, 255, 0, 255};
 }  // namespace
 
 int main(int argc, char** argv) {
-  if (argc < 4) {
-    fprintf(stderr, "Usage: %s font.pcx font.bin message\n", argv[0]);
+  if (argc < 5) {
+    fprintf(stderr, "Usage: %s font.pcx font.bin output.png message\n", argv[0]);
     return 1;
   }
 
   auto const in_pcx_file = argv[1];
   auto const in_kern_file = argv[2];
-  auto const message = std::string{argv[3]};
+  auto const out_file = argv[3];
+  auto const message = std::string{argv[4]};
 
   //
   // Load kerning
@@ -134,9 +135,8 @@ int main(int argc, char** argv) {
   // Save to file
   //
 
-  auto const filename = "drawtextpcx.png";
-  if (!save_to_png(image, filename)) {
-    fprintf(stderr, "Failed to save to: %s\n", filename);
+  if (!save_to_png(image, out_file)) {
+    fprintf(stderr, "Failed to save to: %s\n", out_file);
     return 1;
   }
 

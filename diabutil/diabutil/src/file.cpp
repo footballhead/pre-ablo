@@ -24,7 +24,6 @@ void dump_to_disk(std::vector<uint8_t> const &data,
 }
 
 namespace diabutil {
-namespace {}
 
 std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
   // Open file
