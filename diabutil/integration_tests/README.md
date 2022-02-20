@@ -14,7 +14,8 @@ WARNING: This is a work-in-progress!
 * extract data/bigtgold.cel from prdemo MPQ and copy to assets/
 * extract gendata/mainmenu.pal from prdemo MPQ and copy to assets/
 * extract ui_art/font42.bin from retail MPQ and copy to assets/
-* extract ui_art/font42y.pcx from retail MPQ and copy to assets/
+* extract ui_art/font42g.pcx from retail MPQ and copy to assets/
+* extract levels/l3data/l3.amp from retail MPQ and copy to assets/
 
 ## Run
 

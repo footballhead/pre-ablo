@@ -7,15 +7,21 @@ unittest is used as the framework to describe and group tests
 # Please run yapf on me!
 
 from pathlib import Path
+
 import subprocess
 import unittest
 import sys
+import shutil
+import filecmp
 
 # TODO: make BUILD_DIR configurable or smarter
 BUILD_DIR = Path('..') / 'build'
 # TODO: script to setup ASSETS_DIR
 ASSETS_DIR = Path('assets')
+GOLDEN_DIR = Path('golden')
 OUTPUT_DIR = Path('output')
+MISSING_GFX_DIR = Path('..') / '..' / 'missing_gfx'
+
 cel2png = BUILD_DIR / 'cel2png' / 'cel2png'
 drawtext = BUILD_DIR / 'drawtext' / 'drawtext'
 drawtextpcx = BUILD_DIR / 'drawtextpcx' / 'drawtextpcx'
@@ -46,11 +52,14 @@ class TestDrawText(unittest.TestCase):
         bigtgold_cel = ASSETS_DIR / 'bigtgold.cel'
         mainmenu_pal = ASSETS_DIR / 'mainmenu.pal'
         output_png = OUTPUT_DIR / 'TestDrawText_test_bigtgold_is_successful.png'
-        message = "Don't have a cow, man"
+        message = "DON'T HAVE A COW, MAN"
+
         process = subprocess.run(
             [drawtext, bigtgold_cel, mainmenu_pal, output_png, message])
         self.assertEqual(process.returncode, 0)
-        # TODO: Compare output file
+
+        golden = GOLDEN_DIR / 'drawtext.png'
+        self.assertTrue(filecmp.cmp(output_png, golden))
 
 
 class TestDrawTextPcx(unittest.TestCase):
@@ -60,15 +69,18 @@ class TestDrawTextPcx(unittest.TestCase):
         self.assertEqual(process.returncode, 1)
 
     def test_valid_params_is_successful(self):
-        pcx_file = ASSETS_DIR / 'font42y.pcx'
+        pcx_file = ASSETS_DIR / 'font42g.pcx'
         bin_file = ASSETS_DIR / 'font42.bin'
         out_file = OUTPUT_DIR / 'TestDrawTextPcx_test_valid_params_is_successful.png'
-        message = "Steamed hams"
+        # Note: this font has different upper and lower case letters!
+        message = "STEAMED HAMS"
+
         process = subprocess.run(
             [drawtextpcx, pcx_file, bin_file, out_file, message])
         self.assertEqual(process.returncode, 0)
-        # TODO compare to a golden file
-        # TODO add output param
+
+        golden = GOLDEN_DIR / 'drawtextpcx.png'
+        self.assertTrue(filecmp.cmp(out_file, golden))
 
 
 class TestFixAmp(unittest.TestCase):
@@ -76,6 +88,18 @@ class TestFixAmp(unittest.TestCase):
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([fixamp])
         self.assertEqual(process.returncode, 1)
+
+    def test_valid_params_is_successful(self):
+        # This mutates the file so copy input to output first
+        template = ASSETS_DIR / 'l3.amp'
+        amp_file = OUTPUT_DIR / 'TestFixAmp_test_valid_params_is_successful.amp'
+        shutil.copy2(template, amp_file)
+
+        process = subprocess.run([fixamp, amp_file])
+        self.assertEqual(process.returncode, 0)
+
+        golden = MISSING_GFX_DIR / 'levels' / 'l3data' / 'l3.amp'
+        self.assertTrue(filecmp.cmp(amp_file, golden))
 
 
 class TestJoinCel(unittest.TestCase):

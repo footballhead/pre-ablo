@@ -1,0 +1,1 @@
+FYI Some files are compared against ../../missing_gfx too
