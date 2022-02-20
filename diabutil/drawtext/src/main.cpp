@@ -44,42 +44,85 @@ constexpr auto BigTGold_height = 45;
 
 }  // namespace
 
+// TODO: Make this a library function???
 int main(int argc, char** argv) {
   if (argc < 5) {
-    fprintf(stderr, "Usage: %s BigTGold.CEL palette.pal output.png message\n", argv[0]);
+    fprintf(stderr, "Usage: %s BigTGold.CEL palette.pal output.png message\n",
+            argv[0]);
     fprintf(stderr, "Only works for BigTGold.CEL\n");
     return 1;
   }
 
   auto const in_cel_file = argv[1];
   auto const in_palette_file = argv[2];
-  auto const out_file = std::string{argv[3]};
+  auto const out_file = argv[3];
   auto const message = std::string{argv[4]};
 
   //
-  // Load BigTGold.cel frames and turn into image_t
+  // Load palette
   //
 
-  auto const palette_data = read_entire_file(in_palette_file);
-  auto const palette = palette_from_data(palette_data);
-
-  auto const cel_contents = read_entire_file(in_cel_file);
-  auto const celparts = split_cel(cel_contents);
-
-  // +1 for the space char
-  if (celparts.size() + 1 != mfontkern.size()) {
-    fprintf(stderr, "Expected %zu characters, got %zu\n", mfontkern.size(),
-            celparts.size());
-    return 1;
+  auto const palette_data = diabutil::read_file(in_palette_file);
+  if (!palette_data) {
+    fprintf(stderr, "Failed to load: %s\n", in_palette_file);
+    return 2;
+  }
+  auto const palette =
+      diabutil::palette_from_data(diabutil::make_span(*palette_data));
+  if (!palette) {
+    fprintf(stderr, "Palette conversion failed: %s\n", in_palette_file);
+    return 3;
   }
 
+  //
+  // Load BigTGold.cel, turn into frames
+  //
+
+  auto const cel_contents = diabutil::read_file(in_cel_file);
+  if (!cel_contents) {
+    fprintf(stderr, "Failed to load: %s\n", in_cel_file);
+    return 4;
+  }
+  auto const frames = split_cel(diabutil::make_span(*cel_contents));
+  if (frames.empty()) {
+    fprintf(stderr, "Failed to split: %s\n", in_cel_file);
+    return 5;
+  }
+
+  // +1 for the space char
+  if (frames.size() + 1 != mfontkern.size()) {
+    fprintf(stderr, "Expected %zu characters, got %zu\n", mfontkern.size(),
+            frames.size());
+    return 6;
+  }
+
+  //
+  // Turn frames into images
+  //
+
   std::vector<image_t> glyphs{};
-  glyphs.reserve(celparts.size());
-  std::transform(cbegin(celparts), cend(celparts), std::back_inserter(glyphs),
-                 [&palette](cel_data const& data) {
-                   return image_from_cel(data, BigTGold_width, palette,
-                                         /*has_header=*/false);
-                 });
+  glyphs.reserve(frames.size());
+  for (auto const& frame : frames) {
+    auto const decompressed = diabutil::decompress_cel_frame(diabutil::make_span(frame));
+    if (decompressed.empty()) {
+      fprintf(stderr, "Failed to decompress frame\n");
+      return 7;
+    }
+
+    auto colorized = diabutil::colorize_cel_frame(diabutil::make_span(decompressed), *palette);
+    if (colorized.empty()) {
+      fprintf(stderr, "Failed to colorize frame\n");
+      return 8;
+    }
+
+    auto image = diabutil::colorized_to_image(std::move(colorized), BigTGold_width);
+    if (!image) {
+      fprintf(stderr, "Failed to convert into RGB image\n");
+      return 9;
+    }
+
+    glyphs.push_back(*image);
+  }
 
   //
   // Determine width of final image
@@ -129,8 +172,8 @@ int main(int argc, char** argv) {
   //
 
   if (!save_to_png(image, out_file)) {
-    fprintf(stderr, "Failed to save to: %s\n", out_file.c_str());
-    return 1;
+    fprintf(stderr, "Failed to save to: %s\n", out_file);
+    return 10;
   }
 
   return 0;

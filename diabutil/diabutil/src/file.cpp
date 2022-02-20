@@ -22,3 +22,28 @@ void dump_to_disk(std::vector<uint8_t> const &data,
     throw std::runtime_error{"Failed to write data"};
   }
 }
+
+namespace diabutil {
+namespace {}
+
+std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
+  // Open file
+  std::ifstream in{filename.data(), std::ios_base::binary | std::ios_base::ate};
+  if (!in.good()) {
+    return std::nullopt;
+  }
+
+  // Get size
+  auto const file_size = in.tellg();
+  in.seekg(0, std::ios::beg);
+
+  // Read file contents
+  auto buffer = std::vector<std::byte>(file_size, std::byte{0});
+  if (!in.read(reinterpret_cast<char *>(buffer.data()), file_size)) {
+    return std::nullopt;
+  }
+
+  return buffer;
+}
+
+}  // namespace diabutil

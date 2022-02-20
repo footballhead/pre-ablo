@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <diabutil/color.hpp>
-#include <stdexcept>
 
 TEST(color_t, matching_colors_are_equal) {
   auto const actual_color = color_t{.r = 0, .g = 1, .b = 2, .a = 3};
