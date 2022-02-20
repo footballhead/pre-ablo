@@ -2,6 +2,7 @@
 
 #include <cinttypes>
 #include <cstddef>
+#include <diabutil/span.hpp>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -10,6 +11,7 @@
 /// @deprecated
 std::vector<uint8_t> read_entire_file(std::string const &filename);
 
+/// @deprecated
 void dump_to_disk(std::vector<uint8_t> const &data,
                   std::string const &filename);
 
@@ -21,5 +23,12 @@ namespace diabutil {
 /// @returns On success, a valid optional of all the bytes in the file. On
 /// error, std::nullopt
 std::optional<std::vector<std::byte>> read_file(std::string_view filename);
+
+/// Persist a buffer to a file on disk
+///
+/// @param data The bytes to persist
+/// @param filename Filepath to save bytes in
+/// @returns true on success, false on error
+bool dump_to_disk(span<std::byte> data, std::string_view filename);
 
 }  // namespace diabutil

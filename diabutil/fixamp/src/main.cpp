@@ -18,15 +18,20 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  auto amp_file_contents = read_entire_file(argv[1]);
+  auto const amp_file = argv[1];
+  auto amp_file_contents = diabutil::read_file(amp_file);
+  if (!amp_file_contents) {
+    fprintf(stderr, "Failed to load: %s\n", amp_file);
+    return 2;
+  }
 
   // Each entry is a WORD (16 bits)
-  for (size_t byte_index = 0; byte_index < amp_file_contents.size();
+  for (size_t byte_index = 0; byte_index < amp_file_contents->size();
        byte_index += 2) {
     auto word_index = byte_index / 2;
     // TODO: This will only work on little endian systems
     auto &automap_type = reinterpret_cast<unsigned short *>(
-        amp_file_contents.data())[word_index];
+        amp_file_contents->data())[word_index];
 
     auto const type = automap_type & MAPFLAG_TYPE;
     auto const flags = automap_type ^ type;
@@ -47,7 +52,11 @@ int main(int argc, char **argv) {
     }
   }
 
-  dump_to_disk(amp_file_contents, argv[1]);
+  if (!diabutil::dump_to_disk(diabutil::make_span(*amp_file_contents),
+                              amp_file)) {
+    fprintf(stderr, "Failed to save, file could be corrupt: %s\n", amp_file);
+    return 3;
+  }
 
   return 0;
 }

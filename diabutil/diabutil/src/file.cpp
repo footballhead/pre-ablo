@@ -27,7 +27,8 @@ namespace diabutil {
 
 std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
   // Open file
-  std::ifstream in{filename.data(), std::ios_base::binary | std::ios_base::ate};
+  std::ifstream in{std::string(filename),
+                   std::ios_base::binary | std::ios_base::ate};
   if (!in.good()) {
     return std::nullopt;
   }
@@ -43,6 +44,20 @@ std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
   }
 
   return buffer;
+}
+
+bool dump_to_disk(span<std::byte> data, std::string_view filename) {
+  std::ofstream out{std::string(filename), std::ios_base::binary};
+  if (!out.good()) {
+    return false;
+  }
+
+  out.write(reinterpret_cast<char const *>(data.data), data.size);
+  if (!out.good()) {
+    return false;
+  }
+
+  return true;
 }
 
 }  // namespace diabutil
