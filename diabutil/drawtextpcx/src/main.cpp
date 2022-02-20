@@ -29,15 +29,19 @@ int main(int argc, char** argv) {
   // Load kerning
   //
 
-  auto kerning_data = read_entire_file(in_kern_file);
+  auto kerning_data = diabutil::read_file(in_kern_file);
+  if (!kerning_data) {
+    fprintf(stderr, "Failed to load .bin: %s\n", in_kern_file);
+    return 2;
+  }
 
   // Load header data then remove it to use array 1:1 with ASCII
-  auto space_width = kerning_data.at(0);
-  auto space_height = kerning_data.at(1);
-  kerning_data.erase(begin(kerning_data), std::next(begin(kerning_data), 2));
+  auto space_width = static_cast<uint8_t>(kerning_data->at(0));
+  auto space_height = static_cast<uint8_t>(kerning_data->at(1));
+  kerning_data->erase(begin(*kerning_data), std::next(begin(*kerning_data), 2));
 
   // Space kerning not set properly?
-  kerning_data[' '] = space_width;
+  (*kerning_data)[' '] = std::byte{space_width};
 
   //
   // Read PCX
@@ -50,13 +54,13 @@ int main(int argc, char** argv) {
                                           &pcx_height, &pcx_components, 0);
   if (pcx_data == NULL) {
     fprintf(stderr, "Failed to read: %s\n", in_pcx_file);
-    return 1;
+    return 3;
   }
 
   if (pcx_components != 3) {
     drpcx_free(pcx_data);
     fprintf(stderr, "PCX doesn't have 3 components, don't know what to do\n");
-    return 1;
+    return 4;
   }
 
   //
@@ -67,7 +71,7 @@ int main(int argc, char** argv) {
   if (num_frames != 256) {
     drpcx_free(pcx_data);
     fprintf(stderr, "PCX doesn't have enough characters\n");
-    return 1;
+    return 5;
   }
 
   std::vector<image_t> glyphs(num_frames,
@@ -98,7 +102,7 @@ int main(int argc, char** argv) {
     if (c == 0) {
       break;
     }
-    textWidth += kerning_data.at(c);
+    textWidth += static_cast<uint8_t>(kerning_data->at(c));
   }
 
   //
@@ -112,7 +116,7 @@ int main(int argc, char** argv) {
     if (c == 0) {
       break;
     }
-    auto const kern = kerning_data.at(c);
+    auto const kern = static_cast<uint8_t>(kerning_data->at(c));
     if (kern == 0) {
       continue;
     }
