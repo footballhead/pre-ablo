@@ -180,9 +180,10 @@ class TestMultiToolWorkflow(unittest.TestCase):
         frame_file = outdir / '0.celframe'
         pal_file = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
         objcurs_hand_width = 33
-        process = subprocess.run(
-            [cel2png, frame_file, pal_file,
-             str(objcurs_hand_width), '--header'])
+        process = subprocess.run([
+            cel2png, frame_file, pal_file,
+            str(objcurs_hand_width), '--header'
+        ])
         self.assertEqual(process.returncode, 0)
 
         png_file = outdir / '0.celframe.png'
