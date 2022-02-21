@@ -13,6 +13,7 @@ using namespace std::string_literals;
 struct mini_tile {
   uint16_t data;
 
+  // NOTE: Diablo frames start at 1, we start at 0
   int frame_number() const { return data & 0x0FFF; }
   int frame_type() const { return (data & 0x7000) >> 12; }
 };
@@ -29,7 +30,7 @@ struct hash<mini_tile> {
 }  // namespace std
 
 // TODO: replace with diabutil
-std::vector<uint8_t> read_entire_file(std::string const &filename) {
+std::vector<uint8_t> read_entire_file(std::string const& filename) {
   std::ifstream in{filename, std::ios_base::binary};
   if (!in.good()) {
     throw std::runtime_error{"Failed to open file: " + filename};
@@ -47,7 +48,10 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Usage: %s file.min\n", argv[0]);
     fprintf(
         stderr,
-        "Mutate a celpart so that it can be displayed properly by prdemo\n");
+        "Mutate a celframe so that it can be displayed properly by prdemo\n");
+    fprintf(stderr,
+            "Assumes splitcel has already been run, output is in cwd\n");
+    fprintf(stderr, "To use in-game, must run joincel afterwards\n");
     return 1;
   }
 
@@ -71,7 +75,8 @@ int main(int argc, char** argv) {
 
   for (auto const& min : mini_tiles) {
     if (min.frame_type() == 2) {  // left triangle
-      auto const filename = std::to_string(min.frame_number()) + ".celpart";
+      auto const filename =
+          std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
       auto cel = read_entire_file(filename.c_str());
 
@@ -95,7 +100,8 @@ int main(int argc, char** argv) {
       std::ofstream out{filename, std::ios_base::binary};
       out.write(reinterpret_cast<char const*>(cel.data()), cel.size());
     } else if (min.frame_type() == 3) {  // right triangle
-      auto const filename = std::to_string(min.frame_number()) + ".celpart";
+      auto const filename =
+          std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
       auto cel = read_entire_file(filename.c_str());
 
@@ -119,7 +125,8 @@ int main(int argc, char** argv) {
       std::ofstream out{filename, std::ios_base::binary};
       out.write(reinterpret_cast<char const*>(cel.data()), cel.size());
     } else if (min.frame_type() == 4) {  // left triangle to wall
-      auto const filename = std::to_string(min.frame_number()) + ".celpart";
+      auto const filename =
+          std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
       auto cel = read_entire_file(filename.c_str());
 
@@ -135,7 +142,8 @@ int main(int argc, char** argv) {
       std::ofstream out{filename, std::ios_base::binary};
       out.write(reinterpret_cast<char const*>(cel.data()), cel.size());
     } else if (min.frame_type() == 5) {  // right triangle to wall
-      auto const filename = std::to_string(min.frame_number()) + ".celpart";
+      auto const filename =
+          std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
       auto cel = read_entire_file(filename.c_str());
 

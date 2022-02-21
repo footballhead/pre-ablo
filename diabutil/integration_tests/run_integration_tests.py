@@ -134,6 +134,45 @@ class TestMpqExtract(unittest.TestCase):
         self.assertEqual(process.returncode, 1)
 
 
+class TestRetail2PrDemo(unittest.TestCase):
+
+    def setUp(self):
+        self.old_cwd = Path.cwd()
+
+    def tearDown(self):
+        # Some tests involve changing cwd, ensure we always change back
+        os.chdir(self.old_cwd)
+
+    def test_no_args_nonzero_exit(self):
+        process = subprocess.run([retail2prdemo])
+        self.assertEqual(process.returncode, 1)
+
+    def test_l3_matches_missing_gfx(self):
+        outdir = OUTPUT_DIR / 'TestRetail2PrDemo_test_l3_matches_missing_gfx'
+
+        cel_file = ASSETS_DIR / 'levels' / 'l3data' / 'l3.cel'
+        process = subprocess.run([splitcel, cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        # TODO: make retail2prdemo directory-aware
+        os.chdir(outdir)
+
+        min_file = ASSETS_DIR / 'levels' / 'l3data' / 'l3.min'
+        process = subprocess.run([retail2prdemo, min_file])
+        self.assertEqual(process.returncode, 0)
+
+        joined_cel_file = outdir / 'joined.cel'
+        # Yes, there really are 1771 frames in l3.cel
+        num_frames = 1771
+        process = subprocess.run([joincel, str(num_frames), joined_cel_file])
+        self.assertEqual(process.returncode, 0)
+
+        os.chdir(self.old_cwd)
+
+        golden = MISSING_GFX_DIR / 'levels' / 'l3data' / 'l3.cel'
+        self.assertTrue(filecmp.cmp(joined_cel_file, golden))
+
+
 class TestSplitCel(unittest.TestCase):
 
     def test_no_args_nonzero_exit(self):
