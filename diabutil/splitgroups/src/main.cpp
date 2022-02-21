@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -20,17 +21,20 @@ std::vector<uint8_t> read_entire_file(char const *filename) {
 }  // namespace
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    fprintf(stderr, "Usage: %s infile\n", argv[0]);
-    fprintf(stderr, "Will create 0.cel, 1.cel, ... in the current directory\n");
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s infile.CEL outdir\n", argv[0]);
+    fprintf(stderr, "Will create 0.cel, 1.cel, ... in outdir\n");
     return 1;
   }
+
+  auto const infile = argv[1];
+  auto const outdir = argv[2];
 
   //
   // Load data
   //
 
-  auto const contents = read_entire_file(argv[1]);
+  auto const contents = read_entire_file(infile);
   auto contents_iter = contents.data();
 
   //
@@ -64,10 +68,12 @@ int main(int argc, char **argv) {
   //
 
   for (uint32_t i = 0; i < num_groups; ++i) {
+    auto const filepath =
+        std::filesystem::path(outdir) / (std::to_string(i) + ".cel");
+    std::ofstream out{filepath.c_str(), std::ios_base::binary};
+
     auto const size = group_sizes.at(i);
-    std::ofstream outfile{std::to_string(i + 1) + ".cel",
-                          std::ios_base::binary};
-    outfile.write(reinterpret_cast<char const *>(contents_iter), size);
+    out.write(reinterpret_cast<char const *>(contents_iter), size);
     contents_iter += size;
   }
 

@@ -190,6 +190,29 @@ class TestMultiToolWorkflow(unittest.TestCase):
         golden = GOLDEN_DIR / 'objcurs_hand.png'
         self.assertTrue(filecmp.cmp(png_file, golden))
 
+    def test_splitgroups_splitcel_cel2png_header(self):
+        cel_file = ASSETS_DIR / 'monsters' / 'bat' / 'bata.cel'
+        outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitgroups_splitcel_cel2png_header'
+
+        process = subprocess.run([splitgroups, cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        split_cel_file = outdir / '0.cel'
+        process = subprocess.run([splitcel, split_cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        frame_file = outdir / '0.celframe'
+        pal_file = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
+        bata_width = 96
+        process = subprocess.run(
+            [cel2png, frame_file, pal_file,
+             str(bata_width), '--header'])
+        self.assertEqual(process.returncode, 0)
+
+        png_file = outdir / '0.celframe.png'
+        golden = GOLDEN_DIR / 'bata.png'
+        self.assertTrue(filecmp.cmp(png_file, golden))
+
 
 if __name__ == '__main__':
     # TODO: Will these run using default unittests options?
