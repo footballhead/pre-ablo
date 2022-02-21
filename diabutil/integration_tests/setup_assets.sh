@@ -2,6 +2,8 @@
 
 # Usage: setup_assets.sh predmo.mpq retail.mpq
 
+# TODO: Can we test with our own files? devilution files?
+
 set -eu
 
 if [ $# -ne 2 ]
@@ -27,6 +29,8 @@ mpqextract=../../build/mpqextract/mpqextract
 
 echo data/bigtgold.cel | ${mpqextract} "${prdemo_mpq}"
 echo gendata/mainmenu.pal | ${mpqextract} "${prdemo_mpq}"
+echo data/inv/objcurs.cel | ${mpqextract} "${prdemo_mpq}"
+
 echo ui_art/font42.bin | ${mpqextract} "${retail_mpq}"
 echo ui_art/font42g.pcx | ${mpqextract} "${retail_mpq}"
 echo levels/l3data/l3.amp | ${mpqextract} "${retail_mpq}"

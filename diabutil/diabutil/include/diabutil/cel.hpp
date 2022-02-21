@@ -59,8 +59,8 @@ std::vector<color_t> colorize_cel_frame(span<std::byte> indexed,
 
 /// Turn a single uncompressed RGB frame into an usable image.
 ///
-/// @param frame A single RGB .CEL frame (no header, see split_cel). Consider
-/// std::move()ing if you're done with it!
+/// @param colorized A single RGB frame. Consider std::move()ing if you're done
+/// with it!
 /// @param width The width of the image
 /// @returns A valid image on success, std::nullopt on failure
 std::optional<image_t> colorized_to_image(std::vector<color_t> colorized,

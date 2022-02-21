@@ -16,6 +16,7 @@ import sys
 import shutil
 import filecmp
 
+# TODO: Make these absolute so we can chdir
 # TODO: make BUILD_DIR configurable or smarter
 BUILD_DIR = Path('..') / 'build'
 ASSETS_DIR = Path('assets')
@@ -118,6 +119,7 @@ class TestJoinGroups(unittest.TestCase):
 
 
 class TestMpqAdd(unittest.TestCase):
+    # TODO: Don't run if WITH_STORMLIB is OFF
 
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([mpqadd])
@@ -133,7 +135,6 @@ class TestMpqExtract(unittest.TestCase):
 
 
 class TestSplitCel(unittest.TestCase):
-    # TODO: Don't run if WITH_STORMLIB is OFF
 
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([splitcel])
@@ -145,6 +146,48 @@ class TestSplitGroups(unittest.TestCase):
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([splitgroups])
         self.assertEqual(process.returncode, 1)
+
+
+class TestMultiToolWorkflow(unittest.TestCase):
+
+    def test_splitcel_cel2png(self):
+        cel_file = ASSETS_DIR / 'data' / 'bigtgold.cel'
+        outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitcel_cel2png'
+
+        process = subprocess.run([splitcel, cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        frame_file = outdir / '0.celframe'
+        pal_file = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
+        bigtgold_width = 46
+        process = subprocess.run(
+            [cel2png, frame_file, pal_file,
+             str(bigtgold_width)])
+        self.assertEqual(process.returncode, 0)
+
+        # Frame 0 of bigtgold is the letter A
+        png_file = outdir / '0.celframe.png'
+        golden = GOLDEN_DIR / 'bigtgold_a.png'
+        self.assertTrue(filecmp.cmp(png_file, golden))
+
+    def test_splitcel_cel2png_header(self):
+        cel_file = ASSETS_DIR / 'data' / 'inv' / 'objcurs.cel'
+        outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitcel_cel2png_header'
+
+        process = subprocess.run([splitcel, cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        frame_file = outdir / '0.celframe'
+        pal_file = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
+        objcurs_hand_width = 33
+        process = subprocess.run(
+            [cel2png, frame_file, pal_file,
+             str(objcurs_hand_width), '--header'])
+        self.assertEqual(process.returncode, 0)
+
+        png_file = outdir / '0.celframe.png'
+        golden = GOLDEN_DIR / 'objcurs_hand.png'
+        self.assertTrue(filecmp.cmp(png_file, golden))
 
 
 if __name__ == '__main__':

@@ -30,6 +30,7 @@ struct image_t {
   }
 };
 
+/// @deprecated
 inline bool save_to_png(image_t const& image, std::string const& filename) {
   return stbi_write_png(filename.c_str(), image.width, image.height, 4,
                         image.pixels.data(),
@@ -39,3 +40,18 @@ inline bool save_to_png(image_t const& image, std::string const& filename) {
 inline image_t make_blank_image(int width, int height) {
   return {width, height, std::vector<color_t>(width * height, color_t{})};
 }
+
+namespace diabutil {
+
+/// Save an image to disk as a .PNG file.
+///
+/// @param image The RGB image data to save
+/// @param filename Where to save the image on disk
+/// @return true on success, false on error
+inline bool save_to_png(image_t const& image, char const* filename) {
+  return stbi_write_png(filename, image.width, image.height, 4,
+                        image.pixels.data(),
+                        image.width * sizeof(color_t)) != 0;
+}
+
+}  // namespace diabutil

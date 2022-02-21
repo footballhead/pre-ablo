@@ -58,6 +58,11 @@ bool dump_to_disk(span<std::byte> data, char const *filename) {
     return false;
   }
 
+  out.close();
+  if (!out.good()) {
+    return false;
+  }
+
   return true;
 }
 
