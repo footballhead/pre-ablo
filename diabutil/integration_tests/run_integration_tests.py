@@ -18,7 +18,6 @@ import filecmp
 
 # TODO: make BUILD_DIR configurable or smarter
 BUILD_DIR = Path('..') / 'build'
-# TODO: script to setup ASSETS_DIR
 ASSETS_DIR = Path('assets')
 GOLDEN_DIR = Path('golden')
 OUTPUT_DIR = Path('output')
