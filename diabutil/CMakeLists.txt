@@ -41,3 +41,5 @@ if(WITH_STORMLIB)
     add_subdirectory(mpqadd)
     add_subdirectory(mpqextract)
 endif()
+
+# TODO: Run unit + integration tests in CI
