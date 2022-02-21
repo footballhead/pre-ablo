@@ -6,12 +6,6 @@
 
 using namespace std::string_literals;
 
-namespace {
-
-using cel_data = std::vector<uint8_t>;
-
-}  // namespace
-
 int main(int argc, char** argv) {
   if (argc != 3) {
     fprintf(stderr, "Usage: %s num_groups output.cel\n", argv[0]);
@@ -27,11 +21,16 @@ int main(int argc, char** argv) {
   // Load CELs into memory
   //
 
-  std::vector<cel_data> cels;
+  std::vector<std::vector<std::byte>> cels;
   cels.reserve(num_groups);
   for (int i = 0; i < num_groups; ++i) {
     auto const filename = std::to_string(i) + ".cel";
-    cels.emplace_back(read_entire_file(filename.c_str()));
+    auto cel_contents = diabutil::read_file(filename.c_str());
+    if (!cel_contents) {
+      fprintf(stderr, "Failed to open file: %s\n", filename.c_str());
+      return 2;
+    }
+    cels.emplace_back(std::move(*cel_contents));
   }
 
   //

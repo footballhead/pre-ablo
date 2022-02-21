@@ -6,8 +6,6 @@
 
 using namespace std::string_literals;
 
-using cel_frame_data = std::vector<uint8_t>;
-
 int main(int argc, char** argv) {
   if (argc != 3) {
     fprintf(stderr, "Usage: %s num_frames outfile.cel\n", argv[0]);
@@ -24,11 +22,16 @@ int main(int argc, char** argv) {
   // Load frames into memory
   //
 
-  std::vector<cel_frame_data> frame_data;
+  std::vector<std::vector<std::byte>> frame_data;
   frame_data.reserve(num_frames);
   for (int i = 0; i < num_frames; ++i) {
     auto const filename = std::to_string(i) + ".celframe";
-    frame_data.emplace_back(read_entire_file(filename));
+    auto frame_contents = diabutil::read_file(filename.c_str());
+    if (!frame_contents) {
+      fprintf(stderr, "Failed to open file: %s\n", filename.c_str());
+      return 2;
+    }
+    frame_data.emplace_back(std::move(*frame_contents));
   }
 
   std::ofstream out{out_filename, std::ios_base::binary};

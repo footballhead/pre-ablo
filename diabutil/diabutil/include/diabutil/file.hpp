@@ -7,13 +7,6 @@
 #include <string>
 #include <vector>
 
-/// @deprecated
-std::vector<uint8_t> read_entire_file(std::string const &filename);
-
-/// @deprecated
-void dump_to_disk(std::vector<uint8_t> const &data,
-                  std::string const &filename);
-
 namespace diabutil {
 
 /// Read an entire binary file into memory.

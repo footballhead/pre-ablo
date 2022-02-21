@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <diabutil/file.hpp>
 #include <fstream>
 #include <string>
 #include <unordered_set>
@@ -28,6 +27,16 @@ struct hash<mini_tile> {
   std::size_t operator()(mini_tile const& mt) const noexcept { return mt.data; }
 };
 }  // namespace std
+
+// TODO: replace with diabutil
+std::vector<uint8_t> read_entire_file(std::string const &filename) {
+  std::ifstream in{filename, std::ios_base::binary};
+  if (!in.good()) {
+    throw std::runtime_error{"Failed to open file: " + filename};
+  }
+  return std::vector<uint8_t>(std::istreambuf_iterator<char>(in),
+                              std::istreambuf_iterator<char>());
+}
 
 //
 // entry point
