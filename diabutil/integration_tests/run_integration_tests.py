@@ -6,6 +6,8 @@ unittest is used as the framework to describe and group tests
 
 # Please run yapf on me!
 
+# TODO: Capture program output and only print on test failure?
+
 from pathlib import Path
 
 import subprocess
@@ -49,8 +51,8 @@ class TestDrawText(unittest.TestCase):
         self.assertEqual(process.returncode, 1)
 
     def test_bigtgold_is_successful(self):
-        bigtgold_cel = ASSETS_DIR / 'bigtgold.cel'
-        mainmenu_pal = ASSETS_DIR / 'mainmenu.pal'
+        bigtgold_cel = ASSETS_DIR / 'data' / 'bigtgold.cel'
+        mainmenu_pal = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
         output_png = OUTPUT_DIR / 'TestDrawText_test_bigtgold_is_successful.png'
         message = "DON'T HAVE A COW, MAN"
 
@@ -69,8 +71,8 @@ class TestDrawTextPcx(unittest.TestCase):
         self.assertEqual(process.returncode, 1)
 
     def test_valid_params_is_successful(self):
-        pcx_file = ASSETS_DIR / 'font42g.pcx'
-        bin_file = ASSETS_DIR / 'font42.bin'
+        pcx_file = ASSETS_DIR / 'ui_art' / 'font42g.pcx'
+        bin_file = ASSETS_DIR / 'ui_art' / 'font42.bin'
         out_file = OUTPUT_DIR / 'TestDrawTextPcx_test_valid_params_is_successful.png'
         # Note: this font has different upper and lower case letters!
         message = "STEAMED HAMS"
@@ -91,7 +93,7 @@ class TestFixAmp(unittest.TestCase):
 
     def test_valid_params_is_successful(self):
         # This mutates the file so copy input to output first
-        template = ASSETS_DIR / 'l3.amp'
+        template = ASSETS_DIR / 'levels' / 'l3data' / 'l3.amp'
         amp_file = OUTPUT_DIR / 'TestFixAmp_test_valid_params_is_successful.amp'
         shutil.copy2(template, amp_file)
 
@@ -124,6 +126,7 @@ class TestMpqAdd(unittest.TestCase):
 
 
 class TestMpqExtract(unittest.TestCase):
+    # TODO: Don't run if WITH_STORMLIB is OFF
 
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([mpqextract])
@@ -131,6 +134,7 @@ class TestMpqExtract(unittest.TestCase):
 
 
 class TestSplitCel(unittest.TestCase):
+    # TODO: Don't run if WITH_STORMLIB is OFF
 
     def test_no_args_nonzero_exit(self):
         process = subprocess.run([splitcel])
@@ -145,5 +149,11 @@ class TestSplitGroups(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    # TODO: Will these run using default unittests options?
+    if not ASSETS_DIR.is_dir():
+        print("Missing assets/ dir, run ./setup_assets.sh (see README)")
+        exit(1)
+
     OUTPUT_DIR.mkdir(exist_ok=True)
+
     unittest.main()

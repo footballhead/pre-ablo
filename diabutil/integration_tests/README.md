@@ -4,25 +4,19 @@ WARNING: This is a work-in-progress!
 
 ## Setup
 
-* pip install --user pipenv
-* pipenv install
-* Setup the assets/ directory
-
-## Setting up assets/
-
-* mkdir assets/
-* extract data/bigtgold.cel from prdemo MPQ and copy to assets/
-* extract gendata/mainmenu.pal from prdemo MPQ and copy to assets/
-* extract ui_art/font42.bin from retail MPQ and copy to assets/
-* extract ui_art/font42g.pcx from retail MPQ and copy to assets/
-* extract levels/l3data/l3.amp from retail MPQ and copy to assets/
+* `pip install --user pipenv`
+* `pipenv install`
+* `./setup_assets.sh <prdemo.mpq> <retail.mpq>`
+    * You can get the pre-release demo MPQ from diablo evolution
+    * You can buy Diablo on GoG for retail MPQ
+    * Look I'm already morally conflicted about distributing files in missing_gfx OK just buy the game
 
 ## Run
 
-* pipenv run python run_integration_tests.py
+* `pipenv run python run_integration_tests.py`
 
-You'll want to manually inspect files in `output/`
+We do file comparisons when we can, although you can inpsect files in output/ for piece of mind
 
 ## Developer commands
 
-* pipenv run yapf -i run_integration_tests.py
+* `pipenv run yapf -i run_integration_tests.py`
