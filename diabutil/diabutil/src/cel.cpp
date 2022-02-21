@@ -163,9 +163,7 @@ std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,
       auto const trans_run_width = -static_cast<int8_t>(run_width);
 
       // Need to fill the buffer with pixels
-      for (int8_t runi = 0; runi < trans_run_width; ++runi) {
-        colorized.push_back(transparent_pixel);
-      }
+      colorized.resize(colorized.size() + trans_run_width, transparent_pixel);
     } else {
       // Consider if not enough pixels
       if (i + run_width > frame.size) {

@@ -236,6 +236,26 @@ class TestMultiToolWorkflow(unittest.TestCase):
         golden = GOLDEN_DIR / 'objcurs_hand.png'
         self.assertTrue(filecmp.cmp(png_file, golden))
 
+    def test_splitcel_cel2png_vapor1(self):
+        # A test case for vapor1.cel that exposed a bug or inefficiency
+        cel_file = ASSETS_DIR / 'objects' / 'vapor1.cel'
+        outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitcel_cel2png_vapor1'
+
+        process = subprocess.run([splitcel, cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        frame_file = outdir / '0.celframe'
+        pal_file = ASSETS_DIR / 'gendata' / 'mainmenu.pal'
+        stored_width = 128
+        process = subprocess.run(
+            [cel2png, frame_file, pal_file,
+             str(stored_width), '--header'])
+        self.assertEqual(process.returncode, 0)
+
+        png_file = outdir / '0.celframe.png'
+        golden = GOLDEN_DIR / 'vapor1_0.png'
+        self.assertTrue(filecmp.cmp(png_file, golden))
+
     def test_splitgroups_splitcel_cel2png_header(self):
         cel_file = ASSETS_DIR / 'monsters' / 'bat' / 'bata.cel'
         outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitgroups_splitcel_cel2png_header'
