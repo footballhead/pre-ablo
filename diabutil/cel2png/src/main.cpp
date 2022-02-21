@@ -53,14 +53,7 @@ int main(int argc, char **argv) {
       .size = cel_data->size() - (has_header ? 10 : 0),
   };
 
-  auto const decompressed = diabutil::decompress_cel_frame(cel_span);
-  if (decompressed.empty()) {
-    fprintf(stderr, "Failed to decode .CEL: %s\n", in_cel_file);
-    return 5;
-  }
-
-  auto colorized =
-      diabutil::colorize_cel_frame(diabutil::make_span(decompressed), *palette);
+  auto colorized = diabutil::colorize_encoded_cel_frame(cel_span, *palette);
   if (colorized.empty()) {
     fprintf(stderr, "Failed to apply palette\n");
     return 6;

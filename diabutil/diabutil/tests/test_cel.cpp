@@ -66,45 +66,39 @@ TEST(split_cel, simple_cel_decodes_properly) {
   ASSERT_EQ(output[0], expected_frame);
 }
 
-TEST(decompress_cel_frame, empty_returns_error) {
+TEST(colorize_encoded_cel_frame, empty_returns_error) {
+  auto const unused_palette = palette_t{};
   auto const input = std::vector<std::byte>{};
-  auto const output = decompress_cel_frame(make_span(input));
+  auto const output =
+      colorize_encoded_cel_frame(make_span(input), unused_palette);
   ASSERT_TRUE(output.empty());
 }
 
-TEST(decompress_cel_frame, valid_rle_is_decompressed) {
-  auto const input = std::vector<std::byte>{
-      std::byte{1},    std::byte{255},  // 1 pixel of 255
-      std::byte{0xFF},                  // 1 pixel of transparency (0)
-      std::byte{1},    std::byte{254},  // 1 pixel of 254
-  };
-  auto const expected_output = std::vector<std::byte>{
-      std::byte{255},
-      std::byte{0},
-      std::byte{254},
-  };
-  auto const output = decompress_cel_frame(make_span(input));
-  ASSERT_EQ(output, expected_output);
-}
-
-TEST(decompress_cel_frame, not_enough_pixels_returns_error) {
+TEST(colorize_encoded_cel_frame, not_enough_pixels_returns_error) {
+  auto const unused_palette = palette_t{};
   auto const input = std::vector<std::byte>{
       std::byte{2}, std::byte{255},  // a run of 2, missing a pixel!
   };
-  auto const output = decompress_cel_frame(make_span(input));
+  auto const output =
+      colorize_encoded_cel_frame(make_span(input), unused_palette);
   ASSERT_TRUE(output.empty());
 }
 
-TEST(colorize_cel_frame, small_sample_succeeds) {
-  auto const input = std::vector<std::byte>{std::byte{0}, std::byte{1}};
+TEST(colorize_encoded_cel_frame, small_sample_succeeds) {
+  auto const input = std::vector<std::byte>{
+      std::byte{1},    std::byte{0},    // 1 pixel of 0
+      std::byte{0xFF},                  // 1 pixel of transparency
+      std::byte{1},    std::byte{255},  // 1 pixel of 255
+  };
   auto const arbitrary_color = color_t{.r = 1, .g = 2, .b = 3, .a = 255};
+  auto const arbitrary_color2 = color_t{.r = 4, .g = 5, .b = 6, .a = 255};
   auto palette = palette_t{};
-  // palette[0] is not consulted because that is transparency
-  palette[1] = arbitrary_color;
-  auto const expected =
-      std::vector<color_t>{transparent_pixel, arbitrary_color};
+  palette[0] = arbitrary_color;
+  palette[255] = arbitrary_color2;
+  auto const expected = std::vector<color_t>{arbitrary_color, transparent_pixel,
+                                             arbitrary_color2};
 
-  auto const output = colorize_cel_frame(make_span(input), palette);
+  auto const output = colorize_encoded_cel_frame(make_span(input), palette);
 
   ASSERT_EQ(output, expected);
 }

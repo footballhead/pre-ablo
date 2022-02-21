@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+// TODO: consider font functions (see drawtext and drawtextpcx)
+
 struct image_t {
   int width = 0;
   int height = 0;

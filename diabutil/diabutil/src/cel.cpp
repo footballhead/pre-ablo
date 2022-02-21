@@ -48,6 +48,7 @@ std::vector<uint8_t> rle_decode(std::vector<uint8_t> const &rle_cel,
 
       // Need to fill the buffer with pixels
       for (auto runi = 0; runi < trans_run_width; ++runi) {
+        // TODO: I don't think this is right, 0 could be black.
         decoded.push_back(0);
       }
     } else {
@@ -248,12 +249,13 @@ std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel_span) {
   return split;
 }
 
-std::vector<std::byte> decompress_cel_frame(span<std::byte> frame) {
+std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,
+                                                palette_t const &palette) {
   if (frame.size == 0) {
     return {};
   }
 
-  std::vector<std::byte> decoded;
+  std::vector<color_t> colorized;
   for (size_t i = 0; i < frame.size; /*loop handles increment*/) {
     auto const run_width = static_cast<uint8_t>(frame.data[i]);
     ++i;
@@ -264,7 +266,7 @@ std::vector<std::byte> decompress_cel_frame(span<std::byte> frame) {
 
       // Need to fill the buffer with pixels
       for (int8_t runi = 0; runi < trans_run_width; ++runi) {
-        decoded.push_back(std::byte{0});
+        colorized.push_back(transparent_pixel);
       }
     } else {
       // Consider if not enough pixels
@@ -274,28 +276,11 @@ std::vector<std::byte> decompress_cel_frame(span<std::byte> frame) {
 
       // Copy each pixel in a run
       for (uint8_t runi = 0; runi < run_width; ++runi) {
-        auto const pixel = frame.data[i + runi];
-        decoded.push_back(pixel);
+        auto const pixel = static_cast<size_t>(frame.data[i + runi]);
+        colorized.push_back(palette[pixel]);
       }
 
       i += run_width;
-    }
-  }
-
-  return decoded;
-}
-
-std::vector<color_t> colorize_cel_frame(span<std::byte> indexed,
-                                        palette_t const &palette) {
-  std::vector<color_t> colorized;
-  colorized.reserve(indexed.size);
-
-  for (size_t i = 0; i < indexed.size; ++i) {
-    auto const pixel = static_cast<uint8_t>(indexed.data[i]);
-    if (pixel == 0) {
-      colorized.push_back(transparent_pixel);
-    } else {
-      colorized.push_back(palette[pixel]);
     }
   }
 

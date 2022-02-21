@@ -39,23 +39,17 @@ constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0};
 /// empty then there was probably an error.
 std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel);
 
-/// Undo RLE compression for a single frame. If it has a 10 byte header, you
-/// must remove it first!
+/// Convert a compressed, indexed-color frame into an uncompressed RGB frame.
+///
+/// Both decompress + colorize happen in one method to properly account for
+/// difference of pixel 0 vs transparency and how they can't be represented in a
+/// single uint8_t (need 257 distinct values!)
 ///
 /// @param frame The .CEL frame (no frame table, no header)
-/// @returns Decompressed indexed-color frame on success, empty on error
-std::vector<std::byte> decompress_cel_frame(span<std::byte> frame);
-
-/// Convert an uncompressed, indexed-color frame into an uncompressed RGB frame.
-///
-/// @param indexed The .CEL frame (no frame table, no header) put through
-/// decompress_cel_frame()
 /// @param palette The translation from indexed-color to RGB
 /// @returns Decompressed RGB frame on success, empty on error
-/// @remark An index-color of 0 is treated as transparency regardless of the
-/// palette.
-std::vector<color_t> colorize_cel_frame(span<std::byte> indexed,
-                                        palette_t const &palette);
+std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,
+                                                palette_t const &palette);
 
 /// Turn a single uncompressed RGB frame into an usable image.
 ///

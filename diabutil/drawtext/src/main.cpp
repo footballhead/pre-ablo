@@ -103,19 +103,15 @@ int main(int argc, char** argv) {
   std::vector<image_t> glyphs{};
   glyphs.reserve(frames.size());
   for (auto const& frame : frames) {
-    auto const decompressed = diabutil::decompress_cel_frame(diabutil::make_span(frame));
-    if (decompressed.empty()) {
-      fprintf(stderr, "Failed to decompress frame\n");
-      return 7;
-    }
-
-    auto colorized = diabutil::colorize_cel_frame(diabutil::make_span(decompressed), *palette);
+    auto colorized = diabutil::colorize_encoded_cel_frame(
+        diabutil::make_span(frame), *palette);
     if (colorized.empty()) {
       fprintf(stderr, "Failed to colorize frame\n");
       return 8;
     }
 
-    auto image = diabutil::colorized_to_image(std::move(colorized), BigTGold_width);
+    auto image =
+        diabutil::colorized_to_image(std::move(colorized), BigTGold_width);
     if (!image) {
       fprintf(stderr, "Failed to convert into RGB image\n");
       return 9;
