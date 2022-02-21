@@ -10,19 +10,19 @@ unittest is used as the framework to describe and group tests
 
 from pathlib import Path
 
+import os
 import subprocess
 import unittest
 import sys
 import shutil
 import filecmp
 
-# TODO: Make these absolute so we can chdir
 # TODO: make BUILD_DIR configurable or smarter
-BUILD_DIR = Path('..') / 'build'
-ASSETS_DIR = Path('assets')
-GOLDEN_DIR = Path('golden')
-OUTPUT_DIR = Path('output')
-MISSING_GFX_DIR = Path('..') / '..' / 'missing_gfx'
+BUILD_DIR = (Path('..') / 'build').resolve()
+ASSETS_DIR = Path('assets').resolve()
+GOLDEN_DIR = Path('golden').resolve()
+OUTPUT_DIR = Path('output').resolve()
+MISSING_GFX_DIR = (Path('..') / '..' / 'missing_gfx').resolve()
 
 cel2png = BUILD_DIR / 'cel2png' / 'cel2png'
 drawtext = BUILD_DIR / 'drawtext' / 'drawtext'
@@ -150,6 +150,13 @@ class TestSplitGroups(unittest.TestCase):
 
 class TestMultiToolWorkflow(unittest.TestCase):
 
+    def setUp(self):
+        self.old_cwd = Path.cwd()
+
+    def tearDown(self):
+        # Some tests involve changing cwd, ensure we always change back
+        os.chdir(self.old_cwd)
+
     def test_splitcel_cel2png(self):
         cel_file = ASSETS_DIR / 'data' / 'bigtgold.cel'
         outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_splitcel_cel2png'
@@ -212,6 +219,35 @@ class TestMultiToolWorkflow(unittest.TestCase):
         png_file = outdir / '0.celframe.png'
         golden = GOLDEN_DIR / 'bata.png'
         self.assertTrue(filecmp.cmp(png_file, golden))
+
+    def test_split_join_roundtrip(self):
+        outdir = OUTPUT_DIR / 'TestMultiToolWorkflow_test_split_join_roundtrip'
+
+        original_cel_file = ASSETS_DIR / 'monsters' / 'bat' / 'bata.cel'
+        process = subprocess.run([splitgroups, original_cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        split_cel_file = outdir / '0.cel'
+        process = subprocess.run([splitcel, split_cel_file, outdir])
+        self.assertEqual(process.returncode, 0)
+
+        # TODO make tools directory-aware
+        os.chdir(outdir)
+
+        joined_cel_file = outdir / 'joined.cel'
+        num_frames = 10
+        process = subprocess.run([joincel, str(num_frames), joined_cel_file])
+        self.assertEqual(process.returncode, 0)
+
+        grouped_cel_file = outdir / 'grouped.cel'
+        num_groups = 8
+        process = subprocess.run(
+            [joingroups, str(num_groups), grouped_cel_file])
+        self.assertEqual(process.returncode, 0)
+
+        self.assertTrue(filecmp.cmp(grouped_cel_file, original_cel_file))
+
+        os.chdir(self.old_cwd)
 
 
 if __name__ == '__main__':

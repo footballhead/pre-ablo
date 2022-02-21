@@ -16,6 +16,13 @@ int main(int argc, char **argv) {
   auto const infile = argv[1];
   auto const outdir = argv[2];
 
+  if (!std::filesystem::exists(outdir)) {
+    if (!std::filesystem::create_directories(outdir)) {
+      fprintf(stderr, "Failed to create output directory: %s\n", outdir);
+      return 2;
+    }
+  }
+
   auto const contents = diabutil::read_file(infile);
   if (!contents) {
     fprintf(stderr, "Failed to read: %s\n", infile);

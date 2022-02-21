@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   std::vector<cel_frame_data> frame_data;
   frame_data.reserve(num_frames);
   for (int i = 0; i < num_frames; ++i) {
-    auto const filename = std::to_string(i + 1) + ".celpart";
+    auto const filename = std::to_string(i) + ".celframe";
     frame_data.emplace_back(read_entire_file(filename));
   }
 
