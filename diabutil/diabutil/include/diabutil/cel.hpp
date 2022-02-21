@@ -6,31 +6,10 @@
 #include <diabutil/span.hpp>
 #include <vector>
 
-// TODO: Provide default palette
-
-/// Undo RLE encoding.
-/// @return Palettized image, each byte is a pixel.
-/// @see colorize
-std::vector<uint8_t> rle_decode(std::vector<uint8_t> const &rle_cel,
-                                bool has_header = false);
-
-std::vector<color_t> colorize(std::vector<uint8_t> const &palettized,
-                              palette_t const &palette);
-
-/// @deprecated
-image_t image_from_cel(std::vector<uint8_t> const &cel, int width,
-                       palette_t const &palette, bool has_header = false);
-
-using cel_data = std::vector<uint8_t>;
-/// Given a cel file with a frame table, use the frame table to return the
-/// individual cel parts.
-/// @deprecated
-std::vector<cel_data> split_cel(std::vector<uint8_t> const &cel);
-
 namespace diabutil {
 
 /// Color used to represent transparency (index-color 0)
-constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0};
+inline constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0};
 
 /// Interpret the group table to carve up a grouped .CEL file into individual
 /// .CELs
