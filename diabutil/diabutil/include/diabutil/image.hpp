@@ -32,13 +32,6 @@ struct image_t {
   }
 };
 
-/// @deprecated
-inline bool save_to_png(image_t const& image, std::string const& filename) {
-  return stbi_write_png(filename.c_str(), image.width, image.height, 4,
-                        image.pixels.data(),
-                        image.width * sizeof(color_t)) != 0;
-}
-
 inline image_t make_blank_image(int width, int height) {
   return {width, height, std::vector<color_t>(width * height, color_t{})};
 }

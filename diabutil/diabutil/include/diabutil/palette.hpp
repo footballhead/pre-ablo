@@ -5,18 +5,15 @@
 #include <cstddef>
 #include <diabutil/color.hpp>
 #include <diabutil/span.hpp>
-#include <vector>
 #include <optional>
+#include <vector>
 
-constexpr auto palette_num_colors = 256;
-constexpr auto palette_bytes_per_color = 3;
-constexpr auto palette_expected_size =
+inline constexpr auto palette_num_colors = 256;
+inline constexpr auto palette_bytes_per_color = 3;
+inline constexpr auto palette_expected_size =
     palette_num_colors * palette_bytes_per_color;
 
 using palette_t = std::array<color_t, palette_num_colors>;
-
-/// @deprecated
-palette_t palette_from_data(std::vector<uint8_t> const &data);
 
 namespace diabutil {
 

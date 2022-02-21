@@ -16,7 +16,8 @@ constexpr auto transparent = color_t{0, 255, 0, 255};
 
 int main(int argc, char** argv) {
   if (argc < 5) {
-    fprintf(stderr, "Usage: %s font.pcx font.bin output.png message\n", argv[0]);
+    fprintf(stderr, "Usage: %s font.pcx font.bin output.png message\n",
+            argv[0]);
     return 1;
   }
 
@@ -139,7 +140,7 @@ int main(int argc, char** argv) {
   // Save to file
   //
 
-  if (!save_to_png(image, out_file)) {
+  if (!diabutil::save_to_png(image, out_file)) {
     fprintf(stderr, "Failed to save to: %s\n", out_file);
     return 1;
   }

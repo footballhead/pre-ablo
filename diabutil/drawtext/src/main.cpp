@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
   // Save to file
   //
 
-  if (!save_to_png(image, out_file)) {
+  if (!diabutil::save_to_png(image, out_file)) {
     fprintf(stderr, "Failed to save to: %s\n", out_file);
     return 10;
   }
