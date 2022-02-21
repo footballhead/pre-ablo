@@ -32,6 +32,18 @@ namespace diabutil {
 /// Color used to represent transparency (index-color 0)
 constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0};
 
+/// Interpret the group table to carve up a grouped .CEL file into individual
+/// .CELs
+///
+/// @param cel A loaded .CEL file with a group table.
+/// @param num_groups Number of groups in the file. Typically 8 works.
+/// @returns A list of CEL data, with frame headers. If empty then there was
+/// probably an error.
+/// @remark Unfortunately, the group table and the frame table are slightly
+/// different so we can't just use the same function for both
+std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel,
+                                                 size_t num_groups = 8);
+
 /// Interpret the frame table to carve up a .CEL file into frames
 ///
 /// @param cel A loaded .CEL file with a frame table.

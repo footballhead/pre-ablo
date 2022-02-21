@@ -186,23 +186,66 @@ std::optional<DataType> span_get(span<SpanT> &span) {
 
 }  // namespace
 
+std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel_span,
+                                                 size_t num_groups) {
+  if (cel_span.size == 0) {
+    return {};
+  }
+
+  // Copy size before mutation starts
+  auto const total_size = cel_span.size;
+
+  // +1 because final offset is end-of-file (so all sizes can be calculated)
+  auto num_offsets = num_groups + 1;
+  auto offsets = std::vector<uint32_t>();
+  offsets.reserve(num_offsets);
+
+  // Read available group offsets from file
+  for (size_t i = 0; i < num_groups; ++i) {
+    auto value = span_get<uint32_t>(cel_span);
+    if (!value) {
+      return {};
+    }
+    offsets.push_back(*value);
+  }
+
+  // EOF offset not included so add ourselves
+  offsets.push_back(total_size);
+
+  std::vector<uint32_t> sizes;
+  sizes.reserve(num_groups);
+  for (size_t i = 1; i < num_offsets; ++i) {
+    auto const start_offset = offsets.at(i - 1);
+    auto const end_offset = offsets.at(i);
+    auto const size = end_offset - start_offset;
+    sizes.push_back(size);
+  }
+
+  std::vector<std::vector<std::byte>> split;
+  split.reserve(num_groups);
+  for (size_t i = 0; i < num_groups; ++i) {
+    auto const frame_size = sizes.at(i);
+    if (frame_size > cel_span.size) {
+      return {};
+    }
+
+    // construct a vector by copying between two iterators
+    split.emplace_back(cel_span.data, cel_span.data + frame_size);
+    span_advance(cel_span, frame_size);
+  }
+
+  return split;
+}
+
 std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel_span) {
   if (cel_span.size == 0) {
     return {};
   }
 
-  //
-  // read number of frames
-  //
-
   auto const num_frames = span_get<uint32_t>(cel_span);
   if (!num_frames) {
     return {};
   }
-
-  //
-  // read all frame table offsets
-  //
 
   // +1 because final offset is end-of-file (so all sizes can be calculated)
   auto num_offsets = *num_frames + 1;
@@ -216,10 +259,6 @@ std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel_span) {
     offsets.push_back(*value);
   }
 
-  //
-  // convert offsets to sizes
-  //
-
   std::vector<uint32_t> sizes;
   sizes.reserve(*num_frames);
   for (size_t i = 1; i < num_offsets; ++i) {
@@ -228,10 +267,6 @@ std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel_span) {
     auto const size = end_offset - start_offset;
     sizes.push_back(size);
   }
-
-  //
-  // Use frame sizes to extract each cel
-  //
 
   std::vector<std::vector<std::byte>> split;
   split.reserve(*num_frames);

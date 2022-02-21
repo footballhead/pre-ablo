@@ -1,24 +1,10 @@
 #include <cstdio>
+#include <diabutil/cel.hpp>
+#include <diabutil/file.hpp>
 #include <filesystem>
-#include <fstream>
 #include <string>
-#include <vector>
 
 using namespace std::string_literals;
-
-namespace {
-constexpr auto num_groups = 8;
-
-std::vector<uint8_t> read_entire_file(char const *filename) {
-  std::ifstream t{filename, std::ios_base::binary};
-  if (!t.good()) {
-    throw std::runtime_error{"Failed to open file: "s + filename};
-  }
-  return std::vector<uint8_t>(std::istreambuf_iterator<char>(t),
-                              std::istreambuf_iterator<char>());
-}
-
-}  // namespace
 
 int main(int argc, char **argv) {
   if (argc != 3) {
@@ -30,51 +16,27 @@ int main(int argc, char **argv) {
   auto const infile = argv[1];
   auto const outdir = argv[2];
 
-  //
-  // Load data
-  //
-
-  auto const contents = read_entire_file(infile);
-  auto contents_iter = contents.data();
-
-  //
-  // read all group offsets from header
-  //
-
-  std::vector<uint32_t> group_offsets;
-  group_offsets.reserve(num_groups);
-  for (uint32_t i = 0; i < num_groups; ++i) {
-    group_offsets.push_back(*reinterpret_cast<uint32_t const *>(contents_iter));
-    contents_iter += sizeof(uint32_t);
+  auto const contents = diabutil::read_file(infile);
+  if (!contents) {
+    fprintf(stderr, "Failed to read: %s\n", infile);
+    return 2;
   }
 
-  //
-  // We need to calculate the size for each group
-  //
-
-  std::vector<uint32_t> group_sizes;
-  group_sizes.reserve(num_groups);
-  for (uint32_t i = 1; i < num_groups; ++i) {
-    auto const start_offset = group_offsets[i - 1];
-    auto const end_offset = group_offsets[i];
-    group_sizes.push_back(end_offset - start_offset);
+  auto const cels = diabutil::split_groups(diabutil::make_span(*contents));
+  if (cels.empty()) {
+    fprintf(stderr, "Failed to split groups: %s\n", infile);
+    return 3;
   }
 
-  // Use file size as last end_offset
-  group_sizes.push_back(contents.size() - group_offsets.back());
+  for (size_t i = 0; i < cels.size(); ++i) {
+    auto const filename = std::to_string(i) + ".cel";
+    auto const filepath = std::filesystem::path(outdir) / filename;
+    auto const &cel = cels.at(i);
 
-  //
-  // Use group sizes to extract each group
-  //
-
-  for (uint32_t i = 0; i < num_groups; ++i) {
-    auto const filepath =
-        std::filesystem::path(outdir) / (std::to_string(i) + ".cel");
-    std::ofstream out{filepath.c_str(), std::ios_base::binary};
-
-    auto const size = group_sizes.at(i);
-    out.write(reinterpret_cast<char const *>(contents_iter), size);
-    contents_iter += size;
+    if (!diabutil::dump_to_disk(diabutil::make_span(cel), filepath.c_str())) {
+      fprintf(stderr, "Failed to save frame: %zu\n", i);
+      return 4;
+    }
   }
 
   return 0;

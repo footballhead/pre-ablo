@@ -5,6 +5,8 @@
 namespace diabutil {
 namespace {
 
+// TODO split groups tests
+
 TEST(split_cel, empty_buffer_returns_empty) {
   auto const input = std::vector<std::byte>();
   auto const output = split_cel(make_span(input));
