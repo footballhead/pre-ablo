@@ -22,7 +22,7 @@ retail_mpq=$2
 mkdir -p assets
 cd assets
 
-# mpqextract binary must be refereced from assets subdir
+# mpqextract binary must be referenced from assets subdir
 # TODO: If we're testing mpqextract... should we be using mpqextract here?
 # (which could be broken because we haven't tested it)
 mpqextract=../../build/mpqextract/mpqextract
