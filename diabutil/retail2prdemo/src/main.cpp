@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <diabutil/file.hpp>
 #include <fstream>
 #include <string>
 #include <unordered_set>
@@ -10,6 +11,7 @@ using namespace std::string_literals;
 // mini_tile and standard BS
 //
 
+// TOOD: promote min parser?
 struct mini_tile {
   uint16_t data;
 
@@ -29,16 +31,6 @@ struct hash<mini_tile> {
 };
 }  // namespace std
 
-// TODO: replace with diabutil
-std::vector<uint8_t> read_entire_file(std::string const& filename) {
-  std::ifstream in{filename, std::ios_base::binary};
-  if (!in.good()) {
-    throw std::runtime_error{"Failed to open file: " + filename};
-  }
-  return std::vector<uint8_t>(std::istreambuf_iterator<char>(in),
-                              std::istreambuf_iterator<char>());
-}
-
 //
 // entry point
 //
@@ -55,31 +47,45 @@ int main(int argc, char** argv) {
     return 1;
   }
 
+  auto const min_file = argv[1];
+
   //
   // Read and parse min file
   //
 
-  auto min_file_contents = read_entire_file(argv[1]);
+  auto min_file_contents = diabutil::read_file(min_file);
+  if (!min_file_contents) {
+    fprintf(stderr, "Failed to read: %s\n", min_file);
+    return 2;
+  }
 
   std::unordered_set<mini_tile> mini_tiles;
-  for (int i = 0; i < min_file_contents.size(); i += 2) {
+  for (int i = 0; i < min_file_contents->size(); i += 2) {
     uint16_t buffer =
-        *reinterpret_cast<uint16_t const*>(min_file_contents.data() + i);
+        *reinterpret_cast<uint16_t const*>(min_file_contents->data() + i);
     auto mt = mini_tile{buffer};
     mini_tiles.insert(mt);
   }
 
   //
-  // Use min file info to surgically apply fixes
+  // Use min file info to surgically apply fixes.
+  // This involves removing extra black bytes from the beginning of the shape.
   //
+
+  // TODO: less copy-paste
 
   for (auto const& min : mini_tiles) {
     if (min.frame_type() == 2) {  // left triangle
       auto const filename =
           std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
-      auto cel = read_entire_file(filename.c_str());
+      auto cel_contents = diabutil::read_file(filename.c_str());
+      if (!cel_contents) {
+        fprintf(stderr, "Failed to read: %s\n", filename.c_str());
+        return 3;
+      }
 
+      auto& cel = *cel_contents;
       cel.erase(begin(cel), std::next(begin(cel), 2));
       cel.erase(std::next(begin(cel), 0x6), std::next(begin(cel), 0x8));
       cel.erase(std::next(begin(cel), 0x14), std::next(begin(cel), 0x16));
@@ -103,8 +109,13 @@ int main(int argc, char** argv) {
       auto const filename =
           std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
-      auto cel = read_entire_file(filename.c_str());
+      auto cel_contents = diabutil::read_file(filename.c_str());
+      if (!cel_contents) {
+        fprintf(stderr, "Failed to read: %s\n", filename.c_str());
+        return 3;
+      }
 
+      auto& cel = *cel_contents;
       cel.erase(std::next(begin(cel), 0x2), std::next(begin(cel), 0x4));
       cel.erase(std::next(begin(cel), 0xc), std::next(begin(cel), 0xe));
       cel.erase(std::next(begin(cel), 0x1e), std::next(begin(cel), 0x20));
@@ -128,8 +139,13 @@ int main(int argc, char** argv) {
       auto const filename =
           std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
-      auto cel = read_entire_file(filename.c_str());
+      auto cel_contents = diabutil::read_file(filename.c_str());
+      if (!cel_contents) {
+        fprintf(stderr, "Failed to read: %s\n", filename.c_str());
+        return 3;
+      }
 
+      auto& cel = *cel_contents;
       cel.erase(begin(cel), std::next(begin(cel), 2));
       cel.erase(std::next(begin(cel), 0x6), std::next(begin(cel), 0x8));
       cel.erase(std::next(begin(cel), 0x14), std::next(begin(cel), 0x16));
@@ -145,8 +161,13 @@ int main(int argc, char** argv) {
       auto const filename =
           std::to_string(min.frame_number() - 1) + ".celframe";
       fprintf(stderr, "Fixing %s\n", filename.c_str());
-      auto cel = read_entire_file(filename.c_str());
+      auto cel_contents = diabutil::read_file(filename.c_str());
+      if (!cel_contents) {
+        fprintf(stderr, "Failed to read: %s\n", filename.c_str());
+        return 3;
+      }
 
+      auto& cel = *cel_contents;
       cel.erase(std::next(begin(cel), 0x2), std::next(begin(cel), 0x4));
       cel.erase(std::next(begin(cel), 0xc), std::next(begin(cel), 0xe));
       cel.erase(std::next(begin(cel), 0x1e), std::next(begin(cel), 0x20));
