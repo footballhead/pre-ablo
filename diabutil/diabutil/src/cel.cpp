@@ -183,6 +183,71 @@ std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,
   return colorized;
 }
 
+std::vector<color_t> colorize_encoded_cl2_frame(span<std::byte> frame,
+                                                palette_t const &palette) {
+  if (frame.size == 0) {
+    return {};
+  }
+
+  std::vector<color_t> colorized;
+  for (size_t i = 0; i < frame.size; /*loop handles increment*/) {
+    auto run_width = (char)(frame.data[i]);
+    ++i;
+
+    if (run_width == 0) {
+      return {};
+    }
+
+    // run_width does double duty. It encodes both:
+    //
+    // (a) mode, whether to (i) fill a single value (ii) copy a span (iii)
+    // insert transparency
+    //
+    // (b) size, how many transparent pixels, how large a copy, etc.
+
+    auto const transparent_mode = run_width >= 0;
+    if (transparent_mode) {
+      // Need to fill the buffer with pixels
+      colorized.resize(colorized.size() + run_width, transparent_pixel);
+      continue;
+    }
+
+    run_width = -run_width;
+    auto const fill_mode = run_width > 65;
+    if (fill_mode) {
+      run_width -= 65;
+
+      if (i >= frame.size) {
+        // Not enough data for operation
+        return {};
+      }
+      auto const fill_pixel = frame.data[i];
+      ++i;
+
+      auto const fill_color = palette[static_cast<size_t>(fill_pixel)];
+      colorized.resize(colorized.size() + run_width, fill_color);
+      continue;
+    }
+
+    // not transparency or fill, must be copy!
+
+    if (i + run_width >= frame.size) {
+      // Not enough data for operation
+      return {};
+    }
+
+    for (char copyi = 0; copyi < run_width; ++copyi) {
+      auto const copy_pixel = frame.data[i + copyi];
+      auto const copy_color = palette[static_cast<size_t>(copy_pixel)];
+      colorized.push_back(copy_color);
+    }
+
+    i += run_width;
+  }
+
+  return colorized;
+}
+
 std::optional<image_t> colorized_to_image(std::vector<color_t> colorized,
                                           int width) {
   if (colorized.size() == 0) {

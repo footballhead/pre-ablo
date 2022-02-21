@@ -28,6 +28,7 @@ std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel,
 /// @param cel A loaded .CEL file with a frame table.
 /// @returns A list of frame data, still RLE encoded, possibly with header. If
 /// empty then there was probably an error.
+/// @remarks works on both .CEL and .CL2
 std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel);
 
 /// Convert a compressed, indexed-color frame into an uncompressed RGB frame.
@@ -39,7 +40,13 @@ std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel);
 /// @param frame The .CEL frame (no frame table, no header)
 /// @param palette The translation from indexed-color to RGB
 /// @returns Decompressed RGB frame on success, empty on error
+/// @remarks Only works on .CEL
 std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,
+                                                palette_t const &palette);
+
+/// @see colorize_encoded_cel_frame
+/// @remarks Only works on .CL2
+std::vector<color_t> colorize_encoded_cl2_frame(span<std::byte> frame,
                                                 palette_t const &palette);
 
 /// Turn a single uncompressed RGB frame into an usable image.
