@@ -25,15 +25,16 @@ void dump_to_disk(std::vector<uint8_t> const &data,
 
 namespace diabutil {
 
-std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
-  // Open file
-  std::ifstream in{std::string(filename),
-                   std::ios_base::binary | std::ios_base::ate};
+std::optional<std::vector<std::byte>> read_file(char const *filename) {
+  // Open file (`ate` puts internal marker at EOF so we can tellg for size)
+  std::ifstream in{filename, std::ios_base::binary | std::ios_base::ate};
   if (!in.good()) {
     return std::nullopt;
   }
 
-  // Get size
+  // Get size. (StackOverflow will try to convince you that this is not the way
+  // to go but it's literally in cplusplus.com:
+  // https://www.cplusplus.com/reference/istream/istream/tellg/)
   auto const file_size = in.tellg();
   in.seekg(0, std::ios::beg);
 
@@ -46,8 +47,8 @@ std::optional<std::vector<std::byte>> read_file(std::string_view filename) {
   return buffer;
 }
 
-bool dump_to_disk(span<std::byte> data, std::string_view filename) {
-  std::ofstream out{std::string(filename), std::ios_base::binary};
+bool dump_to_disk(span<std::byte> data, char const *filename) {
+  std::ofstream out{filename, std::ios_base::binary};
   if (!out.good()) {
     return false;
   }
