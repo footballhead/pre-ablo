@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <string>
 
-palette_t palette_from_data(std::vector<uint8_t> const &data) {
+palette_t palette_from_data(std::vector<uint8_t> const& data) {
   palette_t palette;
 
   if (data.size() != palette_expected_size) {
@@ -36,6 +36,16 @@ std::optional<palette_t> palette_from_data(span<std::byte> data) {
   }
 
   return palette;
+}
+
+std::unordered_map<color_t, uint8_t> generate_palette_inverse(
+    palette_t const& palette) {
+  auto inverse = std::unordered_map<color_t, uint8_t>{};
+  for (size_t i = 0; i < palette.size(); ++i) {
+    // TODO: handle collisions?
+    inverse[palette[i]] = i;
+  }
+  return inverse;
 }
 
 }  // namespace diabutil

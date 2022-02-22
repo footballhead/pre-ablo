@@ -11,6 +11,7 @@ option(WITH_STORMLIB "Compile StormLib and programs that use it" ON)
 #
 add_subdirectory(dr_pcx)
 add_subdirectory(stb_image_write)
+add_subdirectory(stb_image)
 add_subdirectory(googletest)
 
 #
@@ -27,6 +28,7 @@ add_subdirectory(drawtextpcx)
 add_subdirectory(fixamp)
 add_subdirectory(joincel)
 add_subdirectory(joingroups)
+add_subdirectory(png2cel)
 add_subdirectory(retail2prdemo)
 add_subdirectory(splitcel)
 add_subdirectory(splitgroups)

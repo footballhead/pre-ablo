@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cinttypes>
+#include <functional>
 
 /// Standard red/green/blue color model representation with an alpha component.
 struct color_t {
@@ -14,3 +15,14 @@ struct color_t {
 constexpr inline bool operator==(color_t const& a, color_t const& b) {
   return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 }
+
+namespace std {
+
+template <>
+struct hash<color_t> {
+  std::size_t operator()(const color_t& color) const {
+    return color.r || color.g << 8 || color.b << 16 || color.a << 24;
+  }
+};
+
+}  // namespace std

@@ -1,10 +1,14 @@
 add_library(diabutil STATIC
     src/cel.cpp
     src/file.cpp
+    src/image.cpp
     src/palette.cpp
     )
 target_include_directories(diabutil PUBLIC include)
-target_link_libraries(diabutil stb_image_write)
+target_link_libraries(diabutil
+    stb_image
+    stb_image_write
+    )
 
 # TODO: Write a macro for this
 add_executable(test_palette tests/test_palette.cpp)

@@ -11,8 +11,8 @@ image_t flip_vertically(image_t const &image) {
   image_t builder;
   builder.width = image.width;
   builder.height = image.height;
+  builder.pixels.reserve(image.width * image.height);
 
-  // TODO: Does std::transform serve us better here?
   for (auto row = builder.height - 1; row >= 0; --row) {
     builder.pixels.insert(end(builder.pixels),
                           next(begin(image.pixels), row * image.width),

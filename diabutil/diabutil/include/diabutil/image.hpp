@@ -3,8 +3,8 @@
 #include <stb_image_write.h>
 
 #include <diabutil/color.hpp>
+#include <optional>
 #include <stdexcept>
-#include <string>
 #include <vector>
 
 // TODO: consider font functions (see drawtext and drawtextpcx)
@@ -48,5 +48,11 @@ inline bool save_to_png(image_t const& image, char const* filename) {
                         image.pixels.data(),
                         image.width * sizeof(color_t)) != 0;
 }
+
+/// Load a PNG from disk. Must have 4 channels (RGBA)
+///
+/// @param filename The file to load
+/// @return A valid image on success, std::nullopt on error
+std::optional<image_t> load_png(char const* filename);
 
 }  // namespace diabutil
