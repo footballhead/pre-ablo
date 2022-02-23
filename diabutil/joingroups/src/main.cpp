@@ -1,60 +1,58 @@
-#include <diabutil/file.hpp>
-
 #include <cstdio>
+#include <diabutil/file.hpp>
 #include <fstream>
 #include <string>
 #include <vector>
 
 using namespace std::string_literals;
 
-namespace {
+int main(int argc, char** argv) {
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s num_groups output.cel\n", argv[0]);
+    fprintf(stderr,
+            "Assumes 0.cel, 1.cel, ... exists in the current directory\n");
+    return 1;
+  }
 
-using cel_data = std::vector<uint8_t>;
+  auto const num_groups = std::atoi(argv[1]);
+  auto const out_filename = argv[2];
 
-} // namespace
+  //
+  // Load CELs into memory
+  //
 
-int main(int argc, char** argv)
-{
-	if (argc != 3) {
-		fprintf(stderr, "Usage: %s num_groups output.cel\n", argv[0]);
-		fprintf(stderr, "Assumes 0.cel, 1.cel, ... exists in the current directory\n");
-		return 1;
-	}
+  std::vector<std::vector<std::byte>> cels;
+  cels.reserve(num_groups);
+  for (int i = 0; i < num_groups; ++i) {
+    auto const filename = std::to_string(i) + ".cel";
+    auto cel_contents = diabutil::read_file(filename.c_str());
+    if (!cel_contents) {
+      fprintf(stderr, "Failed to open file: %s\n", filename.c_str());
+      return 2;
+    }
+    cels.emplace_back(std::move(*cel_contents));
+  }
 
-	auto const num_groups = std::atoi(argv[1]);
-	auto const out_filename = argv[2];
+  //
+  // Write CEL offsets
+  //
 
-	//
-	// Load CELs into memory
-	//
+  std::ofstream out{out_filename, std::ios_base::binary};
 
-	std::vector<cel_data> cels;
-	cels.reserve(num_groups);
-	for (int i = 0; i < num_groups; ++i) {
-		auto const filename = std::to_string(i + 1) + ".cel";
-		cels.emplace_back(read_entire_file(filename.c_str()));
-	}
+  uint32_t buffer = num_groups * sizeof(uint32_t);
 
-	//
-	// Write CEL offsets
-	//
+  for (const auto& cel : cels) {
+    out.write(reinterpret_cast<char const*>(&buffer), sizeof(uint32_t));
+    buffer += cel.size();
+  }
 
-	std::ofstream out{ out_filename, std::ios_base::binary };
+  //
+  // Write each CEL
+  //
 
-	uint32_t buffer = num_groups * sizeof(uint32_t);
+  for (const auto& cel : cels) {
+    out.write(reinterpret_cast<char const*>(cel.data()), cel.size());
+  }
 
-	for (const auto& cel : cels) {
-		out.write(reinterpret_cast<char const*>(&buffer), sizeof(uint32_t));
-		buffer += cel.size();
-	}
-
-	//
-	// Write each CEL
-	//
-
-	for (const auto& cel : cels) {
-		out.write(reinterpret_cast<char const*>(cel.data()), cel.size());
-	}
-
-	return 0;
+  return 0;
 }
