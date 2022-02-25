@@ -23,6 +23,7 @@ add_subdirectory(diabutil)
 # Internal command-lines
 #
 add_subdirectory(cel2png)
+add_subdirectory(cl2_to_cel)
 add_subdirectory(drawtext)
 add_subdirectory(drawtextpcx)
 add_subdirectory(fixamp)
