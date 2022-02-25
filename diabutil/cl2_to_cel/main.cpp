@@ -85,7 +85,7 @@ std::optional<arguments> parse_args(int argc, char **argv) {
 
       builder.skip = std::stoi(argv[shift]);
       ++shift;
-      LOGV("-s %d", builder.skip);
+      LOGV("-s %d", builder.skip.value());
     } else if (strcmp(option, "-w") == 0) {
       if (shift >= argc) {
         fprintf(stderr, "Provide width!\n");
@@ -185,7 +185,8 @@ struct const_byte_span {
   }
 
   // Reinterpret some new data from the span
-  template <typename T> operator T() const {
+  template <typename T>
+  operator T() const {
     if (sizeof(T) > size) {
       throw std::runtime_error{"T: i > size"};
     }
@@ -301,11 +302,12 @@ const_byte_span apply_skip(const_byte_span const frame, int const skip) {
     return const_byte_span::null_span();
   }
 
-  return frame + skip_offset;
+  // cast is required to resolve overload ambiguity in Apple Clang
+  return frame + static_cast<size_t>(skip_offset);
 }
 
 class cel_builder {
-public:
+ public:
   explicit cel_builder(int const width) : _width(width) {}
 
   void copy(std::byte const *pixels, int8_t n) {
@@ -396,7 +398,7 @@ public:
     return std::move(_data);
   }
 
-private:
+ private:
   static constexpr size_t raw_header_size = 0xA;
 
   void advance_column(int n) {
@@ -455,49 +457,51 @@ byte_vector convert_frame(const_byte_span cl2_frame, int const width,
                         : -instruction > 65 ? opcodes::fill
                                             : opcodes::copy;
     switch (opcode) {
-    case opcodes::transparency: {
-      auto const size = instruction; // 0..127
-      builder.transparent(size);
-      break;
-    }
-    case opcodes::fill: {
-      auto const size = (-instruction) - 65; // 1..63 ?
-
-      if (cl2_frame.size == 0) {
-        fprintf(stderr, "Ran out of data for fill\n");
-        return {};
+      case opcodes::transparency: {
+        auto const size = instruction;  // 0..127
+        builder.transparent(size);
+        break;
       }
-      auto const pixel = static_cast<std::byte>(cl2_frame);
-      cl2_frame += sizeof(std::byte);
+      case opcodes::fill: {
+        auto const size = (-instruction) - 65;  // 1..63 ?
 
-      builder.fill(pixel, size);
-      break;
-    }
-    case opcodes::copy: {
-      auto const size = -instruction; // 1..65
+        if (cl2_frame.size == 0) {
+          fprintf(stderr, "Ran out of data for fill\n");
+          return {};
+        }
+        auto const pixel = static_cast<std::byte>(cl2_frame);
+        cl2_frame += sizeof(std::byte);
 
-      if (size > cl2_frame.size) {
-        fprintf(stderr, "Ran out of data for copy\n");
-        return {};
+        builder.fill(pixel, size);
+        break;
       }
+      case opcodes::copy: {
+        auto const size = -instruction;  // 1..65
 
-      builder.copy(cl2_frame.data, size);
-      cl2_frame += size;
-      break;
-    }
+        if (size > cl2_frame.size) {
+          fprintf(stderr, "Ran out of data for copy\n");
+          return {};
+        }
+
+        builder.copy(cl2_frame.data, size);
+        cl2_frame += size;
+        break;
+      }
     }
   }
 
   return builder.build(generate_skip_header);
 }
 
-template <typename T> void append(byte_vector &vec, T val) {
+template <typename T>
+void append(byte_vector &vec, T val) {
   auto const *reinterp = reinterpret_cast<std::byte const *const>(&val);
   auto const size = sizeof(T);
   vec.insert(end(vec), reinterp, reinterp + size);
 }
 
-template <> void append(byte_vector &vec, const_byte_span val) {
+template <>
+void append(byte_vector &vec, const_byte_span val) {
   vec.insert(end(vec), val.data, val.data + val.size);
 }
 
@@ -620,7 +624,7 @@ byte_vector convert_all_groups(const_byte_span cl2_all_groups, int groups,
   return encode_all_groups(cel_all_groups);
 }
 
-} // namespace
+}  // namespace
 
 int main(int argc, char **argv) {
   if (argc <= 1) {
