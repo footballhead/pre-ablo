@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Failed to load: %s\n", in_cel_file);
     return 4;
   }
-  auto const frames = split_cel(diabutil::make_span(*cel_contents));
+  auto const frames = diabutil::find_frames(diabutil::make_span(*cel_contents));
   if (frames.empty()) {
     fprintf(stderr, "Failed to split: %s\n", in_cel_file);
     return 5;
@@ -103,8 +103,7 @@ int main(int argc, char** argv) {
   std::vector<image_t> glyphs{};
   glyphs.reserve(frames.size());
   for (auto const& frame : frames) {
-    auto colorized = diabutil::colorize_encoded_cel_frame(
-        diabutil::make_span(frame), *palette);
+    auto colorized = diabutil::colorize_encoded_cel_frame(frame, *palette);
     if (colorized.empty()) {
       fprintf(stderr, "Failed to colorize frame\n");
       return 8;

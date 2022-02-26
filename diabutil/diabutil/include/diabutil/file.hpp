@@ -21,6 +21,6 @@ std::optional<byte_vector> read_file(char const *filename);
 /// @param data The bytes to persist
 /// @param filename Filepath to save bytes in
 /// @returns true on success, false on error
-bool write_file(const_byte_span data, char const *filename);
+bool write_file(byte_span data, char const *filename);
 
 }  // namespace diabutil

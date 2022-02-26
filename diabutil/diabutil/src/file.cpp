@@ -26,7 +26,7 @@ std::optional<byte_vector> read_file(char const *filename) {
   return buffer;
 }
 
-bool write_file(const_byte_span data, char const *filename) {
+bool write_file(byte_span data, char const *filename) {
   std::ofstream out{filename, std::ios_base::binary};
   if (!out.good()) {
     return false;

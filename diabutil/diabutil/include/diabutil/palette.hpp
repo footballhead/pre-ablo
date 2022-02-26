@@ -3,7 +3,7 @@
 #include <array>
 #include <cinttypes>
 #include <diabutil/color.hpp>
-#include <diabutil/span.hpp>
+#include <diabutil/types.hpp>
 #include <optional>
 #include <unordered_map>
 
@@ -22,7 +22,7 @@ namespace diabutil {
 /// large.
 /// @return On success, a usable palette. On error, std::nullopt.
 /// @todo accept span when C++20
-std::optional<palette_t> palette_from_data(span<std::byte> data);
+std::optional<palette_t> palette_from_data(byte_span data);
 
 /// Turn a palette: index -> color into a lookup: color -> index.
 ///

@@ -1,6 +1,7 @@
 #include <algorithm>
+#include <cstdio>
 #include <diabutil/cel.hpp>
-#include <diabutil/span.hpp>
+#include <diabutil/types.hpp>
 #include <iterator>
 #include <stdexcept>
 
@@ -49,102 +50,84 @@ std::optional<DataType> span_get(span<SpanT> &span) {
 
 }  // namespace
 
-std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel_span,
-                                                 size_t num_groups) {
-  if (cel_span.size == 0) {
-    return {};
-  }
+std::vector<byte_span> find_groups(byte_span const cel,
+                                   size_t const num_groups) {
+  // create a copy to mutate like an iterator
+  auto I = cel;
 
-  // Copy size before mutation starts
-  auto const total_size = cel_span.size;
+  auto groups = std::vector<byte_span>{};
+  groups.reserve(num_groups);
 
-  // +1 because final offset is end-of-file (so all sizes can be calculated)
-  auto num_offsets = num_groups + 1;
-  auto offsets = std::vector<uint32_t>();
-  offsets.reserve(num_offsets);
-
-  // Read available group offsets from file
   for (size_t i = 0; i < num_groups; ++i) {
-    auto value = span_get<uint32_t>(cel_span);
-    if (!value) {
+    if (sizeof(uint32_t) > I.size) {
+      fprintf(stderr, "Ran out of group offset table\n");
       return {};
     }
-    offsets.push_back(*value);
-  }
+    auto const start = static_cast<uint32_t>(I);
+    I += sizeof(uint32_t);
 
-  // EOF offset not included so add ourselves
-  offsets.push_back(total_size);
-
-  std::vector<uint32_t> sizes;
-  sizes.reserve(num_groups);
-  for (size_t i = 1; i < num_offsets; ++i) {
-    auto const start_offset = offsets.at(i - 1);
-    auto const end_offset = offsets.at(i);
-    auto const size = end_offset - start_offset;
-    sizes.push_back(size);
-  }
-
-  std::vector<std::vector<std::byte>> split;
-  split.reserve(num_groups);
-  for (size_t i = 0; i < num_groups; ++i) {
-    auto const frame_size = sizes.at(i);
-    if (frame_size > cel_span.size) {
+    // The last group doesn't have an end offset so use total size
+    if (i < num_groups - 1 && sizeof(uint32_t) > I.size) {
+      fprintf(stderr, "Ran out of group offset table\n");
       return {};
     }
+    auto const end =
+        (i == num_groups - 1) ? cel.size : static_cast<uint32_t>(I);
+    // don't advance, stay here for next read
 
-    // construct a vector by copying between two iterators
-    split.emplace_back(cel_span.data, cel_span.data + frame_size);
-    span_advance(cel_span, frame_size);
+    // `start` is relative to file beginning so reference `cl2` (not cl2_I)
+    groups.emplace_back(byte_span{
+        .data = cel.data + start,
+        .size = end - start,
+    });
   }
 
-  return split;
+  return groups;
 }
 
-std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel_span) {
-  if (cel_span.size == 0) {
+std::vector<byte_span> find_frames(byte_span const cel) {
+  // create a copy to mutate like an iterator
+  auto I = cel;
+
+  if (sizeof(uint32_t) > I.size) {
+    fprintf(stderr, "Not enough data for num_frames\n");
     return {};
   }
+  auto const num_frames = static_cast<uint32_t>(I);
+  I += sizeof(uint32_t);
 
-  auto const num_frames = span_get<uint32_t>(cel_span);
-  if (!num_frames) {
-    return {};
-  }
+  auto frames = std::vector<byte_span>{};
+  frames.reserve(num_frames);
 
-  // +1 because final offset is end-of-file (so all sizes can be calculated)
-  auto num_offsets = *num_frames + 1;
-  auto offsets = std::vector<uint32_t>();
-  offsets.reserve(num_offsets);
-  for (size_t i = 0; i < num_offsets; ++i) {
-    auto value = span_get<uint32_t>(cel_span);
-    if (!value) {
+  for (uint32_t i = 0; i < num_frames; ++i) {
+    if (sizeof(uint32_t) > I.size) {
+      fprintf(stderr, "Ran out of frame offset table\n");
       return {};
     }
-    offsets.push_back(*value);
-  }
+    auto const start = static_cast<uint32_t>(I);
+    I += sizeof(uint32_t);
 
-  std::vector<uint32_t> sizes;
-  sizes.reserve(*num_frames);
-  for (size_t i = 1; i < num_offsets; ++i) {
-    auto const start_offset = offsets.at(i - 1);
-    auto const end_offset = offsets.at(i);
-    auto const size = end_offset - start_offset;
-    sizes.push_back(size);
-  }
+    if (sizeof(uint32_t) > I.size) {
+      fprintf(stderr, "Ran out of frame offset table\n");
+      return {};
+    }
+    auto const end = static_cast<uint32_t>(I);
+    // don't advance, stay here for next read
 
-  std::vector<std::vector<std::byte>> split;
-  split.reserve(*num_frames);
-  for (size_t i = 0; i < *num_frames; ++i) {
-    auto const frame_size = sizes.at(i);
-    if (frame_size > cel_span.size) {
+    auto const size = end - start;
+    if (cel.size - start < size) {
+      fprintf(stderr, "Not enough frame data\n");
       return {};
     }
 
-    // construct a vector by copying between two iterators
-    split.emplace_back(cel_span.data, cel_span.data + frame_size);
-    span_advance(cel_span, frame_size);
+    // `start` is relative to group beginning so reference `cl2` (not cl2_I)
+    frames.emplace_back(byte_span{
+        .data = cel.data + start,
+        .size = end - start,
+    });
   }
 
-  return split;
+  return frames;
 }
 
 std::vector<color_t> colorize_encoded_cel_frame(span<std::byte> frame,

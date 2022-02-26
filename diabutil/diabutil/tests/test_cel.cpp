@@ -7,35 +7,35 @@ namespace {
 
 // TODO split groups tests
 
-TEST(split_cel, empty_buffer_returns_empty) {
-  auto const input = std::vector<std::byte>();
-  auto const output = split_cel(make_span(input));
+TEST(find_frames, empty_buffer_returns_empty) {
+  auto const input = byte_vector();
+  auto const output = find_frames(make_span(input));
   ASSERT_TRUE(output.empty());
 }
 
-TEST(split_cel, only_frame_num_returns_empty) {
+TEST(find_frames, only_frame_num_returns_empty) {
   auto const input = std::vector<std::byte>{
       std::byte(1), std::byte(0), std::byte(0), std::byte(0),  // 1 frame
       // no frame table, etc.
   };
-  auto const output = split_cel(make_span(input));
+  auto const output = find_frames(make_span(input));
   ASSERT_TRUE(output.empty());
 }
 
-TEST(split_cel, bad_frame_table_returns_empty) {
-  auto const input = std::vector<std::byte>{
+TEST(find_frames, bad_frame_table_returns_empty) {
+  auto const input = byte_vector{
       std::byte(1),   std::byte(0),
       std::byte(0),   std::byte(0),  // 1 frame
       std::byte(0xC), std::byte(0),
       std::byte(0),   std::byte(0),  // starts at 0xC
                                      // mssing frame 1 end, etc.
   };
-  auto const output = split_cel(make_span(input));
+  auto const output = find_frames(make_span(input));
   ASSERT_TRUE(output.empty());
 }
 
-TEST(split_cel, no_frame_data_returns_empty) {
-  auto const input = std::vector<std::byte>{
+TEST(find_frames, no_frame_data_returns_empty) {
+  auto const input = byte_vector{
       std::byte(1),   std::byte(0),
       std::byte(0),   std::byte(0),  // 1 frame
       std::byte(0xC), std::byte(0),
@@ -44,12 +44,12 @@ TEST(split_cel, no_frame_data_returns_empty) {
       std::byte(0),   std::byte(0),  // ends at 0xE
                                      // missing data
   };
-  auto const output = split_cel(make_span(input));
+  auto const output = find_frames(make_span(input));
   ASSERT_TRUE(output.empty());
 }
 
-TEST(split_cel, simple_cel_decodes_properly) {
-  auto const input = std::vector<std::byte>{
+TEST(find_frames, simple_cel_decodes_properly) {
+  auto const input = byte_vector{
       std::byte(1),    std::byte(0),
       std::byte(0),    std::byte(0),  // 1 frame
       std::byte(0xC),  std::byte(0),
@@ -59,13 +59,13 @@ TEST(split_cel, simple_cel_decodes_properly) {
       std::byte(1),                   // frame 1 contains a run of size 1
       std::byte(0xFF),                // run contains 255
   };
-  auto const expected_frame = std::vector<std::byte>{
+  auto const expected_frame = byte_vector{
       std::byte(1),     // frame 1 contains a run of size 1
       std::byte(0xFF),  // run contains 255
   };
-  auto const output = split_cel(make_span(input));
+  auto const output = find_frames(make_span(input));
   ASSERT_EQ(output.size(), 1);
-  ASSERT_EQ(output[0], expected_frame);
+  ASSERT_EQ(output[0].size, expected_frame.size());
 }
 
 TEST(colorize_encoded_cel_frame, empty_returns_error) {

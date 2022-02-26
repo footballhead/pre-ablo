@@ -4,5 +4,5 @@
 
 namespace diabutil {
 using byte_vector = std::vector<std::byte>;
-using const_byte_span = span<std::byte const>;
+using byte_span = span<std::byte>;
 }  // namespace diabutil

@@ -3,14 +3,14 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
+#include <diabutil/cel.hpp>
+#include <diabutil/file.hpp>
+#include <diabutil/types.hpp>
 #include <fstream>
 #include <limits>
 #include <optional>
 #include <stdexcept>
 #include <vector>
-
-#include <diabutil/file.hpp>
-#include <diabutil/types.hpp>
 
 namespace {
 
@@ -23,8 +23,6 @@ using namespace diabutil;
 #define LOG(msg) fprintf(stderr, msg "\n")
 #define LOGV(msg, ...)
 #endif
-
-using byte_vector = std::vector<std::byte>;
 
 constexpr auto usage =
     R"help(Usage: %s -i input.cl2 -w X [-g Y] [-s 0..4] -o output.cel
@@ -133,82 +131,15 @@ std::optional<arguments> parse_args(int argc, char **argv) {
   return builder;
 }
 
-std::vector<const_byte_span> find_groups(const_byte_span const cl2,
-                                         size_t const num_groups) {
-  // create a copy to mutate like an iterator
-  auto cl2_I = cl2;
-
-  auto groups = std::vector<const_byte_span>{};
-  groups.reserve(num_groups);
-
-  for (size_t i = 0; i < num_groups; ++i) {
-    auto const start = static_cast<uint32_t>(cl2_I);
-    cl2_I += sizeof(uint32_t);
-    // The last group doesn't have an end offset so use total size
-    auto const end =
-        (i == num_groups - 1) ? cl2.size : static_cast<uint32_t>(cl2_I);
-    // don't advance, stay here for next read
-
-    // `start` is relative to file beginning so reference `cl2` (not cl2_I)
-    groups.emplace_back(const_byte_span{
-        .data = cl2.data + start,
-        .size = end - start,
-    });
-  }
-
-  return groups;
-}
-
-std::vector<const_byte_span> find_frames(const_byte_span const cl2) {
-  if (cl2.size == 0) {
-    return {};
-  }
-
-  // create a copy to mutate like an iterator
-  auto cl2_I = cl2;
-
-  auto const num_frames = static_cast<uint32_t>(cl2_I);
-  cl2_I += sizeof(uint32_t);
-  LOGV("numframes: %u", num_frames);
-
-  auto frames = std::vector<const_byte_span>{};
-  frames.reserve(num_frames);
-
-  for (uint32_t i = 0; i < num_frames; ++i) {
-    if (sizeof(uint32_t) > cl2_I.size) {
-      fprintf(stderr, "Ran out of frame offset table\n");
-      return {};
-    }
-    auto const start = static_cast<uint32_t>(cl2_I);
-    cl2_I += sizeof(uint32_t);
-
-    if (sizeof(uint32_t) > cl2_I.size) {
-      fprintf(stderr, "Ran out of frame offset table\n");
-      return {};
-    }
-    auto const end = static_cast<uint32_t>(cl2_I);
-    // don't advance, stay here for next read
-
-    // `start` is relative to group beginning so reference `cl2` (not cl2_I)
-    frames.emplace_back(const_byte_span{
-        .data = cl2.data + start,
-        .size = end - start,
-    });
-    LOGV("%u size: %zu", i, frames.back().size);
-  }
-
-  return frames;
-}
-
-const_byte_span apply_skip(const_byte_span const frame, int const skip) {
+byte_span apply_skip(byte_span const frame, int const skip) {
   if (skip < 0 || skip > 4) {
     fprintf(stderr, "Invalid skip\n");
-    return const_byte_span::null_span();
+    return byte_span::null_span();
   }
 
   if (skip * sizeof(uint16_t) > frame.size) {
     fprintf(stderr, "Not enough data for skip\n");
-    return const_byte_span::null_span();
+    return byte_span::null_span();
   }
 
   uint16_t const *const skip_table =
@@ -217,12 +148,12 @@ const_byte_span apply_skip(const_byte_span const frame, int const skip) {
 
   if (skip_offset == 0) {
     fprintf(stderr, "Skip table entry is 0\n");
-    return const_byte_span::null_span();
+    return byte_span::null_span();
   }
 
   if (skip_offset > frame.size) {
     fprintf(stderr, "Read skip, not enough data to apply it\n");
-    return const_byte_span::null_span();
+    return byte_span::null_span();
   }
 
   // cast is required to resolve overload ambiguity in Apple Clang
@@ -353,7 +284,7 @@ class cel_builder {
   int _row = 0;
 };
 
-byte_vector convert_frame(const_byte_span cl2_frame, int const width,
+byte_vector convert_frame(byte_span cl2_frame, int const width,
                           bool const generate_skip_header) {
   // treat cl2_frame like an iterator and is mutated
 
@@ -424,7 +355,7 @@ void append(byte_vector &vec, T val) {
 }
 
 template <>
-void append(byte_vector &vec, const_byte_span val) {
+void append(byte_vector &vec, byte_span val) {
   vec.insert(end(vec), val.data, val.data + val.size);
 }
 
@@ -452,7 +383,7 @@ byte_vector encode_group(std::vector<byte_vector> const &cel_frames) {
   return data;
 }
 
-byte_vector convert_group(const_byte_span cl2_group, int width,
+byte_vector convert_group(byte_span cl2_group, int width,
                           std::optional<int> skip) {
   auto const cl2_frames = find_frames(cl2_group);
   if (cl2_frames.empty()) {
@@ -466,7 +397,7 @@ byte_vector convert_group(const_byte_span cl2_group, int width,
   for (auto cl2_frame : cl2_frames) {
     if (skip) {
       cl2_frame = apply_skip(cl2_frame, *skip);
-      if (cl2_frame == const_byte_span::null_span()) {
+      if (cl2_frame == byte_span::null_span()) {
         fprintf(stderr, "Failed to skip\n");
         return {};
       }
@@ -504,8 +435,8 @@ byte_vector encode_all_groups(std::vector<byte_vector> const &cel_all_groups) {
   return data;
 }
 
-byte_vector convert_all_groups(const_byte_span cl2_all_groups, int groups,
-                               int width, std::optional<int> skip) {
+byte_vector convert_all_groups(byte_span cl2_all_groups, int groups, int width,
+                               std::optional<int> skip) {
   auto const cl2_groups = find_groups(cl2_all_groups, groups);
   if (cl2_groups.empty()) {
     fprintf(stderr, "Failed to find groups\n");

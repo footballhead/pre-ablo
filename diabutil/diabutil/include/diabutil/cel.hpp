@@ -3,13 +3,14 @@
 #include <cinttypes>
 #include <diabutil/image.hpp>
 #include <diabutil/palette.hpp>
-#include <diabutil/span.hpp>
+#include <diabutil/types.hpp>
 #include <vector>
 
 namespace diabutil {
 
 /// Color used to represent transparency (index-color 0)
-inline constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0};
+inline constexpr auto transparent_pixel =
+    color_t{.r = 0, .g = 0, .b = 0, .a = 0};
 
 /// Interpret the group table to carve up a grouped .CEL file into individual
 /// .CELs
@@ -20,8 +21,7 @@ inline constexpr auto transparent_pixel = color_t{.r = 0, .g = 0, .b = 0, .a = 0
 /// probably an error.
 /// @remark Unfortunately, the group table and the frame table are slightly
 /// different so we can't just use the same function for both
-std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel,
-                                                 size_t num_groups = 8);
+std::vector<byte_span> find_groups(byte_span cel, size_t num_groups);
 
 /// Interpret the frame table to carve up a .CEL file into frames
 ///
@@ -29,7 +29,7 @@ std::vector<std::vector<std::byte>> split_groups(span<std::byte> cel,
 /// @returns A list of frame data, still RLE encoded, possibly with header. If
 /// empty then there was probably an error.
 /// @remarks works on both .CEL and .CL2
-std::vector<std::vector<std::byte>> split_cel(span<std::byte> cel);
+std::vector<byte_span> find_frames(byte_span cel);
 
 /// Convert a compressed, indexed-color frame into an uncompressed RGB frame.
 ///

@@ -4,6 +4,7 @@
 #include <diabutil/cel.hpp>
 #include <diabutil/file.hpp>
 #include <diabutil/palette.hpp>
+#include <diabutil/types.hpp>
 #include <string>
 #include <vector>
 
@@ -48,10 +49,9 @@ int main(int argc, char **argv) {
   }
 
   // Skip the first 10 bytes (5 words) if the cel has a header
-  auto const cel_span = diabutil::span<std::byte>{
-      .data = cel_data->data() + (has_header ? 10 : 0),
-      .size = cel_data->size() - (has_header ? 10 : 0),
-  };
+  static auto constexpr header_size = 10;
+  auto const cel_span =
+      diabutil::make_span(*cel_data) + (has_header ? header_size : 0);
 
   auto colorized = diabutil::colorize_encoded_cel_frame(cel_span, *palette);
   if (colorized.empty()) {

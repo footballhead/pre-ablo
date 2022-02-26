@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     return 3;
   }
 
-  auto const frames = diabutil::split_cel(diabutil::make_span(*contents));
+  auto const frames = diabutil::find_frames(diabutil::make_span(*contents));
   if (frames.empty()) {
     fprintf(stderr, "Failed to split: %s\n", infile);
     return 4;
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     auto const filepath = std::filesystem::path(outdir) / filename;
     auto const &frame = frames.at(i);
 
-    if (!diabutil::write_file(diabutil::make_span(frame), filepath.c_str())) {
+    if (!diabutil::write_file(frame, filepath.c_str())) {
       fprintf(stderr, "Failed to save frame: %zu\n", i);
       return 5;
     }

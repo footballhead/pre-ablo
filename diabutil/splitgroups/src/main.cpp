@@ -29,7 +29,9 @@ int main(int argc, char **argv) {
     return 2;
   }
 
-  auto const cels = diabutil::split_groups(diabutil::make_span(*contents));
+  static auto constexpr common_num_groups = 8;
+  auto const cels =
+      diabutil::find_groups(diabutil::make_span(*contents), common_num_groups);
   if (cels.empty()) {
     fprintf(stderr, "Failed to split groups: %s\n", infile);
     return 3;
@@ -40,7 +42,7 @@ int main(int argc, char **argv) {
     auto const filepath = std::filesystem::path(outdir) / filename;
     auto const &cel = cels.at(i);
 
-    if (!diabutil::write_file(diabutil::make_span(cel), filepath.c_str())) {
+    if (!diabutil::write_file(cel, filepath.c_str())) {
       fprintf(stderr, "Failed to save frame: %zu\n", i);
       return 4;
     }
