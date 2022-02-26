@@ -4,7 +4,7 @@
 
 namespace diabutil {
 
-std::optional<std::vector<std::byte>> read_file(char const *filename) {
+std::optional<byte_vector> read_file(char const *filename) {
   // Open file (`ate` puts internal marker at EOF so we can tellg for size)
   std::ifstream in{filename, std::ios_base::binary | std::ios_base::ate};
   if (!in.good()) {
@@ -18,7 +18,7 @@ std::optional<std::vector<std::byte>> read_file(char const *filename) {
   in.seekg(0, std::ios::beg);
 
   // Read file contents
-  auto buffer = std::vector<std::byte>(file_size, std::byte{0});
+  auto buffer = byte_vector(file_size, std::byte{0});
   if (!in.read(reinterpret_cast<char *>(buffer.data()), file_size)) {
     return std::nullopt;
   }
@@ -26,7 +26,7 @@ std::optional<std::vector<std::byte>> read_file(char const *filename) {
   return buffer;
 }
 
-bool dump_to_disk(span<std::byte> data, char const *filename) {
+bool write_file(const_byte_span data, char const *filename) {
   std::ofstream out{filename, std::ios_base::binary};
   if (!out.good()) {
     return false;

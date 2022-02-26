@@ -2,7 +2,7 @@
 
 #include <cinttypes>
 #include <cstddef>
-#include <diabutil/span.hpp>
+#include <diabutil/types.hpp>
 #include <optional>
 #include <string>
 #include <vector>
@@ -14,13 +14,13 @@ namespace diabutil {
 /// @param filename Filepath to load
 /// @returns On success, a valid array of all the bytes in the file. On
 /// error, std::nullopt
-std::optional<std::vector<std::byte>> read_file(char const *filename);
+std::optional<byte_vector> read_file(char const *filename);
 
-/// Persist a buffer to a file on disk
+/// Persist a byte buffer to a file on disk
 ///
 /// @param data The bytes to persist
 /// @param filename Filepath to save bytes in
 /// @returns true on success, false on error
-bool dump_to_disk(span<std::byte> data, char const *filename);
+bool write_file(const_byte_span data, char const *filename);
 
 }  // namespace diabutil

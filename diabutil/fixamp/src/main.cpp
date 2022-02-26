@@ -52,8 +52,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (!diabutil::dump_to_disk(diabutil::make_span(*amp_file_contents),
-                              amp_file)) {
+  if (!diabutil::write_file(diabutil::make_span(*amp_file_contents),
+                            amp_file)) {
     fprintf(stderr, "Failed to save, file could be corrupt: %s\n", amp_file);
     return 3;
   }

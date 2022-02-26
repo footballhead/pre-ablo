@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     auto const filepath = std::filesystem::path(outdir) / filename;
     auto const &frame = frames.at(i);
 
-    if (!diabutil::dump_to_disk(diabutil::make_span(frame), filepath.c_str())) {
+    if (!diabutil::write_file(diabutil::make_span(frame), filepath.c_str())) {
       fprintf(stderr, "Failed to save frame: %zu\n", i);
       return 5;
     }

@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (!diabutil::dump_to_disk(diabutil::make_span(cel), out_file)) {
+  if (!diabutil::write_file(diabutil::make_span(cel), out_file)) {
     fprintf(stderr, "Failed to save: %s\n", out_file);
     return 5;
   }

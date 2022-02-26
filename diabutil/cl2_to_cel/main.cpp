@@ -9,7 +9,12 @@
 #include <stdexcept>
 #include <vector>
 
+#include <diabutil/file.hpp>
+#include <diabutil/types.hpp>
+
 namespace {
+
+using namespace diabutil;
 
 #ifndef NDEBUG
 #define LOG(msg) fprintf(stderr, msg "\n")
@@ -126,88 +131,6 @@ std::optional<arguments> parse_args(int argc, char **argv) {
   }
 
   return builder;
-}
-
-std::optional<byte_vector> read_file(char const *filename) {
-  // Open file (`ate` puts internal marker at EOF so we can tellg for size)
-  std::ifstream in{filename, std::ios_base::binary | std::ios_base::ate};
-  if (!in.good()) {
-    fprintf(stderr, "Open fail\n");
-    return std::nullopt;
-  }
-
-  // Get size. (StackOverflow will try to convince you that this is not the way
-  // to go but it's literally in cplusplus.com:
-  // https://www.cplusplus.com/reference/istream/istream/tellg/)
-  auto const file_size = in.tellg();
-  in.seekg(0, std::ios::beg);
-
-  // Read file contents
-  auto buffer = byte_vector(file_size, std::byte{0});
-  if (!in.read(reinterpret_cast<char *>(buffer.data()), file_size)) {
-    fprintf(stderr, "Read fail\n");
-    return std::nullopt;
-  }
-
-  return buffer;
-}
-
-// A data/size aggregate with some smarts. Referenced data is read-only.
-struct const_byte_span {
-  std::byte const *data = nullptr;
-  size_t size = 0;
-
-  static constexpr const_byte_span null_span() {
-    return {
-        .data = nullptr,
-        .size = 0,
-    };
-  }
-
-  bool operator==(const_byte_span const &rhs) const {
-    return data == rhs.data && size == rhs.size;
-  }
-
-  // Advance the span like an iterator
-  const_byte_span &operator+=(size_t i) {
-    if (i > size) {
-      throw std::runtime_error{"+=: i > size"};
-    }
-    data += i;
-    size -= i;
-    return *this;
-  }
-
-  // Advance the span like an iterator, returning new span iterator
-  friend const_byte_span operator+(const_byte_span lhs, size_t rhs) {
-    lhs += rhs;
-    return lhs;
-  }
-
-  // Reinterpret some new data from the span
-  template <typename T>
-  operator T() const {
-    if (sizeof(T) > size) {
-      throw std::runtime_error{"T: i > size"};
-    }
-    return *reinterpret_cast<T const *>(data);
-  }
-
-  // Treat like a byte iterator and look at front
-  std::byte operator*() const { return *data; }
-
-  // Treat like a byte iterator and move forward one spot
-  const_byte_span &operator++() {
-    *this += sizeof(std::byte);
-    return *this;
-  }
-};
-
-inline const_byte_span make_span(byte_vector const &vec) {
-  return {
-      .data = vec.data(),
-      .size = vec.size(),
-  };
 }
 
 std::vector<const_byte_span> find_groups(const_byte_span const cl2,
@@ -559,28 +482,6 @@ byte_vector convert_group(const_byte_span cl2_group, int width,
   }
 
   return encode_group(cel_frames);
-}
-
-bool write_file(const_byte_span data, char const *filename) {
-  std::ofstream out(filename, std::ios_base::binary);
-  if (!out.good()) {
-    fprintf(stderr, "Failed to open for write: %s\n", filename);
-    return false;
-  }
-
-  out.write(reinterpret_cast<char const *const>(data.data), data.size);
-  if (!out.good()) {
-    fprintf(stderr, "Failed to write bytes: %s\n", filename);
-    return false;
-  }
-
-  out.close();
-  if (!out.good()) {
-    fprintf(stderr, "Failed to close file: %s\n", filename);
-    return false;
-  }
-
-  return true;
 }
 
 byte_vector encode_all_groups(std::vector<byte_vector> const &cel_all_groups) {
