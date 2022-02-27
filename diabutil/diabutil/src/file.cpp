@@ -3,8 +3,10 @@
 #include <stdexcept>
 
 namespace diabutil {
+namespace {
 
-std::optional<byte_vector> read_file(char const *filename) {
+template <typename InType>
+std::optional<byte_vector> read_file_impl(InType filename) {
   // Open file (`ate` puts internal marker at EOF so we can tellg for size)
   std::ifstream in{filename, std::ios_base::binary | std::ios_base::ate};
   if (!in.good()) {
@@ -26,7 +28,8 @@ std::optional<byte_vector> read_file(char const *filename) {
   return buffer;
 }
 
-bool write_file(byte_span data, char const *filename) {
+template <typename InType>
+bool write_file_impl(byte_span data, InType filename) {
   std::ofstream out{filename, std::ios_base::binary};
   if (!out.good()) {
     return false;
@@ -43,6 +46,24 @@ bool write_file(byte_span data, char const *filename) {
   }
 
   return true;
+}
+
+}  // namespace
+
+std::optional<byte_vector> read_file(char const *filename) {
+  return read_file_impl<char const *>(filename);
+}
+
+std::optional<byte_vector> read_file(std::filesystem::path const &filename) {
+  return read_file_impl<std::filesystem::path const &>(filename);
+}
+
+bool write_file(byte_span data, char const *filename) {
+  return write_file_impl<char const *>(data, filename);
+}
+
+bool write_file(byte_span data, std::filesystem::path const &filename) {
+  return write_file_impl<std::filesystem::path const &>(data, filename);
 }
 
 }  // namespace diabutil

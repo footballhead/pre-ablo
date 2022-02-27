@@ -9,8 +9,7 @@
 namespace diabutil {
 
 /// Color used to represent transparency (index-color 0)
-inline constexpr auto transparent_pixel =
-    color_t{.r = 0, .g = 0, .b = 0, .a = 0};
+inline constexpr auto transparent_pixel = color_t{0, 0, 0, 0};
 
 /// Interpret the group table to carve up a grouped .CEL file into individual
 /// .CELs

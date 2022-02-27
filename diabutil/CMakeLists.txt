@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(diabutil CXX)
 
+option(WITH_STORMLIB "Compile StormLib and programs that use it" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 include(CTest)
-
-option(WITH_STORMLIB "Compile StormLib and programs that use it" ON)
 
 #
 # External libraries
@@ -12,6 +12,12 @@ option(WITH_STORMLIB "Compile StormLib and programs that use it" ON)
 add_subdirectory(dr_pcx)
 add_subdirectory(stb_image_write)
 add_subdirectory(stb_image)
+
+if (MSVC)
+    # Quick linker fix for googletest on Windows. I don't actually know what the
+    # repurcussions of this are outside of allowing me to compile
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+endif()
 add_subdirectory(googletest)
 
 #

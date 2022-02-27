@@ -23,19 +23,19 @@ std::optional<image_t> load_png(char const* filename) {
   for (int i = 0; i < width * height * desired_channels;
        i += desired_channels) {
     pixels.emplace_back(color_t{
-        .r = data[i],
-        .g = data[i + 1],
-        .b = data[i + 2],
-        .a = data[i + 3],
+        data[i],
+        data[i + 1],
+        data[i + 2],
+        data[i + 3],
     });
   }
 
   stbi_image_free(data);
 
   return image_t{
-      .width = width,
-      .height = height,
-      .pixels = std::move(pixels),
+      width,
+      height,
+      std::move(pixels),
   };
 }
 

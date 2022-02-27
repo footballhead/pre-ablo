@@ -17,7 +17,7 @@ TEST(palette_from_data, all_black_is_successful) {
   auto const raw_palette =
       std::vector<std::byte>(palette_expected_size, std::byte{0});
   auto expected_palette = palette_t();
-  expected_palette.fill(color_t{.r = 0, .g = 0, .b = 0, .a = 255});
+  expected_palette.fill(color_t{0, 0, 0, 255});
 
   // Act
   auto const actual_palette = palette_from_data(make_span(raw_palette));
@@ -32,10 +32,10 @@ TEST(generate_palette_inverse, arbitrary_color_succeeds) {
   auto palette = palette_t{};
   for (size_t i = 0; i < palette.size(); ++i) {
     palette[i] = color_t{
-        .r = static_cast<uint8_t>(i),
-        .g = static_cast<uint8_t>(i),
-        .b = static_cast<uint8_t>(i),
-        .a = static_cast<uint8_t>(i),
+        static_cast<uint8_t>(i),
+        static_cast<uint8_t>(i),
+        static_cast<uint8_t>(i),
+        static_cast<uint8_t>(i),
     };
   }
 

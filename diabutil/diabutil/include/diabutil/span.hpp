@@ -13,8 +13,8 @@ struct span {
 
   static constexpr span<T> null_span() {
     return {
-        .data = nullptr,
-        .size = 0,
+        nullptr,
+        0,
     };
   }
 
@@ -59,7 +59,10 @@ struct span {
 
 template <typename T>
 span<T> make_span(std::vector<T> const &vec) {
-  return {.data = vec.data(), .size = vec.size()};
+  return {
+      vec.data(),
+      vec.size(),
+  };
 }
 
 }  // namespace diabutil

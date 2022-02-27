@@ -24,6 +24,7 @@ image_t flip_vertically(image_t const &image) {
 }
 
 /// Push the data pointer forward while maintaining correct size.
+/// @todo replace with other span members
 template <typename SpanT>
 void span_advance(span<SpanT> &span, size_t n) {
   span.data += n;
@@ -36,6 +37,7 @@ void span_advance(span<SpanT> &span, size_t n) {
 /// @returns If not enough data in span, std::nullopt. Otherwise, a conversion
 /// to DataType.
 /// @todo This only works on x86 systems (little-endian, no alignment)
+/// @todo replace with other span members
 template <typename DataType, typename SpanT>
 std::optional<DataType> span_get(span<SpanT> &span) {
   if (span.size < sizeof(DataType)) {
@@ -52,6 +54,11 @@ std::optional<DataType> span_get(span<SpanT> &span) {
 
 std::vector<byte_span> find_groups(byte_span const cel,
                                    size_t const num_groups) {
+  if (num_groups == 0) {
+    fprintf(stderr, "invalid argument: expected num_groups > 0\n");
+    return {};
+  }
+
   // create a copy to mutate like an iterator
   auto I = cel;
 
@@ -75,10 +82,16 @@ std::vector<byte_span> find_groups(byte_span const cel,
         (i == num_groups - 1) ? cel.size : static_cast<uint32_t>(I);
     // don't advance, stay here for next read
 
+    auto const size = end - start;
+    if (size == 0 || cel.size - start < size) {
+      fprintf(stderr, "Not enough group data\n");
+      return {};
+    }
+
     // `start` is relative to file beginning so reference `cl2` (not cl2_I)
     groups.emplace_back(byte_span{
-        .data = cel.data + start,
-        .size = end - start,
+        cel.data + start,
+        size,
     });
   }
 
@@ -115,6 +128,10 @@ std::vector<byte_span> find_frames(byte_span const cel) {
     // don't advance, stay here for next read
 
     auto const size = end - start;
+    if (size == 0) {
+      fprintf(stderr, "Warning: empty cell (continuing...)\n");
+    }
+
     if (cel.size - start < size) {
       fprintf(stderr, "Not enough frame data\n");
       return {};
@@ -122,8 +139,8 @@ std::vector<byte_span> find_frames(byte_span const cel) {
 
     // `start` is relative to group beginning so reference `cl2` (not cl2_I)
     frames.emplace_back(byte_span{
-        .data = cel.data + start,
-        .size = end - start,
+        cel.data + start,
+        size,
     });
   }
 
