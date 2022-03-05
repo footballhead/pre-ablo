@@ -43,16 +43,12 @@ package:
     # Get pre-release demo and ddraw.dll, put in ./PRE-ABLO via conan imports
     - conan remote add gitlab https://gitlab.com/api/v4/projects/18183220/packages/conan 
     - conan install ./ci
-    # Combine DIABDAT.MPQ with assets/ using tools from previous step
-    - mkdir mpq_staging
-    - cd mpq_staging
-    - cat ../tools/listfile.txt | ../diabutil/build/mpqextract/mpqextract ../PRE-ABLO/DIABDAT.MPQ
-    - for dir in $(cd ../assets/ && ls -d */); do cp -R "../assets/$dir" .; done
-    - for dir in *; do find "$dir" -type f >> new_listfile.txt; done
-    - cat new_listfile.txt | ../diabutil/build/mpqadd/mpqadd DIABDAT.MPQ
+    # Create pre-ablo.mpq (for load_mpq_customizations)
+    - cd assets
+    - ./package.sh pre-ablo.mpq
     - cd ..
     # Put everything in destination folder (./PRE-ABLO)
-    - cp mpq_staging/DIABDAT.MPQ PRE-ABLO/
+    - cp assets/pre-ablo.mpq PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
     - cp dplay/build/dplay.dll PRE-ABLO/
   artifacts:

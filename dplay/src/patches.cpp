@@ -74,7 +74,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(infinite_mana)
     REGISTER_PATCH_RECOMMENDED(infraring_fix)
     REGISTER_PATCH_DEBUG(instacast)
-    REGISTER_PATCH_DEBUG(load_mpq_customizations)
+    {"load_mpq_customizations", load_mpq_customizations_description, load_mpq_customizations_main, /*checked=*/true, "pre-ablo.mpq"},
     REGISTER_PATCH_DEBUG(magic_find_x3)
     REGISTER_PATCH_DEBUG(max_monster_types)
     REGISTER_PATCH_RECOMMENDED(mega_fix)
