@@ -1,0 +1,2 @@
+plrgfx/warrior/wln/wlnlm.cel
+plrgfx/warrior/wlu/wludt.cel

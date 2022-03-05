@@ -20,20 +20,22 @@ TODO: Scripts to convert these from retail
 
 * Beta only has rln/whn/wmn death. It's been copied to other weapons (see #117)
 * scbsd.cel was reconverted from retail (see #124)
-* wlnlm.cel from prdemo needs fixing (see #78)
+* wlnlm.cel + wludt.cel from prdemo needs header fixing (see #78)
 * l2.cel and l3.cel required backporting (see #11)
 * l3.amp required fixing (see #7)
 * fireman attack is broken in Beta, was fixed in alpha4
 
 ### Known Issues
 
-* wludt is broken (see #115)
+* wludt has wrong number of frames (see #115)
 * firemh.cel (see #119)
 * warrior fire cast no weapon is weird (see #79)
 * our magew.cel is actually retail mages.cel. We need 20 frames for pre-release demo but in retail magew.cel is only 1 frame.
 * some retail monster graphics don't match pre-release demo required frames (see #91)
 * some objects are broken (see #127)
-* I remember something about goatlord but can't remember now :X
+* goatld.cel levitates on certain death angles
+* unrava.cel needs to come from hellfire because retail is broken
+    * This has a shadow compared to the others! which makes it out of place
 
 Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
