@@ -24,7 +24,7 @@ conan remote add diablo-prdemo-patches https://gitlab.com/api/v4/projects/181832
 conan user <gitlab_username or deploy_token_username> -r diablo-prdemo-patches -p <personal_access_token or deploy_token>
 ```
 
-## Using
+## Creating the package
 
 * Create the package
 
@@ -37,3 +37,28 @@ conan create . gitlab/stable
 ```
 conan upload prdemo/0.1@gitlab/stable -r diablo-prdemo-patches --all
 ```
+
+## Using the package
+
+Here's a sample `conanfile.txt` that will get the package and copy all the non-
+Conan contents to a new `DIABLO` folder:
+
+```
+[requires]
+prdemo/0.1@gitlab/stable
+
+[imports]
+., *.DLL -> ./DIABLO
+., *.EXE -> ./DIABLO
+., *.RTF -> ./DIABLO
+., *.MPQ -> ./DIABLO
+., *.BMP -> ./DIABLO
+```
+
+Then, with conanfile.txt in the current directory:
+
+```
+conan install .
+```
+
+Your files will be in `./DIABLO`

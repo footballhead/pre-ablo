@@ -35,24 +35,24 @@ dplay:
     - pages
 
 package:
-  image: "ubuntu:latest"
+  # This is an official conan image. We only use it for conan (not GCC)
+  # TODO: We could probably create a custom alpine with just conan installed...
+  image: "conanio/gcc11-ubuntu16.04"
   stage: deploy
   script:
-    - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y curl p7zip unzip ca-certificates
-    - curl -L "https://drive.google.com/uc?export=download&id=1E-AC21QMiOao8hVun-McROsfYBeEW20y" > prereleasedemo.7z
-    - 7zr x prereleasedemo.7z
+    # Get pre-release demo and ddraw.dll, put in ./PRE-ABLO via conan imports
+    - conan remote add gitlab https://gitlab.com/api/v4/projects/18183220/packages/conan 
+    - conan install ./ci
+    # Combine DIABDAT.MPQ with missing_gfx/ using tools from previous step
     - mkdir mpq_staging
     - cd mpq_staging
-    - cat ../tools/listfile.txt | ../diabutil/build/mpqextract/mpqextract ../DIABLO/DIABDAT.MPQ
+    - cat ../tools/listfile.txt | ../diabutil/build/mpqextract/mpqextract ../PRE-ABLO/DIABDAT.MPQ
     - for dir in $(cd ../missing_gfx/ && ls -d */); do cp -R "../missing_gfx/$dir" .; done
     - for dir in *; do find "$dir" -type f >> new_listfile.txt; done
     - cat new_listfile.txt | ../diabutil/build/mpqadd/mpqadd DIABDAT.MPQ
     - cd ..
-    - mv DIABLO PRE-ABLO
-    - curl -L "https://github.com/footballhead/diablo-ddrawwrapper/releases/download/v0.1.0/ddrawwrapper-prde-v0.1.0.zip" > ddrawwrapper.zip
-    - unzip ddrawwrapper.zip -d ddrawwrapper
+    # Put everything in destination folder (./PRE-ABLO)
     - cp mpq_staging/DIABDAT.MPQ PRE-ABLO/
-    - cp ddrawwrapper/ddraw.dll PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
     - cp dplay/build/dplay.dll PRE-ABLO/
   artifacts:

@@ -1,0 +1,10 @@
+[requires]
+prdemo/0.1@gitlab/stable
+ddrawwrapper/0.1@gitlab/stable
+
+[imports]
+., *.DLL -> ./PRE-ABLO
+., *.EXE -> ./PRE-ABLO
+., *.RTF -> ./PRE-ABLO
+., *.MPQ -> ./PRE-ABLO
+., *.BMP -> ./PRE-ABLO
