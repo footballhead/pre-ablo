@@ -1,4 +1,4 @@
-# Pre-Release Demo in Conan
+# ddrawwrapper (ddraw.dll) in Conan
 
 This recipe packages our ddrawwrapper DLL for easier inclusion in our CI configuration.
 
