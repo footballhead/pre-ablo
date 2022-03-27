@@ -1,4 +1,4 @@
-# Missing Graphics
+# Missing Assets
 
 The directory contains:
 

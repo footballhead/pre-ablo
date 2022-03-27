@@ -9,7 +9,7 @@ WARNING: This is a work-in-progress!
 * `pipenv run python setup_assets.py <prdemo.mpq> <retail.mpq>`
     * You can get the pre-release demo MPQ from diablo evolution
     * You can buy Diablo on GoG for retail MPQ
-    * Look I'm already morally conflicted about distributing files in missing_gfx OK just buy the game
+    * Look I'm already morally conflicted about distributing files in assets OK just buy the game
 
 ## Run
 

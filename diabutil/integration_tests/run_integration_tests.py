@@ -22,7 +22,7 @@ BUILD_DIR = (Path('..') / 'build').resolve()
 ASSETS_DIR = Path('assets').resolve()
 GOLDEN_DIR = Path('golden').resolve()
 OUTPUT_DIR = Path('output').resolve()
-MISSING_GFX_DIR = (Path('..') / '..' / 'missing_gfx').resolve()
+MISSING_GFX_DIR = (Path('..') / '..' / 'assets').resolve()
 
 cel2png = BUILD_DIR / 'cel2png' / 'cel2png'
 drawtext = BUILD_DIR / 'drawtext' / 'drawtext'

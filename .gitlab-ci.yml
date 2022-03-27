@@ -43,11 +43,11 @@ package:
     # Get pre-release demo and ddraw.dll, put in ./PRE-ABLO via conan imports
     - conan remote add gitlab https://gitlab.com/api/v4/projects/18183220/packages/conan 
     - conan install ./ci
-    # Combine DIABDAT.MPQ with missing_gfx/ using tools from previous step
+    # Combine DIABDAT.MPQ with assets/ using tools from previous step
     - mkdir mpq_staging
     - cd mpq_staging
     - cat ../tools/listfile.txt | ../diabutil/build/mpqextract/mpqextract ../PRE-ABLO/DIABDAT.MPQ
-    - for dir in $(cd ../missing_gfx/ && ls -d */); do cp -R "../missing_gfx/$dir" .; done
+    - for dir in $(cd ../assets/ && ls -d */); do cp -R "../assets/$dir" .; done
     - for dir in *; do find "$dir" -type f >> new_listfile.txt; done
     - cat new_listfile.txt | ../diabutil/build/mpqadd/mpqadd DIABDAT.MPQ
     - cd ..
