@@ -1,12 +1,39 @@
-# Missing Assets
+# Assets
+
+## Contents
 
 The directory contains:
 
-* `levels/l2data`: catacombs graphics, from Alpha4 with modifications (see #11)
-* `levels/l3data`: caves graphics, from Alpha4 with modifications (see #11)
-* `monsters`: missing monster graphics, from Alpha4
-* `plrgfx/rogue`: rogue graphics, from Alpha4
-* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Battle.net Beta
+### Missing Files
+
+These files are required past dlvl 1 but are missing from the MPQ
+
+* `levels/l2data`: catacombs graphics, from Beta
+* `levels/l3data`: caves graphics, from Beta
+* `plrgfx/rogue`: rogue graphics, from Beta
+* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Beta
+* `monsters`: missing monster graphics, from Alpha4 (unknown provenance)
+
+TODO: Scripts to convert these from retail
+
+### Fixes
+
+* Beta only has rln/whn/wmn death. It's been copied to other weapons (see #117)
+* scbsd.cel was reconverted from retail (see #124)
+* wlnlm.cel from prdemo needs fixing (see #78)
+* l2.cel and l3.cel required backporting (see #11)
+* l3.amp required fixing (see #7)
+* fireman attack is broken in Beta, was fixed in alpha4
+
+### Known Issues
+
+* wludt is broken (see #115)
+* firemh.cel (see #119)
+* warrior fire cast no weapon is weird (see #79)
+* our magew.cel is actually retail mages.cel. We need 20 frames for pre-release demo but in retail magew.cel is only 1 frame.
+* some retail monster graphics don't match pre-release demo required frames (see #91)
+* some objects are broken (see #127)
+* I remember something about goatlord but can't remember now :X
 
 Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
@@ -22,16 +49,13 @@ If DIABDAT.MPQ is missing (e.g. if you delete it) then the game will load the fi
 2. Delete DIABDAT.MPQ
 3. Merge these directories with the ones you just extracted.
 
-This will break music. To get music working, check out [music-nompq-fix](../music-nompq-fix)
+This will break music. To get music working, use `music_nompq_fix` patch
 
-### Modify the MPQ
+### Generate pre-ablo.mpq
 
-**The latest Ladik's MPQ Editor will not work.** Prefer the known working version I've included in [../tools/mpqediten32_3.5.1.795](../tools/mpqediten32_3.5.1.795)
+We provide `package.sh` to generate our own `pre-ablo.mpq`. This works with the `load_mpq_customizations` patch.
 
-Open the MPQ, then drag & drop these folders into the right place.
+You can modify `package.sh` to include your files alongside the other Pre-ablo assets.
 
-## Notes
-
-* caves minimap doesn't 100% work, see https://gitlab.com/moralbacteria/diablo-prdemo-patches/-/issues/7
-* monsters/mage/magew.cel is actually mages.cel (since it's the required 20 frames). In retail, magew.cel is only 1 frame.
-* 
+If you are modifying the MPQ manually, **The latest Ladik's MPQ Editor will not work.**
+Prefer the known working version I've included in [../tools/mpqediten32_3.5.1.795](../tools/mpqediten32_3.5.1.795)
