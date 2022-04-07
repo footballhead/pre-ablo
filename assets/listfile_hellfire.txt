@@ -1,1 +1,7 @@
 monsters/unrav/unrava.cl2
+monsters/unrav/unravw.cl2
+monsters/antworm/worma.cl2
+monsters/antworm/wormd.cl2
+monsters/antworm/wormh.cl2
+monsters/antworm/wormn.cl2
+monsters/antworm/wormw.cl2

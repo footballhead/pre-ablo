@@ -95,22 +95,12 @@ do
 	python cl2_to_cel.py --input monsters/succ/scbs${i}.cl2 --width 128 --groups 8 --output monsters/succ/scbs${i}.cel
 	python cl2_to_cel.py --input monsters/thin/thin${i}.cl2 --width 160 --groups 8 --output monsters/thin/thin${i}.cel
 	python cl2_to_cel.py --input monsters/tsneak/tsneak${i}.cl2 --width 128 --groups 8 --output monsters/tsneak/tsneak${i}.cel
+	python cl2_to_cel.py --input monsters/unrav/unrav${i}.cl2 --width 128 --groups 8 --output monsters/unrav/unrav${i}.cel
+	#python cl2_to_cel.py --input monsters/antworm/worm${i}.cl2 --width 128 --groups 8 --output monsters/worm/worm${i}.cel
 done
 
 python cl2_to_cel.py --input monsters/snake/snakes.cl2 --width 160 --groups 8 --output monsters/snake/snakes.cel
 python cl2_to_cel.py --input monsters/thin/thins.cl2 --width 160 --groups 8 --output monsters/thin/thins.cel
-
-# monsters/tsneak/tsneaka.cl2
-# monsters/tsneak/tsneakd.cl2
-# monsters/tsneak/tsneakh.cl2
-# monsters/tsneak/tsneakn.cl2
-# monsters/tsneak/tsneakw.cl2
-# ${cl2_to_cel} -i monsters/unrav/unrava.cl2 -w 96 -g 8 -o monsters/unrav/unrava.cel
-# monsters/unrav/unravd.cl2
-# monsters/unrav/unravh.cl2
-# monsters/unrav/unravn.cl2
-
-# TODO unravw.cel
 
 #
 # CLEANUP

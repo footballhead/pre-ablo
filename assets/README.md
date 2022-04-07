@@ -36,6 +36,8 @@ TODO: Scripts to convert these from retail
 * goatld.cel levitates on certain death angles
 * unrava.cel needs to come from hellfire because retail is broken
     * This has a shadow compared to the others! which makes it out of place
+* In a similar vein, unravw.cel needs to come from hellfire because it's missing in retail, so see note about shadow
+* Worm graphics come from hellfire antworm with a palette swap and width reduction (192 -> 160) because the real worm graphics have not been found yet :(
 
 Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
