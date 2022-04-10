@@ -9,37 +9,35 @@ The directory contains:
 These files are required past dlvl 1 but are missing from the MPQ
 
 * `levels/l2data`: catacombs graphics, from Beta
+    * `l2.cel` required backporting (see #11)
 * `levels/l3data`: caves graphics, from Beta
+    * `l3.cel` required backporting (see #11)
+    * `l3.amp` required fixing (see #7)
 * `plrgfx/rogue`: rogue graphics, from Beta
-* `plrfgx/warrrior`: warrior graphics for Medium/Heavy armor, from Beta
-* `monsters`: missing monster graphics, from Alpha4 (unknown provenance)
-
-TODO: Scripts to convert these from retail
-
-### Fixes
-
-* Beta only has rln/whn/wmn death. It's been copied to other weapons (see #117)
-* scbsd.cel was reconverted from retail (see #124)
-* wlnlm.cel + wludt.cel from prdemo needs header fixing (see #78)
-* l2.cel and l3.cel required backporting (see #11)
-* l3.amp required fixing (see #7)
-* fireman attack is broken in Beta, was fixed in alpha4
+    * `rlndt` is the only death animation. It's been copied to other weapons (see #117)
+* `plrfgx/warrior`: warrior graphics for Medium/Heavy armor, from Beta
+    * `wmndt`/`whndt` are the only death animtions. They've been copied to other weapons (see #117)
+    * `wlnlm`/`wludt` is from pre-release demo but the header needs header fixing (see #78, #115)
+* `monsters`: missing monster graphics, from retail/beta/hellfire/alpha4
+    * `firema` required fixing (see fix_fireman.py)
 
 ### Known Issues
 
-* wludt has wrong number of frames (see #115)
-* firemh.cel (see #119)
+* `wludt` has wrong number of frames (see #115)
+* `firemh` levitates (see #119)
 * warrior fire cast no weapon is weird (see #79)
-* our magew.cel is actually retail mages.cel. We need 20 frames for pre-release demo but in retail magew.cel is only 1 frame.
-* some retail monster graphics don't match pre-release demo required frames (see #91)
+* `magew` is actually retail `mages`. We need 20 frames for pre-release demo but in retail magew.cl2 is only 1 frame.
+* Some retail graphics don't match Pre-Release Demo required frames (see #91)
+    * Notably `mega` (see #56) and `snake` (see #25)
 * some objects are broken (see #127)
-* goatld.cel levitates on certain death angles
-* unrava.cel needs to come from hellfire because retail is broken
+* `goatld` levitates on certain death angles
+* `unrava` needs to come from hellfire because retail is garbled
     * This has a shadow compared to the others! which makes it out of place
-* In a similar vein, unravw.cel needs to come from hellfire because it's missing in retail, so see note about shadow
-* Worm graphics come from hellfire antworm with a palette swap and width reduction (192 -> 160) because the real worm graphics have not been found yet :(
+* `unravw` needs to come from hellfire because it's broken in retail (and once you fix the header it's garbled still)
+    * This has a shadow compared to the others! which makes it out of place
+* `worm` graphics haven't been found yet so they come from Alpha4, which itself is derived form hellfire `antworm` with a palette swap and width reduction (192 -> 160)
 
-Thanks to Diablo Evolution for a lot of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
+Thanks to Diablo Evolution for some of these, check them out: https://diablo-evolution.net/index.php?pageid=alpha4
 
 ## Installing
 

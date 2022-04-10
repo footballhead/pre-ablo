@@ -47,6 +47,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
+  int return_code = 0;
   std::string line;
   while (std::getline(std::cin, line)) {
     // This is more for my sanity (especially on Docker with Windows files
@@ -77,10 +78,11 @@ int main(int argc, char **argv) {
       std::cerr << "Failed to extract file. Continuing...\n"
                 << "  err=" << GetLastError() << '\n'
                 << "  line=" << line << '\n';
+      return_code = 1;
       continue;
     }
   }
 
   SFileCloseArchive(mpq);
-  return 0;
+  return return_code;
 }

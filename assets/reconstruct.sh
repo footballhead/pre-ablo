@@ -95,7 +95,7 @@ do
 	python cl2_to_cel.py --input monsters/succ/scbs${i}.cl2 --width 128 --groups 8 --output monsters/succ/scbs${i}.cel
 	python cl2_to_cel.py --input monsters/thin/thin${i}.cl2 --width 160 --groups 8 --output monsters/thin/thin${i}.cel
 	python cl2_to_cel.py --input monsters/tsneak/tsneak${i}.cl2 --width 128 --groups 8 --output monsters/tsneak/tsneak${i}.cel
-	python cl2_to_cel.py --input monsters/unrav/unrav${i}.cl2 --width 128 --groups 8 --output monsters/unrav/unrav${i}.cel
+	python cl2_to_cel.py --input monsters/unrav/unrav${i}.cl2 --width 96 --groups 8 --output monsters/unrav/unrav${i}.cel
 	#python cl2_to_cel.py --input monsters/antworm/worm${i}.cl2 --width 128 --groups 8 --output monsters/worm/worm${i}.cel
 done
 
