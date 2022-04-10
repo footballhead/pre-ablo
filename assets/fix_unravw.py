@@ -5,6 +5,7 @@ from pathlib import Path
 # the same problems as unrava... The height is wrong, there are the wrong
 # number of frames, and the graphics are randomly translated and cropped.
 
+
 def main() -> int:
     if len(sys.argv) != 3:
         print(f'Usage: {sys.argv[0]} unravw.cel output.cel')
