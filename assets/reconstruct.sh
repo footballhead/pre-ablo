@@ -15,7 +15,6 @@ beta=$2
 retail=$3
 hellfire=$4
 
-fixamp=$(realpath ../diabutil/build/fixamp/fixamp)
 joincel=$(realpath ../diabutil/build/joincel/joincel)
 mpqextract=$(realpath ../diabutil/build/mpqextract/mpqextract)
 retail2prdemo=$(realpath ../diabutil/build/retail2prdemo/retail2prdemo)
@@ -61,7 +60,7 @@ cd "${old_pwd}"
 rm -rf "${tmp}"
 
 # l3.amp
-${fixamp} levels/l3data/l3.amp
+python fix_l3_amp.py levels/l3data/l3.amp levels/l3data/l3.amp
 
 # copy death animations to cover for missing files
 for i in a b d h m s t u
