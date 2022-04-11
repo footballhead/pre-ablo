@@ -32,6 +32,7 @@ DECLARE_PATCH(old_drlg);
 DECLARE_PATCH(only_magma_demons);
 DECLARE_PATCH(options_menu);
 DECLARE_PATCH(panic_teleport);
+DECLARE_PATCH(plrgfx_frame_fix);
 DECLARE_PATCH(randomize_leveltype);
 DECLARE_PATCH(retail_music);
 DECLARE_PATCH(savegame_patch_fix);
@@ -85,6 +86,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(only_magma_demons)
     REGISTER_PATCH_RECOMMENDED(options_menu)
     REGISTER_PATCH_DEBUG(panic_teleport)
+    REGISTER_PATCH_RECOMMENDED(plrgfx_frame_fix)
     REGISTER_PATCH_DEBUG(randomize_leveltype)
     REGISTER_PATCH_DEBUG(retail_music)
     REGISTER_PATCH_DEBUG(savegame_patch_fix)
