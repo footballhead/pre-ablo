@@ -79,7 +79,7 @@ PATCH_MAIN
         0x8B, 0x88, 0x04, 0x59, 0x60, 0x00, // mov     ecx, plr_pgfxnum[eax]
     };
     ok &= patch_bytes(0x00466853, pre_call, sizeof(pre_call));
-    ok &= patch_call(0x00466853 + sizeof(pre_call), get_warrior_DFrames);
+    ok &= patch_call(0x00466853 + sizeof(pre_call), (void*)get_warrior_DFrames);
     constexpr auto CALL_SIZE = 5;
     // Inspiration from .text:0041544D (I could probably move edx, ecx but I'm not good at machine code lol)
     constexpr uint8_t post_call[] = {
