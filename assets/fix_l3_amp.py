@@ -9,9 +9,7 @@ MAPFLAG_DIRT: int = 0x40 << 8
 def main() -> int:
     if len(sys.argv) != 3:
         print(f'Usage: python {sys.argv[0]} l3.amp out.amp')
-        print(
-            'Turn unrecognized tiles into dirt for for better visibility'
-        )
+        print('Turn unrecognized tiles into dirt for for better visibility')
         return 1
 
     fixed = b''

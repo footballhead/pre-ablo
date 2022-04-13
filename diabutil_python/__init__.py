@@ -25,7 +25,21 @@ def read_uint32(data: bytes,
     return int.from_bytes(data[i:i + UINT32_SIZE], byteorder=byteorder)
 
 
-def decompose_cel(data: bytes, num_groups: int) -> List[List[bytes]]:
+def decompose_no_groups(data: bytes) -> List[bytes]:
+    """Turn byte stream into cel[frame]."""
+    cel = []
+
+    num_frames = read_uint32(data, 0)
+    for frame_i in range(num_frames):
+        # + UINT32_SIZE to skip num_frames (already read!)
+        begin = read_uint32(data, UINT32_SIZE + frame_i * UINT32_SIZE)
+        end = read_uint32(data, UINT32_SIZE + (frame_i + 1) * UINT32_SIZE)
+        cel.append(data[begin:end])
+
+    return cel
+
+
+def decompose_with_groups(data: bytes, num_groups: int) -> List[List[bytes]]:
     """Turn byte stream into cel[group][frame]. Works on both .CEL and .CL2"""
     assert (num_groups > 0)
 

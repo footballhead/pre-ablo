@@ -4,7 +4,7 @@ from pathlib import Path
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import CelBuilder, decompose_cel, FRAME_HEADER_SIZE, serialize_with_groups
+from diabutil_python import CelBuilder, decompose_with_groups, FRAME_HEADER_SIZE, serialize_with_groups
 
 UINT8_SIZE: int = 1
 
@@ -51,7 +51,8 @@ def main() -> int:
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
 
-    cl2 = decompose_cel(args.input.read_bytes(), args.groups)
+    # TODO conversion without --groups specified
+    cl2 = decompose_with_groups(args.input.read_bytes(), args.groups)
     cel = []
 
     for group in cl2:

@@ -4,7 +4,7 @@ from typing import List, Literal
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_cel, serialize_with_groups, UINT16_SIZE, UINT8_SIZE
+from diabutil_python import decompose_with_groups, serialize_with_groups, UINT16_SIZE, UINT8_SIZE
 
 FIREMA_NUM_GROUPS: int = 8
 
@@ -29,6 +29,7 @@ def fix_frame(data: bytes) -> bytes:
 
     # We make our own header so skip the existing header
     i = 5 * UINT16_SIZE
+    # TODO generalize this routine into a CelParser, use CelBuilder
     while i < len(data):
         # Read+copy instruction
         newdata += data[i:i + UINT8_SIZE]
@@ -78,7 +79,7 @@ def main() -> int:
         print(f'Usage: {sys.argv[0]} firema.cel output.cel')
         return 1
 
-    original_cel = decompose_cel(
+    original_cel = decompose_with_groups(
         Path(sys.argv[1]).read_bytes(), FIREMA_NUM_GROUPS)
 
     fixed_cel = [[fix_frame(frame) for frame in group]

@@ -4,7 +4,7 @@ from pathlib import Path
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_cel, serialize_with_groups
+from diabutil_python import decompose_with_groups, serialize_with_groups
 
 WLUDT_NUM_GROUPS: int = 8
 
@@ -36,7 +36,7 @@ def main() -> int:
     fixed_cel = []
     flat_frames = list(
         itertools.chain.from_iterable(
-            decompose_cel(wludt_fixed_header, WLUDT_NUM_GROUPS)))
+            decompose_with_groups(wludt_fixed_header, WLUDT_NUM_GROUPS)))
     for num in [20, 20, 20, 20, 20, 16, 20, 16]:
         fixed_cel.append(flat_frames[:num])
         flat_frames = flat_frames[num:]
