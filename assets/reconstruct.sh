@@ -15,10 +15,7 @@ beta=$2
 retail=$3
 hellfire=$4
 
-joincel=$(realpath ../diabutil/build/joincel/joincel)
 mpqextract=$(realpath ../diabutil/build/mpqextract/mpqextract)
-retail2prdemo=$(realpath ../diabutil/build/retail2prdemo/retail2prdemo)
-splitcel=$(realpath ../diabutil/build/splitcel/splitcel)
 
 #
 # EXTRACT
@@ -34,35 +31,16 @@ cat ./listfile_hellfire.txt | ${mpqextract} "${hellfire}"
 #
 
 # l2.cel
-tmp=$(mktemp -d)
-cp levels/l2data/* "${tmp}"
-
-old_pwd=$(pwd -P)
-cd "${tmp}"
-${splitcel} l2.cel .
-${retail2prdemo} l2.min
-${joincel} 1471 l2_fix.cel
-cp l2_fix.cel "${old_pwd}/levels/l2data/l2.cel"
-cd "${old_pwd}"
-rm -rf "${tmp}"
+python fix_dungeon_cels.py levels/l2data/l2.cel levels/l2data/l2.min levels/l2data/l2.cel
 
 # l3.cel
-tmp=$(mktemp -d)
-cp levels/l3data/* "${tmp}"
-
-old_pwd=$(pwd -P)
-cd "${tmp}"
-${splitcel} l3.cel .
-${retail2prdemo} l3.min
-${joincel} 1771 l3_fix.cel
-cp l3_fix.cel "${old_pwd}/levels/l3data/l3.cel"
-cd "${old_pwd}"
-rm -rf "${tmp}"
+python fix_dungeon_cels.py levels/l3data/l3.cel levels/l3data/l3.min levels/l3data/l3.cel
 
 # l3.amp
 python fix_l3_amp.py levels/l3data/l3.amp levels/l3data/l3.amp
 
-# copy death animations to cover for missing files
+# Copy death animations to cover for missing files.
+# We use the plrgfx_frame_fix patch to ensure frames in the code binary match the assets (to avoid crashing)
 for i in a b d h m s t u
 do
 	cp plrgfx/warrior/wmn/wmndt.cel plrgfx/warrior/wm${i}/wm${i}dt.cel
@@ -79,8 +57,8 @@ python fix_wlnlm.py plrgfx/warrior/wln/wlnlm.cel plrgfx/warrior/wln/wlnlm.cel
 # wludt.cel
 python fix_wludt.py plrgfx/warrior/wlu/wludt.cel plrgfx/warrior/wlu/wludt.cel
 
-# For magee, use mages instead because of # of frames
-cp monsters/mage/mages.cl2 monsters/mage/magew.cl2
+# Use mages instead of magew because we need a 20 frame animation
+mv monsters/mage/mages.cl2 monsters/mage/magew.cl2
 
 # Convert monster GFX
 for i in a d h n w
