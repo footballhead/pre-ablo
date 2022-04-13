@@ -4,7 +4,7 @@ from pathlib import Path
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_cel, serialize
+from diabutil_python import decompose_cel, serialize_with_groups
 
 WLUDT_NUM_GROUPS: int = 8
 
@@ -48,7 +48,7 @@ def main() -> int:
     fixed_cel[7] += fixed_cel[7][-1:] * 4
 
     # Write result
-    Path(sys.argv[2]).write_bytes(serialize(fixed_cel))
+    Path(sys.argv[2]).write_bytes(serialize_with_groups(fixed_cel))
 
     return 0
 

@@ -50,37 +50,45 @@ def decompose_cel(data: bytes, num_groups: int) -> List[List[bytes]]:
     return cel
 
 
-def serialize(groups: List[List[bytes]]) -> bytes:
+def _join_frames(frames: List[bytes]) -> bytes:
+    """Turn all frames into a serializable chunk with a header"""
+    header = len(frames).to_bytes(UINT32_SIZE, 'little')
+
+    # Header is 1 uint32 for num_frames then n+1 uint32 for frame start/end
+    header_size = (len(frames) + 2) * UINT32_SIZE
+    offset = header_size
+    for frame in frames:
+        header += offset.to_bytes(UINT32_SIZE, 'little')
+        offset += len(frame)
+    header += offset.to_bytes(UINT32_SIZE, 'little')
+
+    return header + b''.join(frames)
+
+
+def _join_groups(groups: List[bytes]) -> bytes:
+    """Turn all groups into a serializable chunk with a header"""
+
+    header = b''
+
+    header_size = len(groups) * UINT32_SIZE
+    offset = header_size
+    for group in groups:
+        header += offset.to_bytes(UINT32_SIZE, 'little')
+        offset += len(group)
+
+    return header + b''.join(groups)
+
+
+def serialize_no_groups(cel: List[bytes]) -> bytes:
+    """Turn a cel[frame] into a stream of .CEL bytes"""
+
+    return _join_frames(cel)
+
+
+def serialize_with_groups(cel: List[List[bytes]]) -> bytes:
     """Turn a cel[group][frame] structure into a stream of .CEL bytes"""
 
-    def join_frames(frames: List[bytes]) -> bytes:
-        """Turn all frames into a serializable chunk with a header"""
-        header = len(frames).to_bytes(UINT32_SIZE, 'little')
-
-        # Header is 1 uint32 for num_frames then n+1 uint32 for frame start/end
-        header_size = (len(frames) + 2) * UINT32_SIZE
-        offset = header_size
-        for frame in frames:
-            header += offset.to_bytes(UINT32_SIZE, 'little')
-            offset += len(frame)
-        header += offset.to_bytes(UINT32_SIZE, 'little')
-
-        return header + b''.join(frames)
-
-    def join_groups(groups: List[bytes]) -> bytes:
-        """Turn all groups into a serializable chunk with a header"""
-
-        header = b''
-
-        header_size = len(groups) * UINT32_SIZE
-        offset = header_size
-        for group in groups:
-            header += offset.to_bytes(UINT32_SIZE, 'little')
-            offset += len(group)
-
-        return header + b''.join(groups)
-
-    return join_groups([join_frames(frames) for frames in groups])
+    return _join_groups([_join_frames(group) for group in cel])
 
 
 class CelBuilder:

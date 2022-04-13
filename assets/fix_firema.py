@@ -4,7 +4,7 @@ from typing import List, Literal
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_cel, serialize, UINT16_SIZE, UINT8_SIZE
+from diabutil_python import decompose_cel, serialize_with_groups, UINT16_SIZE, UINT8_SIZE
 
 FIREMA_NUM_GROUPS: int = 8
 
@@ -84,7 +84,7 @@ def main() -> int:
     fixed_cel = [[fix_frame(frame) for frame in group]
                  for group in original_cel]
 
-    Path(sys.argv[2]).write_bytes(serialize(fixed_cel))
+    Path(sys.argv[2]).write_bytes(serialize_with_groups(fixed_cel))
 
     return 0
 

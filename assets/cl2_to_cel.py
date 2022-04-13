@@ -4,7 +4,7 @@ from pathlib import Path
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import CelBuilder, decompose_cel, FRAME_HEADER_SIZE, serialize, read_uint32, UINT32_SIZE
+from diabutil_python import CelBuilder, decompose_cel, FRAME_HEADER_SIZE, serialize_with_groups
 
 UINT8_SIZE: int = 1
 
@@ -57,7 +57,8 @@ def main() -> int:
     for group in cl2:
         cel.append([convert_frame(frame, args.width) for frame in group])
 
-    args.output.write_bytes(serialize(cel))
+    # TODO conversion without --groups specified
+    args.output.write_bytes(serialize_with_groups(cel))
 
     return 0
 
