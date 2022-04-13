@@ -19,17 +19,11 @@ mpqextract = BUILD_DIR / 'mpqextract' / 'Debug' / 'mpqextract'
 # Fed as input to subprocess so must be byte-string
 PRDEMO_LISTFILE = b'''data/bigtgold.cel
 gendata/mainmenu.pal
-data/inv/objcurs.cel
-monsters/bat/bata.cel
-objects/vapor1.cel
 '''
 
 # Fed as input to subprocess so must be byte-string
 RETAIL_LISTFILE = b'''ui_art/font42.bin
 ui_art/font42g.pcx
-levels/l3data/l3.amp
-levels/l3data/l3.cel
-levels/l3data/l3.min
 '''
 
 

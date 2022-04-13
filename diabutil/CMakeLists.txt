@@ -29,16 +29,9 @@ add_subdirectory(diabutil)
 # Internal command-lines
 #
 add_subdirectory(cel2png)
-add_subdirectory(cl2_to_cel)
 add_subdirectory(drawtext)
 add_subdirectory(drawtextpcx)
-add_subdirectory(fixamp)
-add_subdirectory(joincel)
-add_subdirectory(joingroups)
 add_subdirectory(png2cel)
-add_subdirectory(retail2prdemo)
-add_subdirectory(splitcel)
-add_subdirectory(splitgroups)
 
 #
 # StormLib is causing problems so isolate
