@@ -3,18 +3,19 @@ import os
 import subprocess
 import sys
 import shutil
+from typing import List
 
 # Scripts local to current directory (assets/)
 from cl2_to_cel import cl2_to_cel
 from fix_dungeon_cels import fix_dungeon_cels
 from fix_firema import fix_firema
 from fix_l3_amp import fix_l3_amp
-from fix_snakea import fix_snakea
-from fix_snakew import fix_snakew
 from fix_wlnlm import fix_wlnlm
 from fix_wludt import fix_wludt
 
 THIS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(THIS_DIR.parent))
+from diabutil_python import decompose_with_groups, serialize_with_groups
 
 
 def mpq_extract(mpq: Path, listfile: Path) -> None:
@@ -31,6 +32,22 @@ def cl2_convert(file: Path, width: int, groups: int):
     down on typing and line length.
     """
     cl2_to_cel(file, width, groups, file.with_suffix('.cel'))
+
+
+def _reanimate(file: Path, groups: int, frames: List[int]):
+    """Mutate a grouped cel to reorder/add/remove animation frames"""
+
+    def _reanimate_cel(cel: List[List[bytes]], frames: List[int]):
+        for group in cel:
+            new_group = [group[i] for i in frames]
+            # `group` is a reference to part of `cel`; to mutate it we need to
+            # call functions on the `list` object
+            group.clear()
+            group.extend(new_group)
+
+    cel = decompose_with_groups(file.read_bytes(), groups)
+    _reanimate_cel(cel, frames)
+    file.write_bytes(serialize_with_groups(cel))
 
 
 def main() -> int:
@@ -105,6 +122,9 @@ def main() -> int:
         cl2_convert(THIS_DIR / 'monsters' / 'mage' / f'mage{i}.cl2',
                     width=128,
                     groups=8)
+        cl2_convert(THIS_DIR / 'monsters' / 'mega' / f'mega{i}.cl2',
+                    width=160,
+                    groups=8)
         cl2_convert(THIS_DIR / 'monsters' / 'snake' / f'snake{i}.cl2',
                     width=160,
                     groups=8)
@@ -129,10 +149,26 @@ def main() -> int:
                 groups=8)
 
     # Modify graphics to match demo frame table
-    fix_snakea(THIS_DIR / 'monsters' / 'snake' / f'snakea.cel',
-               THIS_DIR / 'monsters' / 'snake' / f'snakea.cel')
-    fix_snakew(THIS_DIR / 'monsters' / 'snake' / f'snakew.cel',
-               THIS_DIR / 'monsters' / 'snake' / f'snakew.cel')
+    # snake attack: turn 13 frames into 14 frames
+    _reanimate(THIS_DIR / 'monsters' / 'snake' / f'snakea.cel',
+               groups=8,
+               frames=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12])
+    # snake walk: turn 11 frames to 12 frames
+    _reanimate(THIS_DIR / 'monsters' / 'snake' / f'snakew.cel',
+               groups=8,
+               frames=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10])
+    # mega hit: turn 1 frame into 9 frames (ughhhhh)
+    _reanimate(THIS_DIR / 'monsters' / 'mega' / f'megah.cel',
+               groups=8,
+               frames=[0] * 9)
+    # mega neutral: turn 6 frames into 14 frames
+    _reanimate(THIS_DIR / 'monsters' / 'mega' / f'megan.cel',
+               groups=8,
+               frames=[0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4, 5, 5])
+    # mega walk: turn 7 frames into 9 frames
+    _reanimate(THIS_DIR / 'monsters' / 'mega' / f'megaw.cel',
+               groups=8,
+               frames=[0, 1, 2, 2, 3, 4, 4, 5, 6])
 
     # Cleanup (remove all .CL2 files)
     for root, _, files in os.walk(THIS_DIR / 'monsters'):
