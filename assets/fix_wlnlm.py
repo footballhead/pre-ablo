@@ -1,13 +1,10 @@
 import sys
 from pathlib import Path
+from typing import List
 
 
-def main() -> int:
-    if len(sys.argv) != 3:
-        print(f'Usage: {sys.argv[0]} wlnlm.cel output.cel')
-        return 1
-
-    wlnlm_bytes = Path(sys.argv[1]).read_bytes()
+def fix_wlnlm(in_file: Path, out_file: Path):
+    wlnlm_bytes = in_file.read_bytes()
 
     # There's no pattern to fix the header so just hardcode what we expect.
     new_header = b'\x20\x00\x00\x00' +\
@@ -20,10 +17,18 @@ def main() -> int:
                  b'\xc1\xec\x03\x00'
 
     # Chop off old header, add our header
-    Path(sys.argv[2]).write_bytes(new_header + wlnlm_bytes[len(new_header):])
+    out_file.write_bytes(new_header + wlnlm_bytes[len(new_header):])
+
+
+def main(argv: List[str]) -> int:
+    if len(argv) != 3:
+        print(f'Usage: {argv[0]} wlnlm.cel output.cel')
+        return 1
+
+    fix_wlnlm(Path(argv[1]), Path(argv[2]))
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

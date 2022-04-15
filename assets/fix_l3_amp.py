@@ -1,20 +1,17 @@
+from importlib.resources import path
 import sys
 from pathlib import Path
+from typing import List
 
 UINT16_SIZE: int = 2
 MAPFLAG_TYPE_MASK: int = 0xF
 MAPFLAG_DIRT: int = 0x40 << 8
 
 
-def main() -> int:
-    if len(sys.argv) != 3:
-        print(f'Usage: python {sys.argv[0]} l3.amp out.amp')
-        print('Turn unrecognized tiles into dirt for for better visibility')
-        return 1
-
+def fix_l3_amp(in_file: Path, out_file: Path):
     fixed = b''
 
-    amp = Path(sys.argv[1]).read_bytes()
+    amp = in_file.read_bytes()
     while amp:
         uint16 = int.from_bytes(amp[:UINT16_SIZE], 'little')
 
@@ -33,10 +30,19 @@ def main() -> int:
         fixed += (type | flags).to_bytes(UINT16_SIZE, 'little')
         amp = amp[UINT16_SIZE:]
 
-    Path(sys.argv[2]).write_bytes(fixed)
+    out_file.write_bytes(fixed)
+
+
+def main(argv: List[str]) -> int:
+    if len(argv) != 3:
+        print(f'Usage: python {argv[0]} l3.amp out.amp')
+        print('Turn unrecognized tiles into dirt for for better visibility')
+        return 1
+
+    fix_l3_amp(Path(argv[1]), Path(argv[2]))
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

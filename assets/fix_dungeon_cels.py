@@ -21,11 +21,7 @@ def parse_min(data: bytes) -> List[MiniTile]:
     ]
 
 
-def main() -> int:
-    if len(sys.argv) != 4:
-        print(f'Usage: python {sys.argv[0]} l2.cel l2.min out.cel')
-        return 1
-
+def fix_dungeon_cels(cel_file: Path, min_file: Path, out_file: Path):
     # TODO: These functions are a straight port of the C++ code and could be written to be more pythonic
 
     def remove_2_bytes(data: bytes, i: int) -> bytes:
@@ -87,11 +83,11 @@ def main() -> int:
         # Do nothing for other cases
     ]
 
-    cel = decompose_no_groups(Path(sys.argv[1]).read_bytes())
-    fixed = set()
-    min = parse_min(Path(sys.argv[2]).read_bytes())
+    cel = decompose_no_groups(cel_file.read_bytes())
+    min = parse_min(min_file.read_bytes())
 
     # Remove 2 bytes of black pixels from each row of affected graphics
+    fixed = set()
     for tile in min:
         if switch[tile.type]:
             # Diablo loves 1-based arrays. We use 0-based arrays for CEL frame-indexing
@@ -103,10 +99,18 @@ def main() -> int:
 
     print(f'Fixed {len(fixed)} tiles')
 
-    Path(sys.argv[3]).write_bytes(serialize_no_groups(cel))
+    out_file.write_bytes(serialize_no_groups(cel))
+
+
+def main(argv: List[str]) -> int:
+    if len(argv) != 4:
+        print(f'Usage: python {argv[0]} l2.cel l2.min out.cel')
+        return 1
+
+    fix_dungeon_cels(Path(argv[1]), Path(argv[2]), Path(argv[3]))
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

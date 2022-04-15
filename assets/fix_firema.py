@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import List, Literal
+from typing import List
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
@@ -74,21 +74,25 @@ def fix_frame(data: bytes) -> bytes:
          for offset in header_offsets]) + newdata
 
 
-def main() -> int:
-    if len(sys.argv) != 3:
-        print(f'Usage: {sys.argv[0]} firema.cel output.cel')
-        return 1
-
+def fix_firema(in_file: Path, out_file: Path):
     original_cel = decompose_with_groups(
-        Path(sys.argv[1]).read_bytes(), FIREMA_NUM_GROUPS)
+        in_file.read_bytes(), FIREMA_NUM_GROUPS)
 
     fixed_cel = [[fix_frame(frame) for frame in group]
                  for group in original_cel]
 
-    Path(sys.argv[2]).write_bytes(serialize_with_groups(fixed_cel))
+    out_file.write_bytes(serialize_with_groups(fixed_cel))
+
+
+def main(argv: List[str]) -> int:
+    if len(argv) != 3:
+        print(f'Usage: {argv[0]} firema.cel output.cel')
+        return 1
+
+    fix_firema(Path(argv[1]), Path(argv[2]))
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

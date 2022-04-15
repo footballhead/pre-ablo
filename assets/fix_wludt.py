@@ -1,6 +1,7 @@
 import sys
 import itertools
 from pathlib import Path
+from typing import List
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
@@ -23,13 +24,9 @@ def fix_header(data: bytes) -> bytes:
     return new_header + data[len(new_header):]
 
 
-def main() -> int:
-    if len(sys.argv) != 3:
-        print(f'Usage: {sys.argv[0]} wludt.cel output.cel')
-        return 1
-
+def fix_wludt(in_file: Path, out_file: Path) -> None:
     # Header is broken. Fix it first so our algorithms can read it
-    wludt_fixed_header = fix_header(Path(sys.argv[1]).read_bytes())
+    wludt_fixed_header = fix_header(in_file.read_bytes())
 
     # Correct the number of frames per group
     # (derived from manual inspection with TDG)
@@ -48,10 +45,18 @@ def main() -> int:
     fixed_cel[7] += fixed_cel[7][-1:] * 4
 
     # Write result
-    Path(sys.argv[2]).write_bytes(serialize_with_groups(fixed_cel))
+    out_file.write_bytes(serialize_with_groups(fixed_cel))
+
+
+def main(argv: List[str]) -> int:
+    if len(argv) != 3:
+        print(f'Usage: {argv[0]} wludt.cel output.cel')
+        return 1
+
+    fix_wludt(Path(argv[1]), Path(argv[2]))
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

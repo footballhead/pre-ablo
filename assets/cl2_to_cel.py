@@ -1,6 +1,7 @@
 import sys
 import argparse
 from pathlib import Path
+from typing import List
 
 THIS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(THIS_DIR.parent))
@@ -43,26 +44,30 @@ def convert_frame(data: bytes, width: int) -> bytes:
     return builder.build()
 
 
-def main() -> int:
+def cl2_to_cel(input: Path, width: int, groups: int, output: Path) -> None:
+    # TODO conversion without --groups specified
+    cl2 = decompose_with_groups(input.read_bytes(), groups)
+    cel = []
+
+    for group in cl2:
+        cel.append([convert_frame(frame, width) for frame in group])
+
+    # TODO conversion without --groups specified
+    output.write_bytes(serialize_with_groups(cel))
+
+
+def main(argv: List[str]) -> int:
     parser = argparse.ArgumentParser(description='Naively convert CL2 to CEL')
     parser.add_argument('--input', type=Path, required=True)
     parser.add_argument('--width', type=int, required=True)
     parser.add_argument('--groups', type=int, required=True)
     parser.add_argument('--output', type=Path, required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(argv[1:])
 
-    # TODO conversion without --groups specified
-    cl2 = decompose_with_groups(args.input.read_bytes(), args.groups)
-    cel = []
-
-    for group in cl2:
-        cel.append([convert_frame(frame, args.width) for frame in group])
-
-    # TODO conversion without --groups specified
-    args.output.write_bytes(serialize_with_groups(cel))
+    cl2_to_cel(args.input, args.width, args.groups, args.output)
 
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))
