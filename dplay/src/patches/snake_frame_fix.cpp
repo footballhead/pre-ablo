@@ -8,7 +8,6 @@ DESCRIBE_PATCH("Prevent a crash when drawing the snake enemies by altering the a
 
 namespace {
 
-constexpr int new_mImgSize = 2220;
 constexpr int new_Frames[] = {12, 11, 13, 5, 18, 16}; // only [1] and [2] differ
 
 } // namespace

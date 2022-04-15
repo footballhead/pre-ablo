@@ -77,7 +77,7 @@ const Patch patches_registry[] = {
     {"load_mpq_customizations", load_mpq_customizations_description, load_mpq_customizations_main, /*checked=*/true, "pre-ablo.mpq"},
     REGISTER_PATCH_DEBUG(magic_find_x3)
     REGISTER_PATCH_DEBUG(max_monster_types)
-    REGISTER_PATCH_DEBUG(mega_fix)
+    REGISTER_PATCH_RECOMMENDED(mega_fix)
     REGISTER_PATCH_DEBUG(monster_density_x2)
     REGISTER_PATCH_DEBUG(music_nompq_fix)
     REGISTER_PATCH_DEBUG(no_death_anim)
