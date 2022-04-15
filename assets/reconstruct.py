@@ -9,6 +9,8 @@ from cl2_to_cel import cl2_to_cel
 from fix_dungeon_cels import fix_dungeon_cels
 from fix_firema import fix_firema
 from fix_l3_amp import fix_l3_amp
+from fix_snakea import fix_snakea
+from fix_snakew import fix_snakew
 from fix_wlnlm import fix_wlnlm
 from fix_wludt import fix_wludt
 
@@ -125,6 +127,12 @@ def main() -> int:
     cl2_convert(THIS_DIR / 'monsters' / 'thin' / f'thins.cl2',
                 width=160,
                 groups=8)
+
+    # Modify graphics to match demo frame table
+    fix_snakea(THIS_DIR / 'monsters' / 'snake' / f'snakea.cel',
+               THIS_DIR / 'monsters' / 'snake' / f'snakea.cel')
+    fix_snakew(THIS_DIR / 'monsters' / 'snake' / f'snakew.cel',
+               THIS_DIR / 'monsters' / 'snake' / f'snakew.cel')
 
     # Cleanup (remove all .CL2 files)
     for root, _, files in os.walk(THIS_DIR / 'monsters'):

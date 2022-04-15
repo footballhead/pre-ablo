@@ -92,7 +92,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(savegame_patch_fix)
     REGISTER_PATCH_RECOMMENDED(skip_intros)
     REGISTER_PATCH_DEBUG(skip_outro)
-    REGISTER_PATCH_RECOMMENDED(snake_frame_fix)
+    REGISTER_PATCH_DEBUG(snake_frame_fix)
     REGISTER_PATCH_RECOMMENDED(stone_curse_missile_fix)
     REGISTER_PATCH_RECOMMENDED(thunder_demon_missile_fix)
     REGISTER_PATCH_RECOMMENDED(too_much_hp_crash)
