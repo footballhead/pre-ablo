@@ -34,6 +34,21 @@ dplay:
   except:
     - pages
 
+reset_dungeon:
+  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
+  stage: build
+  script:
+    - cd reset_dungeon
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=../dplay/mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+    - make -j $(nproc)
+  artifacts:
+    paths:
+      - reset_dungeon/build/reset_dungeon.exe
+  except:
+    - pages
+
 package:
   # This is an official conan image. We only use it for conan (not GCC)
   # TODO: We could probably create a custom alpine with just conan installed...
@@ -51,6 +66,7 @@ package:
     - cp assets/pre-ablo.mpq PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
     - cp dplay/build/dplay.dll PRE-ABLO/
+    - cp reset_dungeon/build/reset_dungeon.exe PRE-ABLO/
   artifacts:
     name: "pre-ablo_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
     paths:

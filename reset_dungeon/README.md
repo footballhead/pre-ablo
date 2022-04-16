@@ -1,0 +1,1 @@
+Use ../dplay/mingw.toolchain.cmake
