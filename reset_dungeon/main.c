@@ -234,13 +234,18 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 1;
     }
 
-    // Reset player
+    // Reset all special levels
+    for (int i = 0; i < NUMLEVELS; ++i)
+    {
+        plr[0]._pSLvlVisited[i] = FALSE;
+    }
+
+    // Reset other levels (except for town, notice i starts at 1)
     srand(time(NULL));
-    for (int i = 0; i < 17; ++i)
+    for (int i = 1; i < NUMLEVELS; ++i)
     {
         plr[0]._pSeedTbl[i] = rand();
         plr[0]._pLvlVisited[i] = FALSE;
-        plr[0]._pSLvlVisited[i] = FALSE;
     }
 
     // Reset quests
@@ -261,7 +266,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     GlobalUnlock(GlobalHandle(lpBuffer));
     GlobalFree(GlobalHandle(lpBuffer));
 
-    MessageBox(NULL, TEXT("Success! Reload your game and walk to the cathedral."), TEXT("Success!"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(NULL,
+               TEXT("Success! Reload your game and walk to the cathedral."),
+               TEXT("Success!"), MB_OK | MB_ICONINFORMATION);
 
     return 0;
 }

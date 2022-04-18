@@ -8,6 +8,7 @@
 
 #define MAXQUESTS 10
 #define MAX_PLRS 4
+#define NUMLEVELS 17
 
 _STATIC_ASSERT(sizeof(void*) == 4);
 
