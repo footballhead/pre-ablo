@@ -1,0 +1,5 @@
+// WINCPP_app_fatal	00000000004776F0	
+// __dc_diab_msg_box	000000000047771E	
+// TermMsg	0000000000477768	
+// no_memory	0000000000477799	
+// winapp_fatal	00000000004777D8	

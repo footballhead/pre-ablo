@@ -1,0 +1,2 @@
+// InitDiabloMsg	00000000004578D0	
+// DrawDiabloMsg	000000000045795C	
