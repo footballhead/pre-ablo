@@ -1,3 +1,5 @@
+#include "stdlib.h"
+
 // LoadFileInMem	0000000000482790	
 // LoadFileWithMem	000000000048283B	
 // get_alloc_file_4828D6	00000000004828D6	
@@ -35,4 +37,11 @@
 // engine_draw_pixel	00000000004840F9	
 // DrawLine	00000000004841F1	
 // GetDirection	00000000004848A1	
-// random_	00000000004849E2	
+
+// .text:004849E2
+int random_(int v) {
+    if (v <= 0) {
+        return 0;
+    }
+    return rand() % v;
+}

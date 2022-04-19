@@ -30,4 +30,29 @@ typedef enum lvl_entry {
     ENTRY_TWARPUP = 7,
 } lvl_entry;
 
+typedef enum shrine_type {
+    SHRINE_MYSTERIOUS,
+    SHRINE_IMPOSING,
+    SHRINE_HIDDEN,
+    SHRINE_MAGICAL,
+    SHRINE_MYSTICAL,
+    SHRINE_ENCHANTED,
+    SHRINE_THAUMATURGIC,
+    SHRINE_FASCINATING,
+    SHRINE_CRYPTIC,
+    SHRINE_SUPERNATURAL,
+    SHRINE_EERIE,
+    SHRINE_HOLY,
+    SHRINE_SPIRITUAL
+} shrine_type;
+
+typedef enum inv_body_loc {
+    INVLOC_HEAD,
+    INVLOC_CHEST,
+    INVLOC_RING_LEFT,
+    INVLOC_RING_RIGHT,
+    INVLOC_HAND_LEFT,
+    INVLOC_HAND_RIGHT
+} inv_body_loc;
+
 #endif

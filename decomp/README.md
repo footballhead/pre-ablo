@@ -53,3 +53,9 @@ DirectX 1.0 sdk: https://archive.org/details/gamesdk
 1. unused.cpp
 1. draw_asm.cpp
 1. drlg_l1.cpp
+
+## Links
+
+* ddraw
+* dplay
+* storm

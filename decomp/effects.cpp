@@ -6,6 +6,11 @@
 // FreeTownersEffects	00000000004647D8	
 // PlayEffect	0000000000464821	
 // PlaySFX	00000000004648D5	
-// PlayRndSFX	000000000046491F	
+
+// .text:000000000046491F
+void PlayRndSFX(int psfx) {
+    // TODO
+}
+
 // PlayTownerSFX	0000000000464A3B	
 // sfx_stop	0000000000464ACD	

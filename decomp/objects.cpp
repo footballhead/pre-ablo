@@ -1,3 +1,24 @@
+#include "defines.h"
+#include "enums.h"
+#include "structs.h"
+
+//
+// extern
+//
+
+extern ObjectStruct object[127]; // objects.cpp?
+extern PlayerStruct plr[MAX_PLRS]; // player.cpp?
+extern int force_redraw; // interfac.cpp?
+
+void PlayRndSFX(int psfx); // effects.cpp
+int random_(int v); // engine.cpp
+void ModifyPlrStr(int p, int l); // player.cpp
+void ModifyPlrMag(int p, int l); // player.cpp
+void ModifyPlrDex(int p, int l); // player.cpp
+void ModifyPlrVit(int p, int l); // player.cpp
+void InitDiabloMsg(char e); // error.cpp
+void CalcPlrInv(int pnum); // items.cpp
+
 // InitObjectGFX	0000000000457E30	
 // FreeObjectGFX	0000000000458029	
 // RndLocOk	000000000045808F	
@@ -67,7 +88,101 @@
 // OperateSarc	000000000045D9D6	
 // OperateL2Door	000000000045DAB8	
 // TryDisarm	000000000045DBB5	
-// OperateShrine	000000000045DD39	
+
+// .text:0045DD39
+void OperateShrine(int pnum, int i) {
+    // These variables are reused in different contexts within the switch.
+    // Since they don't have a stable meaning, I've given them generic names.
+    int var0, var1, var2, var3, var4;
+
+    PlayRndSFX(43);
+    object[i]._oSelFlag = 0;
+    object[i]._oAnimFlag = TRUE;
+    object[i]._oAnimDelay = 1;
+
+    switch (object[i]._oVar1) {
+    case SHRINE_MYSTERIOUS:
+        var0 = random_(4);
+        if (var0 == 0) var1 = 5; else var1 = -1;
+        if (var0 == 1) var2 = 5; else var2 = -1;
+        if (var0 == 2) var3 = 5; else var3 = -1;
+        if (var0 == 3) var4 = 5; else var4 = -1;
+        ModifyPlrStr(pnum, var1);
+        ModifyPlrMag(pnum, var2);
+        ModifyPlrDex(pnum, var3);
+        ModifyPlrVit(pnum, var4);
+        InitDiabloMsg(8); // "Odd sensations..."
+        break;
+    case SHRINE_IMPOSING:
+        var1 = plr[pnum]._pLevel << 7; // This is effectively 2*clvl but adjusted for HP (which is fixed point with 6 binary decimals)
+        plr[pnum]._pHitPoints += var1;
+        plr[pnum]._pHPBase += var1;
+        if (plr[pnum]._pMaxHP < plr[pnum]._pHitPoints) {
+            plr[pnum]._pHitPoints = plr[pnum]._pMaxHP;
+            plr[pnum]._pHPBase = plr[pnum]._pMaxHPBase;
+        }
+
+        var1 = plr[pnum]._pLevel << 7;
+        plr[pnum]._pMana -= var1;
+        plr[pnum]._pManaBase -= var1;
+        if (plr[pnum]._pMana < 0) {
+            plr[pnum]._pManaBase -= -(0 - plr[pnum]._pMana);
+            plr[pnum]._pMana = 0;
+        }
+
+        force_redraw = 4;
+        InitDiabloMsg(9); // "A surge of blood interrupts your thoughts"
+        break;
+    case SHRINE_HIDDEN:
+        // Determine how many items are worn (excluding rings)
+        var1 = 0;
+        if (plr[pnum].InvBody[INVLOC_HEAD]._itype != -1) var1 += 1;
+        if (plr[pnum].InvBody[INVLOC_CHEST]._itype != -1) var1 += 1;
+        if (plr[pnum].InvBody[INVLOC_HAND_LEFT]._itype != -1) var1 += 1;
+        if (plr[pnum].InvBody[INVLOC_HAND_RIGHT]._itype != -1) var1 += 1;
+
+        // Only work if wearing at least 2 pieces of equipment
+        if (var1 > 1) {
+            // Randomly destroy a worn item
+            var0 = random_(var1) + 1;
+            if (plr[pnum].InvBody[INVLOC_HEAD]._itype != -1) var0 -= 1;
+            if (var0 == 0) plr[pnum].InvBody[INVLOC_HEAD]._itype = -1;
+            if (plr[pnum].InvBody[INVLOC_CHEST]._itype != -1) var0 -= 1;
+            if (var0 == 0) plr[pnum].InvBody[INVLOC_CHEST]._itype = -1;
+            if (plr[pnum].InvBody[INVLOC_HAND_LEFT]._itype != -1) var0 -= 1;
+            if (var0 == 0) plr[pnum].InvBody[INVLOC_HAND_LEFT]._itype = -1;
+            if (plr[pnum].InvBody[INVLOC_HAND_RIGHT]._itype != -1) var0 -= 1;
+            if (var0 == 0) plr[pnum].InvBody[INVLOC_HAND_RIGHT]._itype = -1;
+
+            // Non-destroyed items get +10 durability
+            if (plr[pnum].InvBody[INVLOC_HEAD]._itype != -1) {
+                plr[pnum].InvBody[INVLOC_HEAD]._iDurability += 10;
+                plr[pnum].InvBody[INVLOC_HEAD]._iMaxDur += 10;
+            }
+            if (plr[pnum].InvBody[INVLOC_CHEST]._itype != -1) {
+                plr[pnum].InvBody[INVLOC_CHEST]._iDurability += 10;
+                plr[pnum].InvBody[INVLOC_CHEST]._iMaxDur += 10;
+            }
+            if (plr[pnum].InvBody[INVLOC_HAND_LEFT]._itype != -1) {
+                plr[pnum].InvBody[INVLOC_HAND_LEFT]._iDurability += 10;
+                plr[pnum].InvBody[INVLOC_HAND_LEFT]._iMaxDur += 10;
+            }
+            if (plr[pnum].InvBody[INVLOC_HAND_RIGHT]._itype != -1) {
+                plr[pnum].InvBody[INVLOC_HAND_RIGHT]._iDurability += 10;
+                plr[pnum].InvBody[INVLOC_HAND_RIGHT]._iMaxDur += 10;
+            }
+
+            CalcPlrInv(pnum);
+        }
+
+        InitDiabloMsg(10); // "Energy passes through your equipment..."
+        break;
+    case SHRINE_MAGICAL:
+        break;
+    // TODO: The rest
+    }
+}
+
 // OperateSkelBook	000000000045F05C	
 // OperateBookCase	000000000045F123	
 // OperateFountains	000000000045F1A0	

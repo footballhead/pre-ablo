@@ -127,30 +127,30 @@ typedef struct _PlayerStruct
   _BYTE gap567[30];
   char plr_pClass;
   char anonymous_20[2];
-  int plr_pStrength;
-  int plr_pBaseStr;
-  int plr_pMagic;
-  int plr_pBaseMag;
-  int plr_pDexterity;
-  int plr_pBaseDex;
-  int plr_pVitality;
-  int plr_pBaseVit;
-  int plr_pStatPts;
+  int _pStrength;
+  int _pBaseStr;
+  int _pMagic;
+  int _pBaseMag;
+  int _pDexterity;
+  int _pBaseDex;
+  int _pVitality;
+  int _pBaseVit;
+  int _pStatPts;
   int anonymous_21;
   int anonymous_22;
   int anonymous_23;
-  int plr_pHPBase;
-  int plr_pMaxHPBase;
-  int plr_pHitPoints;
-  int plr_pMaxHP;
-  int plr_pHPPer;
-  int plr_pManaBase;
-  int plr_pMaxManaBase;
-  int plr_pMana;
-  int plr_pMaxMana;
-  int plr_pManaPer;
-  char plr_pLevel;
-  char plr_pMaxLvl;
+  int _pHPBase;
+  int _pMaxHPBase;
+  int _pHitPoints;
+  int _pMaxHP;
+  int _pHPPer;
+  int _pManaBase;
+  int _pMaxManaBase;
+  int _pMana;
+  int _pMaxMana;
+  int _pManaPer;
+  char _pLevel;
+  char _pMaxLvl;
   char anonymous_24[2];
   int plr_pExperience;
   int plr_pMaxExp;
@@ -199,12 +199,7 @@ typedef struct _PlayerStruct
   int plr_pBAnim[8];
   int plr_pBFrames;
   int plr_pBWidth;
-  ItemStruct plr_InvBodyHead;
-  ItemStruct plr_InvBodyChest;
-  ItemStruct plr_InvBodyRingLeft;
-  ItemStruct plr_InvBodyRingRight;
-  ItemStruct plr_InvBodyHandLeft;
-  ItemStruct plr_InvBodyHandRight;
+  ItemStruct InvBody[6];
   int plr_potbox_item;
   ItemStruct plr_InvList[40];
   int plr_pNumInv;
@@ -274,5 +269,43 @@ typedef struct _QuestStruct
 } QuestStruct;
 #pragma pack(pop)
 _STATIC_ASSERT(sizeof(QuestStruct) == 0x10);
+
+#pragma pack(push, 8)
+struct ObjectStruct
+{
+  int _otype;
+  int _ox;
+  int _oy;
+  int _oLight;
+  BOOL _oAnimFlag;
+  BYTE *_oAnimData;
+  int _oAnimDelay;
+  int _oAnimCnt;
+  int _oAnimLen;
+  int _oAnimFrame;
+  BYTE *_oAnimWidth;
+  int _oAnimWidth2;
+  int _oDelFlag;
+  char _oBreak;
+  char anonymous_0[3];
+  int _oSolidFlag;
+  int _oMissFlag;
+  char _oSelFlag;
+  char anonymous_1[3];
+  int _oPreFlag;
+  int _oTrapFlag;
+  int _oDoorFlag;
+  int _olid;
+  int _oVar1; // if shrine then shrine type (see OperateShrine)
+  int _oVar2;
+  int _oVar3;
+  int _oVar4;
+  int _oVar5;
+  int _oVar6;
+  int _oVar7;
+  int _oVar8;
+};
+#pragma pack(pop)
+_STATIC_ASSERT(sizeof(QuestStruct) == 0x74);
 
 #endif
