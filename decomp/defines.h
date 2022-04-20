@@ -4,5 +4,10 @@
 #define MAXQUESTS 10
 #define MAX_PLRS 4
 #define MAXMONSTERS 200
+#define MAX_SPELLS 29
+#define MAXOBJECTS 127
+
+#define MAXDUNX 112
+#define MAXDUNY 112
 
 #endif

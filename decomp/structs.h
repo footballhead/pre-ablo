@@ -107,9 +107,9 @@ typedef struct _PlayerStruct
   int plr_peflag;
   int anonymous_12;
   int anonymous_13;
-  int plr_pRSpell;
-  char plr_pRSplType;
-  char plr_pSplLvl[35];
+  int _pRSpell;
+  char _pRSplType;
+  char _pSplLvl[35];
   int _pMemSpells;
   int _pAblSpells;
   int _pScrlSpells;
@@ -159,7 +159,7 @@ typedef struct _PlayerStruct
   char plr_pMagResist;
   char plr_pFireResist;
   char plr_pLghtResist;
-  int plr_pGold;
+  int _pGold;
   int plr_pInfraFlag;
   int plr_pVar1;
   int plr_pVar2;
@@ -283,7 +283,7 @@ struct ObjectStruct
   int _oAnimCnt;
   int _oAnimLen;
   int _oAnimFrame;
-  BYTE *_oAnimWidth;
+  int _oAnimWidth;
   int _oAnimWidth2;
   int _oDelFlag;
   char _oBreak;
@@ -307,5 +307,100 @@ struct ObjectStruct
 };
 #pragma pack(pop)
 _STATIC_ASSERT(sizeof(QuestStruct) == 0x74);
+
+#pragma pack(push, 8)
+struct MonsterStruct
+{
+  int _mMTidx;
+  int _mmode;
+  char anonymous_0;
+  char anonymous_1[3];
+  int anonymous_2;
+  int anonymous_3;
+  _BYTE gap14[8];
+  int _mx;
+  int _my;
+  int _moldx;
+  int _moldy;
+  int _mxoff;
+  int monster_myoff;
+  int monster_mxvel;
+  int monster_myvel;
+  int _mdir;
+  int monster_menemy;
+  int _mAnimData;
+  int _mAnimDelay;
+  int _mAnimCnt;
+  int _mAnimLen;
+  int _mAnimFrame;
+  int anonymous_4;
+  int _mDelFlag;
+  int monster_mVar1;
+  int monster_mVar2;
+  int monster_mVar3;
+  int monster_mVar4;
+  int monster_mVar5;
+  int monster_mVar6;
+  int monster_mVar7;
+  int monster_mVar8;
+  int _mmaxhp;
+  int _mhitpoints;
+  char anonymous_8;
+  char anonymous_9;
+  char anonymous_10[2];
+  int _mflags;
+  char anonymous_11;
+  char anonymous_12[3];
+  int anonymous_13;
+  int anonymous_14;
+  int anonymous_15;
+  _BYTE gapA0[4];
+  char _uniqtype;
+  char _uniqtrans;
+  char _udeadval;
+  char mLevel;
+  __int16 mExp;
+  char mHit;
+  char mMinDamange;
+  char mMaxDamage;
+  char mHit2;
+  char mMinDamage2;
+  char mMaxDamage2;
+  char mArmorClass;
+  char anonymous_28;
+  __int16 mMagicRes;
+  char anonymous_30;
+  char anonymous_31;
+  char anonymous_32;
+  char anonymous_33;
+  int anonymous_34;
+  void *MType;
+  int _MData;
+};
+#pragma pack(pop)
+_STATIC_ASSERT(sizeof(MonsterStruct) == 0xC4);
+
+#pragma pack(push, 8)
+struct ObjDataStruct
+{
+  char oload;
+  char ofindex;
+  char ominlvl;
+  char omaxlvl;
+  char olvltype;
+  char otheme;
+  int oAnimFlag;
+  int oAnimDelay;
+  int oAnimLen;
+  int oAnimWidth;
+  int oSolidFlag;
+  int oMissFlag;
+  int oLightFlag;
+  char oBreak;
+  char oSelFlag;
+  int oTrapFlag;
+};
+#pragma pack(pop)
+_STATIC_ASSERT(sizeof(ObjDataStruct) == 0x2C);
 
 #endif

@@ -19,6 +19,7 @@ DirectX 1.0 sdk: https://archive.org/details/gamesdk
 1. dplay.cpp
 1. interfac.cpp
 1. items.cpp
+1. objdat.cpp
 1. drlg_l4.cpp
 1. stores.cpp
 1. setmaps.cpp
