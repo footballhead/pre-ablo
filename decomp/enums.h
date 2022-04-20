@@ -153,4 +153,49 @@ typedef enum quest_state {
     QUEST_DONE     = 3
 } quest_state;
 
+enum spell_id
+{
+  SPL_NULL = 0x0,
+  SPL_FIREBOLT = 0x1,
+  SPL_HEAL = 0x2,
+  SPL_LIGHTNING = 0x3,
+  SPL_FLASH = 0x4,
+  SPL_IDENTIFY = 0x5,
+  SPL_FIREWALL = 0x6,
+  SPL_TOWN = 0x7,
+  SPL_STONE = 0x8,
+  SPL_INFRA = 0x9,
+  SPL_RNDTELEPORT = 0xA,
+  SPL_MANASHIELD = 0xB,
+  SPL_FIREBALL = 0xC,
+  SPL_GUARDIAN = 0xD,
+  SPL_CHAIN = 0xE,
+  SPL_WAVE = 0xF,
+  SPL_DOOMSERP = 0x10,
+  SPL_BLODRIT = 0x11,
+  SPL_NOVA = 0x12,
+  SPL_INVISIBIL = 0x13,
+  SPL_SENTINEL = 0x14,
+  SPL_GOLEM = 0x15,
+  SPL_BLODBOIL = 0x16,
+  SPL_TELEPORT = 0x17,
+  SPL_APOCA = 0x18,
+  SPL_ETHEREALIZE = 0x19,
+  SPL_REPAIR = 0x1A,
+  SPL_RECHARGE = 0x1B,
+  SPL_DISARM = 0x1C,
+};
+
+enum monster_resistance
+{
+  RESIST_MAGIC = 0x1,
+  RESIST_FIRE = 0x2,
+  RESIST_LIGHTNING = 0x4,
+  IMMUNE_MAGIC = 0x8,
+  IMMUNE_FIRE = 0x10,
+  IMMUNE_LIGHTNING = 0x20,
+  IMMUNE_NULL_40 = 0x40, // :)
+  IMMUNE_ACID = 0x80,
+};
+
 #endif

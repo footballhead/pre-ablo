@@ -14,8 +14,12 @@ extern MonsterStruct monster[MAXMONSTERS]; // monster.cpp?
 extern int currlevel;
 extern char dObject[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern char dPiece[MAXDUNX][MAXDUNY]; // gendung.cpp?
+extern char dMonster[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern ObjDataStruct AllObjects[69]; // objdat.cpp
 extern QuestStruct quests[MAXQUESTS];
+extern char tempstr[64]; // interfac.cpp ???
+extern int nSolidTable[MAXTILES + 1];
+extern ItemStruct golditem;
 
 void PlayRndSFX(int psfx); // effects.cpp
 int random_(int v); // engine.cpp
@@ -28,6 +32,8 @@ void CalcPlrInv(int pnum); // items.cpp
 void AddPlrExperience(int pnum, int lvl, int exp); // player.cpp
 void TakePlrsMoney(int cost); // stores.cpp
 void DoLighting(int nXPos, int nYPos, int nRadius, int Lnum);
+int AddMissile(int sx, int sy, int dx_, int dy, int midir, int mitype, int micaster, int id, int midam);
+void SetGoldCurs(int i);
 
 //
 // initialized data (.data:004B8A50)
@@ -575,7 +581,7 @@ void OperateShrine(int pnum, int i) {
             }
         }
 
-        InitDiabloMsg(13); // Did you forget something?
+        InitDiabloMsg(13); // "Did you forget something?""
         break;
     case SHRINE_THAUMATURGIC:
         for (var0 = 0; var0 < nobjects; ++var0) {
@@ -586,22 +592,123 @@ void OperateShrine(int pnum, int i) {
             }
         }
 
+        InitDiabloMsg(14); // "You hear a series of creaks and thumps..."
         break;
     case SHRINE_FASCINATING:
+        plr[pnum]._pMemSpells |= SPL_FIREBOLT;
+        plr[pnum]._pSplLvl[SPL_FIREBOLT] = 5;
+        for (var0 = 0; var0 < nummonsters; ++var0) {
+            var1 = monstactive[i];
+            monster[var1].mMagicRes |= IMMUNE_FIRE;
+        }
+
+        InitDiabloMsg(15); // "You are the powerless master of fire!"
         break;
     case SHRINE_CRYPTIC:
+        var0 = random_(4) + 4;
+        while (var0 > 0) {
+            do {
+                var1 = random_(4);
+                var2 = random_(4);
+            } while (var1 == var2);
+
+            if (var1 == 0) var3 = plr[pnum]._pBaseStr;
+            if (var1 == 1) var3 = plr[pnum]._pBaseMag;
+            if (var1 == 2) var3 = plr[pnum]._pBaseDex;
+            if (var1 == 3) var3 = plr[pnum]._pBaseVit;
+
+            if (var2 == 0) {
+                var4 = plr[pnum]._pBaseStr;
+                ModifyPlrStr(pnum, var3 - var4);
+            }
+            if (var2 == 1) {
+                var4 = plr[pnum]._pBaseMag;
+                ModifyPlrMag(pnum, var3 - var4);
+            }
+            if (var2 == 2) {
+                var4 = plr[pnum]._pBaseDex;
+                ModifyPlrDex(pnum, var3 - var4);
+            }
+            if (var2 == 3) {
+                var4 = plr[pnum]._pBaseVit;
+                ModifyPlrVit(pnum, var3 - var4);
+            }
+
+            if (var1 == 0) ModifyPlrStr(pnum, var4 - var3);
+            if (var1 == 1) ModifyPlrMag(pnum, var4 - var3);
+            if (var1 == 2) ModifyPlrDex(pnum, var4 - var3);
+            if (var1 == 3) ModifyPlrVit(pnum, var4 - var3);
+
+            var0--;
+        }
+
+        var1 = 20 << 6;
+        plr[pnum]._pMaxHP += var1;
+        plr[pnum]._pHitPoints += var1;
+        plr[pnum]._pMaxHPBase += var1;
+        plr[pnum]._pHPBase += var1;
+
+        var2 = 20 << 6;
+        plr[pnum]._pMaxMana += var2;
+        plr[pnum]._pMana += var2;
+        plr[pnum]._pMaxManaBase += var2;
+        plr[pnum]._pManaBase += var2;
+
+        force_redraw = 4;
+        InitDiabloMsg(16); // "Power comes from your disorientation..."
         break;
     case SHRINE_SUPERNATURAL:
+        for (var0 = 0; var0 < nummonsters; ++var0) {
+            var1 = monstactive[var0];
+            monster[var1].mHit = 100;
+            monster[var1].mHit2 = 100;
+            monster[var1].mMinDamage /= 2;
+            monster[var1].mMaxDamage /= 2;
+            monster[var1].mMinDamage2 /= 2;
+            monster[var1].mMaxDamage2 /= 2;
+        }
+
+        InitDiabloMsg(17); // "You hear a strange cry from the distance"
         break;
     case SHRINE_EERIE:
+        var1 = strlen(plr[pnum]._pName);
+        for (var0 = 0; var0 < var1; var0++) {
+            tempstr[var0] = plr[pnum]._pName[var1 - var0 - 1];
+        }
+        tempstr[var0] = '\0';
+        strcpy(plr[pnum]._pName, tempstr);
+
+        ModifyPlrMag(pnum, 2);
+
+        InitDiabloMsg(18); // "You forget who you are!"
         break;
     case SHRINE_HOLY:
+        do {
+            var1 = random_(MAXDUNX);
+            var2 = random_(MAXDUNY);
+            var3 = dPiece[var1][var2];
+        } while(nSolidTable[var3] || dObject[var1][var2] || dMonster[var1][var2]);
+
+        // 3 == MIS_RNDTELEPORT
+        AddMissile(plr[pnum]._px, plr[pnum]._py, var1, var2, plr[pnum]._pdir, 3, 0, pnum, 0);
         break;
     case SHRINE_SPIRITUAL:
+        for (var0 = 0; var0 < NUM_INV_GRID_ELEM; var0++) {
+            if (!plr[pnum].InvGrid[var0]) {
+                var2 = currlevel + random_(10 * currlevel);
+                var1 = plr[pnum]._pNumInv;
+                plr[pnum].InvList[var1] = golditem;
+                plr[pnum]._pNumInv++;
+                plr[pnum].InvGrid[var0] = plr[pnum]._pNumInv;
+                plr[pnum].InvList[var1]._ivalue = var2;
+                plr[pnum]._pGold += var2;
+                SetGoldCurs(var1);
+            }
+        }
+
+        InitDiabloMsg(19); // "Untold Wealth!"
         break;
     }
-
-    // TODO: The rest
 }
 
 // OperateSkelBook    000000000045F05C    

@@ -4,7 +4,7 @@
 // extern
 //
 
-char tempstr[64]; // interfac.cpp ???
+extern char tempstr[64]; // interfac.cpp ???
 
 //
 // initialized data (.data:004B87C0)
