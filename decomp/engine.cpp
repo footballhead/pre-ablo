@@ -1,4 +1,18 @@
 #include "stdlib.h"
+#include <windows.h>
+
+//
+// uninitialized vars (.data )
+//
+
+char file_to_load_with_base[MAX_PATH];
+DWORD dword_61B6F4;
+DWORD dword_61B6F8;
+char byte_61B6FC;
+
+//
+// code (.text:00482790)
+//
 
 // LoadFileInMem	0000000000482790	
 // LoadFileWithMem	000000000048283B	

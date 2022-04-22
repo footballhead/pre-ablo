@@ -1,3 +1,17 @@
+#include "player.h"
+
+//
+// uninitialized vars (.data:)
+//
+
+// ...
+int gbActivePlayers;
+// ...
+PlayerStruct plr[MAX_PLRS];
+int myplr;
+BOOL deathflag;
+// ...
+
 // SetAnimPtrs	0000000000464BB0	
 // SetAllAnimPtrs	0000000000464C0D	
 // LoadPlrGFX	0000000000464EE0	

@@ -60,7 +60,7 @@ typedef struct _PlayerStruct
 {
   int plr_pmode;
   BOOL plractive;
-  char plr_to_send_message_id;
+  char to_send_message_id;
   char anonymous_0[3];
   int anonymous_1;
   char anonymous_2;

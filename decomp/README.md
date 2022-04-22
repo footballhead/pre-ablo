@@ -16,7 +16,8 @@ DirectX 1.0 sdk: https://archive.org/details/gamesdk
 1. minitext.cpp
 1. sound.cpp
 1. control.cpp
-1. dplay.cpp
+1. multi.cpp
+1. itemdat.cpp
 1. interfac.cpp
 1. items.cpp
 1. objdat.cpp
@@ -49,6 +50,7 @@ DirectX 1.0 sdk: https://archive.org/details/gamesdk
 1. list.h
 1. cursor.cpp
 1. scrollrt.cpp
+1. palette.cpp
 1. engine.cpp
 1. diablo.cpp
 1. unused.cpp

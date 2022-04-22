@@ -1,12 +1,12 @@
 #include "defines.h"
 #include "enums.h"
+#include "player.h"
 #include "structs.h"
 
 //
 // extern
 //
 
-extern PlayerStruct plr[MAX_PLRS]; // player.cpp?
 extern int force_redraw; // interfac.cpp?
 extern int nummonsters; // monster.cpp?
 extern int monstactive[MAXMONSTERS]; // monster.cpp?

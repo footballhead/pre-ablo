@@ -1,3 +1,16 @@
+#include "multi.h"
+
+#include "dplay_stub.h"
+
+// initialized vars (.data:004A3AA8)
+
+LPDIRECTPLAY lpIDP = NULL;
+HANDLE dphEvent = NULL;
+// ...
+BOOL isSinglePlayer = FALSE;
+BOOL hasJoinedGame = FALSE;
+BOOL handleSystemMessage = FALSE;
+
 // __dc_DPlayCreate	00000000004141E0	
 // __dc_DPlayEnumSessions	000000000041425B	
 // __dc_DPlayOpenSession	00000000004142DB	

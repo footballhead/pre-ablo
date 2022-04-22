@@ -5,6 +5,7 @@
 #include "defines.h"
 #include "diablo.h"
 #include "enums.h"
+#include "player.h"
 #include "structs.h"
 
 #include <windows.h>
@@ -15,7 +16,6 @@ extern char* tbuff;
 extern BOOL demo_mode;
 extern BOOL setlevel;
 extern int setlvlnum;
-extern PlayerStruct plr[MAX_PLRS];
 extern int currlevel;
 extern int leveltype;
 extern BOOL chrflag;

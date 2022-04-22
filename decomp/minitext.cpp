@@ -1,5 +1,6 @@
 #include <cstdlib>
 
+#include "diablo.h"
 #include "engine.h"
 
 //
@@ -7,7 +8,6 @@
 //
 
 extern BOOL questlog;
-extern BYTE* gpBuffer;
 extern int PitchTbl[1024];
 
 //
