@@ -1,5 +1,6 @@
 mpqadd:
-  image: "ubuntu:latest"
+  # This image must match `package` build so the resulting binaries are guaranteed to have matching glibc
+  image: "conanio/gcc11-ubuntu16.04"
   stage: build
   script:
     - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y g++ make cmake zlib1g-dev libbz2-dev
