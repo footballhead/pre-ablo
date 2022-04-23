@@ -10,6 +10,10 @@
 
 #include <windows.h>
 
+//
+// externs
+//
+
 extern char savedir_abspath[64];
 
 extern char* tbuff;
@@ -25,7 +29,26 @@ extern int numquests;
 extern QuestStruct quests[MAXQUESTS];
 extern int monstkills[200];
 
-// BEGIN FUNCTIONS (no functions before this point)
+//
+// uninitialized data (.data:00603EF0)
+//
+
+BYTE* sgpLogo;
+BYTE* PentSpin_cel;
+int qactive_bkup[5];
+char sgCurrentMenuIdx;
+BOOL title_allow_loadgame;
+char sgpMenu;
+DWORD memspells_bkup;
+BYTE* BigTGold_cel;
+BYTE* tbuff;
+char byte_603F24;
+DWORD dword_603F28; // always 5?
+// potential for another DWORD?
+
+//
+// code (.text:004605A0)
+//
 
 // gmenu_init_menu
 // DrawBigFontXY

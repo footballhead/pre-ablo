@@ -1,3 +1,40 @@
+#include "control.h"
+
+#include <windows.h>
+
+//
+// uninitialized vars (.data:)
+//
+
+BOOL drawbtnflag;
+BOOL drawhpflag;
+// Index into plr[myplr].InvList.
+// if -1 then there is nothing being hovered
+// Set by draw_potbox string. Used to set player potbox selection in control_do_update_potbox.
+int potbox_hover;
+BOOL durflag;
+BOOL drawPanelString;
+BYTE* pPanelText;
+BYTE* pStatusPanel;
+char infostr[64];
+// TODO dword_5DDE00
+// dword_5DDE04
+// dword_5DDE08
+// dword_5DDE0C
+// dword_5DDE10
+BYTE* pBtmBuff;
+BYTE* pSpelIcon_cel;
+BYTE* pManaBuff;
+// It may look like there's a missing DWORD here, but turns out arrays are
+// aligned on 8-byte boundaries. shrug.jpg
+char tempstr[64];
+BOOL left_mb_pressed;
+// TODO
+
+//
+// code (.text:000000000040EF80)
+//
+
 // DrawSpellCel	000000000040EF80	
 // SetSpellTrans	000000000040F059	
 // DrawSpell	000000000040F28D	

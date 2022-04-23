@@ -3,4 +3,6 @@
 
 extern char msgflag;
 
+void InitDiabloMsg(char e);
+
 #endif

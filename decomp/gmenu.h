@@ -3,6 +3,8 @@
 
 #include <windows.h>
 
+extern BOOL title_allow_loadgame;
+
 void LoadGame(BOOL firstflag);
 
 #endif

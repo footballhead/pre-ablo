@@ -1,11 +1,16 @@
 #include "diablo.h"
 
+#include "directx/DDRAW.H"
+#include <direct.h>
+#include <stdio.h>
 #include <windows.h>
 
-#include "ddraw_stub.h"
+#include "control.h"
 #include "enums.h"
 #include "error.h"
+#include "gmenu.h"
 #include "multi.h"
+#include "palette.h"
 #include "player.h"
 
 //
@@ -58,8 +63,8 @@ BOOL musicFromDisk = FALSE;
 HANDLE sghMusic = 0;
 DWORD PauseMode = 0;
 BOOL gbMusicOn = TRUE;
-DWORD dword_61B758 = 0; // UNUSED
-const char* sgszMusicTracks[] = { // indexed by leveltype
+const char *sgszMusicTracks[] = {
+    // indexed by leveltype
     "Music\\DTowne.wav",
     "Music\\DLvlA.wav",
     "Music\\DLvlA.wav",
@@ -73,10 +78,10 @@ const char* sgszMusicTracks[] = { // indexed by leveltype
 //
 
 BYTE *gpBuffer;
-DWORD frames; // updated regularly
-DWORD frames_drawn; // updated regulary
+DWORD frames;         // updated regularly
+DWORD frames_drawn;   // updated regulary
 DWORD draw_framerate; // 1sec snapshot
-int framerate; // 1sec snapshot
+int framerate;        // 1sec snapshot
 // ...
 LPDIRECTDRAWSURFACE lpDDSBackBuf;
 HWND ghMainWnd;
@@ -84,19 +89,30 @@ int MouseX;
 int MouseY;
 // ...
 BOOL can_fade;
-// ...
+LPDIRECTDRAWPALETTE lpDDPalette;
 int main_menu_screen;
 BOOL shouldStopPaintTimer;
-DWORD dword_61B758; // UNUSED
+DWORD dword_61B758; // UNUSED; set to 0, never read
 // ...
 char savedir_abspath[64];
 // ...
-BOOL fullscreen;
-// ...
+BOOL fullscreen; // only value is TRUE
+BOOL dd_use_backbuffer; // only value is FALSE
+DWORD dword_61BF50; // UNUSED
+DWORD dword_61BF54; // UNUSED
+DWORD dword_61BF58; // UNUSED; set to 0, never read
+DWORD dword_61BF5C; // UNUSED; set to 0, never read
+DWORD dword_61BF60; // UNUSED; set to 640, never read
+DWORD dword_61BF64; // UNUSED; set to 480, never read
+BOOL gbActive;
+LPDIRECTDRAWSURFACE lpDDSPrimary;
 DWORD prevTime;
-// ...
+// Compiler-generated alignment to put array on 8-byte boundary
+char fileLoadPrefix[64];
+DWORD dword_61BFB8;
+HANDLE mpq_handle;
 DWORD dword_61BFC0; // UNUSED
-// ...
+LPDIRECTDRAW lpDDInterface;
 BOOL some_DirectDraw_option;
 BOOL allow_mp_action_send;
 DWORD dword_61BFD0;
@@ -110,6 +126,13 @@ DWORD prev_timer_PostMessage_time;
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                       LPSTR lpCmdLine, int nShowCmd)
 {
+    UINT driveType;
+    MSG message;
+    BOOL error;
+    int i;
+    int mkdir_error;
+    SYSTEM_INFO system_info;
+
     gbActivePlayers = 1;
     fullscreen = TRUE;
     if (gbActivePlayers == 1)
@@ -134,11 +157,247 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     dword_61B758 = 0;
     dword_61BFC0 = 0;
     msgflag = 0;
+    title_allow_loadgame = FALSE;
+    fileLoadPrefix[0] = 0;
+    savedir_abspath[0] = 0;
 
-    // TODO
+    // Try to find a suitable savedir_abspath
+    driveType = GetDriveTypeA(NULL);
+    if (driveType == DRIVE_CDROM)
+    {
+        error = FALSE;
+        GetCurrentDirectoryA(sizeof(tempstr), tempstr);
+        if (GetTempPathA(sizeof(savedir_abspath), savedir_abspath) == 0)
+        {
+            error = TRUE;
+        }
+        else
+        {
+            if (_chdir(savedir_abspath) == -1)
+            {
+                error = TRUE;
+            }
+            if (*tempstr == *savedir_abspath)
+            {
+                error = TRUE;
+            }
+            _chdir(tempstr);
+            sprintf(savedir_abspath, "%sSave", savedir_abspath);
+        }
+
+        if (error)
+        {
+            MessageBoxA(NULL, "No Windows Temp directory found. Cannot continue", "Diablo Demo", MB_ICONEXCLAMATION);
+        }
+    }
+    else
+    {
+        GetCurrentDirectoryA(sizeof(savedir_abspath), savedir_abspath);
+        sprintf(savedir_abspath, "%s\\Save", savedir_abspath);
+    }
+
+    mkdir_error = _mkdir(savedir_abspath);
+    if (mkdir_error && *_errno() == EEXIST)
+    {
+        mkdir_error = 0;
+    }
+
+    if (mkdir_error != 0 || driveType == DRIVE_UNKNOWN)
+    {
+        InitDiabloMsg(4); // "Temp directory availability error"
+    }
+
+    GetSystemInfo(&system_info);
+    if (system_info.wProcessorArchitecture & ~PROCESSOR_ARCHITECTURE_INTEL || system_info.dwProcessorType < PROCESSOR_INTEL_PENTIUM)
+    {
+        MessageBoxA(NULL, "The Diablo demo requires at least a Pentium.", "Diablo Demo", MB_DEFBUTTON2 | MB_ICONEXCLAMATION | MB_OKCANCEL);
+        return 0;
+    }
+
+    if (init_create_window(hInstance, nShowCmd) == FALSE)
+    {
+        return 0;
+    }
+
+    // TODO!!!!!!!!!!!!!
 }
 
-// dx_init	0000000000484E67
+// .text:00484E67
+BOOL dx_init(HWND hWnd)
+{
+    HRESULT hDDVal;
+    DDSURFACEDESC ddsd;
+    DWORD dwStyle;
+    RECT window_rect;
+    RECT work_area_rect;
+
+    if (fullscreen == FALSE)
+    {
+        SetFocus(hWnd);
+
+        hDDVal = DirectDrawCreate(NULL, &lpDDInterface, NULL);
+        if (hDDVal != DD_OK)
+        {
+            goto error0;
+        }
+
+        hDDVal = lpDDInterface->SetCooperativeLevel(hWnd, DDSCL_NORMAL);
+        if (hDDVal != DD_OK)
+        {
+            goto error1;
+        }
+
+        dwStyle = GetWindowLongA(hWnd, GWL_STYLE);
+        dwStyle &= ~WS_POPUP;
+        dwStyle |= WS_MINIMIZEBOX | WS_SIZEBOX | WS_CAPTION;
+        SetWindowLongA(hWnd, GWL_STYLE, dwStyle);
+
+        // This looks like a bunch of malarkey to make sure the window is
+        // 640x480 and visible to the player (actually on a desktop)
+        SetRect(&window_rect, 0, 0, 640, 480);
+        AdjustWindowRectEx(
+            &window_rect,
+            GetWindowLongA(hWnd, GWL_STYLE),
+            !!GetMenu(hWnd), // TODO disassembly is
+                             // call ds:GetMenu
+                             // cmp eax, 1
+                             // sbb eax, eax
+                             // inc eax
+                             // push eax
+            GetWindowLongA(hWnd, GWL_EXSTYLE));
+        SetWindowPos(
+            hWnd,
+            HWND_TOP,
+            0,
+            0,
+            window_rect.right - window_rect.left,
+            window_rect.bottom - window_rect.top,
+            SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+        SetWindowPos(
+            hWnd,
+            HWND_NOTOPMOST,
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+        SystemParametersInfoA(SPI_GETWORKAREA, 0, &work_area_rect, 0);
+        GetWindowRect(hWnd, &window_rect);
+        if (window_rect.left < work_area_rect.left)
+        {
+            window_rect.left = work_area_rect.left;
+        }
+        if (window_rect.top < work_area_rect.top)
+        {
+            window_rect.top = work_area_rect.top;
+        }
+        SetWindowPos(
+            hWnd,
+            HWND_TOP,
+            window_rect.left,
+            window_rect.top,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+
+        // start setting parameters...
+        ddsd.dwFlags = DDSD_BACKBUFFERCOUNT;
+        ddsd.ddsCaps.dwCaps = DDSCAPS_COMPLEX | DDSCAPS_FLIP | DDSCAPS_PRIMARYSURFACE | DDSCAPS_VIDEOMEMORY;
+
+        // psych! override those with what we actually want >:)
+        // (methinks a developer just copy-pasted this here for testing...)
+        dd_use_backbuffer = FALSE;
+        ddsd.dwFlags = DDSD_CAPS;
+        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+        hDDVal = lpDDInterface->CreateSurface(&ddsd, &lpDDSBackBuf, NULL);
+        lpDDSPrimary = lpDDSBackBuf;
+    } else { // fullscreen == TRUE
+        hDDVal = DirectDrawCreate(NULL, &lpDDInterface, NULL);
+        if (hDDVal != DD_OK)
+        {
+            goto error2;
+        }
+
+        hDDVal = lpDDInterface->SetCooperativeLevel(hWnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE);
+        if (hDDVal != DD_OK)
+        {
+            goto error3;
+        }
+
+        hDDVal = lpDDInterface->SetDisplayMode(640,480, 8);
+        if (hDDVal != DD_OK)
+        {
+            goto error4;
+        }
+
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+
+        dd_use_backbuffer = FALSE;
+        ddsd.dwFlags = DDSD_CAPS;
+        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+        hDDVal = lpDDInterface->CreateSurface(&ddsd, &lpDDSBackBuf, NULL);
+        lpDDSPrimary = lpDDSBackBuf;
+        if (hDDVal != DD_OK) {
+            goto error5;
+        }
+    }
+
+    lpDDInterface->CreatePalette(DDPCAPS_8BIT, system_palette, &lpDDPalette, NULL);
+    if (lpDDPalette == NULL) {
+        goto error6;
+    }
+
+    hDDVal = lpDDSBackBuf->SetPalette(lpDDPalette);
+    if (hDDVal != DD_OK) {
+        goto error7;
+    }
+
+    SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
+
+    snd_init(hWnd);
+    SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
+    if (debugMusicOn) {
+        SFileDdaInitialize(sglpDS);
+    }
+    if (musicFromDisk) {
+        Mopaq_479075(20, 10, 0x8000);
+        if (SNDCPP_InitThread() == 0) {
+            return FALSE;
+        }
+        music_start("Music\\Dintro.wav");
+    }
+
+    
+    // TODO
+
+error:
+    dx_cleanup();
+    MessageBoxA(hWnd, "DirectDraw Init FAILED", "Diablo Demo", MB_OK);
+    DestroyWindow(hWnd);
+    return FALSE;
+error7:
+    goto error;
+error6:
+    goto error;
+error5:
+    goto error;
+error4:
+    goto error;
+error3:
+    goto error;
+error2:
+    goto error;
+error1:
+    goto error;
+error0:
+    goto error;
+}
 // WNDPROC_mode0_blizzard_intro	00000000004853DA
 // diablo_48565F	000000000048565F
 // GM_Game	00000000004865C4
@@ -149,19 +408,21 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 // The sole purpose of this timer callback seems to be to send WM_DIABPAINT
 // messages every 50ms.
 void CALLBACK PaintTimer(UINT uTimerID,
-                            UINT uMsg,
-                            DWORD_PTR dwUser,
-                            DWORD_PTR dw1,
-                            DWORD_PTR dw2)
+                         UINT uMsg,
+                         DWORD_PTR dwUser,
+                         DWORD_PTR dw1,
+                         DWORD_PTR dw2)
 {
-    if (paint_callback_mutex) {
+    if (paint_callback_mutex)
+    {
         return;
     }
 
     paint_callback_mutex = TRUE;
     DWORD now = timeGetTime();
     frames++;
-    if (now - prevTime >= 1000) {
+    if (now - prevTime >= 1000)
+    {
         framerate = frames;
         frames = 0;
 
@@ -171,10 +432,13 @@ void CALLBACK PaintTimer(UINT uTimerID,
         frames_drawn = 0;
     }
 
-    if (now - prev_timer_PostMessage_time >= 50) {
-        if (can_fade == FALSE) {
+    if (now - prev_timer_PostMessage_time >= 50)
+    {
+        if (can_fade == FALSE)
+        {
             can_fade = TRUE;
-            if (paint_mutex == FALSE) {
+            if (paint_mutex == FALSE)
+            {
                 PostMessage((HWND)dwUser, 0x400, 0, 0); // 0x400 = WM_DIABPAINT
             }
 
@@ -182,7 +446,8 @@ void CALLBACK PaintTimer(UINT uTimerID,
         }
     }
 
-    if (shouldStopPaintTimer) {
+    if (shouldStopPaintTimer)
+    {
         timeKillEvent(uTimerID);
         ExitThread(0);
     }
@@ -192,8 +457,55 @@ void CALLBACK PaintTimer(UINT uTimerID,
 
 // InitLevelType	0000000000488442
 // init_multi_with_time_srand	00000000004884C8
-// init_create_window	0000000000488769
-// dx_cleanup	000000000048885D
+
+// .text:00488769
+BOOL init_create_window(HINSTANCE hInstance, int nShowCmd)
+{
+    HWND hWnd;
+    WNDCLASSA wc;
+
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    // wc.lpfnWndProc = MainWndProc; // TODO!
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
+    wc.hCursor = LoadCursor(hInstance, IDI_APPLICATION);
+    wc.hbrBackground = 0;
+    wc.lpszMenuName = "Diablo";
+    wc.lpszClassName = "Diablo";
+    RegisterClassA(&wc);
+
+    hWnd = CreateWindowExA(WS_EX_TOPMOST,
+                           "Diablo",
+                           "Diablo Game",
+                           WS_POPUP,
+                           0,
+                           0,
+                           GetSystemMetrics(SM_CXSCREEN),
+                           GetSystemMetrics(SM_CYSCREEN),
+                           NULL,
+                           NULL,
+                           hInstance,
+                           NULL);
+    if (hWnd == NULL)
+    {
+        return FALSE;
+    }
+
+    ghMainWnd = hWnd;
+    ShowWindow(hWnd, nShowCmd);
+    UpdateWindow(hWnd);
+    dx_init(hWnd);
+
+    return TRUE;
+}
+
+// .text:0048885D
+void dx_cleanup()
+{
+    // TODO
+}
 
 // .text:004888E2
 void FreeGameMem()

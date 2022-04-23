@@ -79,7 +79,7 @@ int objectactive[MAXOBJECTS];
 DWORD unused003;
 BYTE *pObjCels[40];
 int trapid;
-DWORD unused004; // could be part of loadsave.cpp
+DWORD dword_00603EEC; // UNUSED
 
 //
 // code (.text:00457E30)
