@@ -8,6 +8,7 @@
 #include "player.h"
 #include "structs.h"
 
+#include <stdio.h>
 #include <windows.h>
 
 //
@@ -16,7 +17,7 @@
 
 extern char savedir_abspath[64];
 
-extern char* tbuff;
+extern BYTE* tbuff;
 extern BOOL demo_mode;
 extern BOOL setlevel;
 extern int setlvlnum;
@@ -73,7 +74,7 @@ int WLoad() {
 // ILoad
 
 BOOL OLoad() {
-    char* v = tbuff++;
+    char* v = (char*)tbuff++;
     if (*v == TRUE) {
         return TRUE;
     } else {
@@ -112,7 +113,7 @@ void LoadGame(BOOL firstflag) {
 
     char path_name[128];
 
-    _sprintf(path_name, "%s\\Game00.sav", savedir_abspath);
+    sprintf(path_name, "%s\\Game00.sav", savedir_abspath);
 
     HFILE hFile = _lopen(path_name, OF_SHARE_DENY_WRITE | OF_READ);
     LONG size = _llseek(hFile, 0, 2);
@@ -159,7 +160,7 @@ void LoadGame(BOOL firstflag) {
         LoadQuest(i);
     }
 
-    LoadGameLevel(firstflag, ENTRY_LOAD);
+    LoadGameLevel(firstflag, ENTRY_LOAD, firstflag);
 
     // for (i = 0; i < MAXMONSTERS; i++) {
     //     monstkills[i] = ILoad();

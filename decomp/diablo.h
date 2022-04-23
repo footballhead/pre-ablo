@@ -6,6 +6,6 @@
 extern BYTE* gpBuffer;
 
 void FreeGameMem();
-void LoadGameLevel(BOOL firstflag, int lvldir);
+void LoadGameLevel(BOOL firstflag, int lvldir, BOOL first_flag);
 
 #endif

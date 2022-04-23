@@ -198,4 +198,15 @@ enum monster_resistance
   IMMUNE_ACID = 0x80,
 };
 
+enum game_mode
+{
+  MODE_BLIZ_LOGO = 0x0,
+  MODE_MAINMENU = 0x1,
+  MODE_NEWGAME = 0x2,
+  MODE_GAME = 0x7,
+  MODE_INTRO_VID = 0xC,
+  MODE_DEMO_END = 0xD,
+  MODE_PROGRESS = 0xE,
+};
+
 #endif

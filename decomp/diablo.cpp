@@ -6,22 +6,26 @@
 #include <windows.h>
 
 #include "control.h"
+#include "cursor.h"
+#include "engine.h"
 #include "enums.h"
 #include "error.h"
 #include "gmenu.h"
 #include "multi.h"
 #include "palette.h"
 #include "player.h"
+#include "scrollrt.h"
 
 //
 // extern
 //
 
 extern int leveltype;
-extern LPVOID pDungeonCels;
-extern LPVOID pMegaTiles;
-extern LPVOID pMiniTiles;
-extern LPVOID pSpecialCels;
+extern BYTE *pDungeonCels;
+extern BYTE *pMegaTiles;
+extern BYTE *pLevelPieces;
+extern BYTE *pSpecialCels;
+extern BYTE *pSpeedCels;
 
 void FreeMonsters();
 void FreeObjectGFX();
@@ -31,14 +35,24 @@ void FreeEffects();
 void FreeTownerGFX();
 void FreeTownerEffects();
 
+void DPlayHandleMessage();
+void InitMonsterGFX();
+void InitMonsterSND();
+void InitObjectGFX();
+void InitMissileGFX();
+void InitSpellGFX();
+void IncProgress();
+
 //
 // initialized vars (.data:004BC0A8)
 //
 
-char registration_table[128] = "REGISTRATION_TABLE"; // wtf is this?
-// Mutex "held" duing PaintCallback (set to TRUE on enter, FALSE on return)
+// wtf is this? nobody references it
+char registration_table[128] = "REGISTRATION_TABLE";
+// Mutex "held" duing PaintTimer (set to TRUE on enter, FALSE on return)
 BOOL paint_callback_mutex = FALSE;
 int force_redraw = 0;
+// Used by main loop to determine when to post a WM_DIABPAINT message
 BOOL need_to_repaint = FALSE;
 // Controlled by ShowProgress. Will be set to TRUE during certain ShowProgress
 // blocks, then set to FALSE when done. This will be used as the final check in
@@ -57,6 +71,8 @@ BOOL show_intros = TRUE;
 BOOL debugMusicOn = TRUE;
 BOOL cheat_mode = FALSE;
 BOOL frameflag = FALSE;
+// If TRUE then moving the mouse to the edge of the screen scrolls the view
+// (think real-time strategy controls a la Age of Empires)
 BOOL scrollflag = FALSE;
 BOOL light4flag = FALSE;
 BOOL musicFromDisk = FALSE;
@@ -96,14 +112,14 @@ DWORD dword_61B758; // UNUSED; set to 0, never read
 // ...
 char savedir_abspath[64];
 // ...
-BOOL fullscreen; // only value is TRUE
+BOOL fullscreen;        // only value is TRUE
 BOOL dd_use_backbuffer; // only value is FALSE
-DWORD dword_61BF50; // UNUSED
-DWORD dword_61BF54; // UNUSED
-DWORD dword_61BF58; // UNUSED; set to 0, never read
-DWORD dword_61BF5C; // UNUSED; set to 0, never read
-DWORD dword_61BF60; // UNUSED; set to 640, never read
-DWORD dword_61BF64; // UNUSED; set to 480, never read
+DWORD dword_61BF50;     // UNUSED
+DWORD dword_61BF54;     // UNUSED
+DWORD dword_61BF58;     // UNUSED; set to 0, never read
+DWORD dword_61BF5C;     // UNUSED; set to 0, never read
+DWORD dword_61BF60;     // UNUSED; set to 640, never read
+DWORD dword_61BF64;     // UNUSED; set to 480, never read
 BOOL gbActive;
 LPDIRECTDRAWSURFACE lpDDSPrimary;
 DWORD prevTime;
@@ -219,7 +235,86 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
 
-    // TODO!!!!!!!!!!!!!
+    //
+    // MAIN LOOP
+    //
+
+    while (true)
+    {
+        // Process messages
+        if (PeekMessageA(&message, NULL, 0, 0, 0))
+        {
+            if (!GetMessageA(&message, NULL, 0, 0))
+            {
+                return message.wParam;
+            }
+            TranslateMessage(&message);
+            DispatchMessageA(&message);
+            continue;
+        }
+
+        if (gbActivePlayers > 1)
+        {
+            DPlayHandleMessage();
+        }
+
+        // Menus, etc. are handled by their own WndProc. This loop only does
+        // core gameplay
+        if (main_menu_screen != MODE_GAME)
+        {
+            continue;
+        }
+
+        if (unknown_dplay_get_plractive() == FALSE)
+        {
+            continue;
+        }
+
+        if (PauseMode != 2)
+        {
+            if (PauseMode == 1)
+            {
+                PauseMode = 2;
+            }
+
+            for (i = 0; gbActivePlayers > i; i++)
+            {
+                if (plr[i].plractive)
+                {
+                    plr[i].to_send_message_id += 1;
+                }
+            }
+
+            allow_mp_action_send = TRUE;
+
+            // ~~~ Where all the magic happens ~~~
+            game_logic();
+
+            if (need_to_repaint)
+            {
+                PostMessageA(ghMainWnd, WM_DIABPAINT, 0, 0);
+                need_to_repaint = FALSE;
+            }
+        }
+
+        CheckCursMove();
+        if (scrollflag)
+        {
+            ScrollView();
+        }
+
+        force_redraw = 4;
+        if (need_to_repaint)
+        {
+            PostMessageA(ghMainWnd, WM_DIABPAINT, 0, 0);
+            need_to_repaint = FALSE;
+        }
+
+        // This is a tight loop without any yields... This probably pegs the
+        // CPU as a result!
+    }
+
+    return message.wParam; // no breaks; we should never get here!
 }
 
 // .text:00484E67
@@ -315,7 +410,9 @@ BOOL dx_init(HWND hWnd)
 
         hDDVal = lpDDInterface->CreateSurface(&ddsd, &lpDDSBackBuf, NULL);
         lpDDSPrimary = lpDDSBackBuf;
-    } else { // fullscreen == TRUE
+    }
+    else
+    { // fullscreen == TRUE
         hDDVal = DirectDrawCreate(NULL, &lpDDInterface, NULL);
         if (hDDVal != DD_OK)
         {
@@ -328,7 +425,7 @@ BOOL dx_init(HWND hWnd)
             goto error3;
         }
 
-        hDDVal = lpDDInterface->SetDisplayMode(640,480, 8);
+        hDDVal = lpDDInterface->SetDisplayMode(640, 480, 8);
         if (hDDVal != DD_OK)
         {
             goto error4;
@@ -343,18 +440,21 @@ BOOL dx_init(HWND hWnd)
 
         hDDVal = lpDDInterface->CreateSurface(&ddsd, &lpDDSBackBuf, NULL);
         lpDDSPrimary = lpDDSBackBuf;
-        if (hDDVal != DD_OK) {
+        if (hDDVal != DD_OK)
+        {
             goto error5;
         }
     }
 
     lpDDInterface->CreatePalette(DDPCAPS_8BIT, system_palette, &lpDDPalette, NULL);
-    if (lpDDPalette == NULL) {
+    if (lpDDPalette == NULL)
+    {
         goto error6;
     }
 
     hDDVal = lpDDSBackBuf->SetPalette(lpDDPalette);
-    if (hDDVal != DD_OK) {
+    if (hDDVal != DD_OK)
+    {
         goto error7;
     }
 
@@ -362,18 +462,20 @@ BOOL dx_init(HWND hWnd)
 
     snd_init(hWnd);
     SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
-    if (debugMusicOn) {
+    if (debugMusicOn)
+    {
         SFileDdaInitialize(sglpDS);
     }
-    if (musicFromDisk) {
+    if (musicFromDisk)
+    {
         Mopaq_479075(20, 10, 0x8000);
-        if (SNDCPP_InitThread() == 0) {
+        if (SNDCPP_InitThread() == 0)
+        {
             return FALSE;
         }
         music_start("Music\\Dintro.wav");
     }
 
-    
     // TODO
 
 error:
@@ -504,7 +606,21 @@ BOOL init_create_window(HINSTANCE hInstance, int nShowCmd)
 // .text:0048885D
 void dx_cleanup()
 {
-    // TODO
+    if (lpDDInterface)
+    {
+        if (lpDDSBackBuf)
+        {
+            lpDDSBackBuf->Release();
+            lpDDSBackBuf = NULL;
+        }
+        if (lpDDPalette)
+        {
+            lpDDPalette->Release();
+            lpDDPalette = NULL;
+        }
+        lpDDInterface->Release();
+        lpDDInterface = NULL;
+    }
 }
 
 // .text:004888E2
@@ -516,8 +632,8 @@ void FreeGameMem()
     GlobalUnlock(GlobalHandle(pMegaTiles));
     GlobalFree(GlobalHandle(pMegaTiles));
 
-    GlobalUnlock(GlobalHandle(pMiniTiles));
-    GlobalFree(GlobalHandle(pMiniTiles));
+    GlobalUnlock(GlobalHandle(pLevelPieces));
+    GlobalFree(GlobalHandle(pLevelPieces));
 
     GlobalUnlock(GlobalHandle(pSpecialCels));
     GlobalFree(GlobalHandle(pSpecialCels));
@@ -540,11 +656,85 @@ void FreeGameMem()
         FreeTownerEffects();
     }
 }
-// LoadLvlGFX	00000000004889EA
-// LoadAllGFX	0000000000488BC1
+
+// .text:004889EA
+static void LoadLvlGFX()
+{
+    switch (leveltype)
+    {
+    case DTYPE_TOWN:
+        pDungeonCels = LoadFileInMem("Levels\\TownData\\Town.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\TownData\\Town.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\TownData\\Town.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\TownData\\TownS.CEL");
+        break;
+    case DTYPE_OLD_CATHEDRAL:
+        pDungeonCels = LoadFileInMem("Levels\\L1Data\\L1.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\L1Data\\L1.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\L1Data\\L1.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\L1Data\\L1S.CEL");
+        break;
+    case DTYPE_CATACOMBS:
+        pDungeonCels = LoadFileInMem("Levels\\L2Data\\L2.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\L2Data\\L2.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\L2Data\\L2.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\L2Data\\L2S.CEL");
+        break;
+    case DTYPE_CAVES:
+        pDungeonCels = LoadFileInMem("Levels\\L3Data\\L3.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\L3Data\\L3.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\L3Data\\L3.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\L1Data\\L1S.CEL"); // lol
+        break;
+    case DTYPE_HELL:
+        pDungeonCels = LoadFileInMem("Levels\\L2Data\\L2.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\L2Data\\L2.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\L2Data\\L2.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\L2Data\\L2S.CEL");
+        break;
+    case DTYPE_CATHEDRAL:
+        pDungeonCels = LoadFileInMem("Levels\\L1Data\\L1.CEL");
+        pMegaTiles = LoadFileInMem("Levels\\L1Data\\L1.TIL");
+        pLevelPieces = LoadFileInMem("Levels\\L1Data\\L1.MIN");
+        pSpecialCels = LoadFileInMem("Levels\\L1Data\\L1S.CEL");
+        break;
+    }
+}
+
+// .text:00488BC1
+static void LoadAllGFX(BOOL firstflag)
+{
+    pSpeedCels = (BYTE *)GlobalLock(GlobalAlloc(0, 0x100000));
+    InitMonsterGFX();
+    if (firstflag)
+    {
+        IncProgress();
+    }
+    InitMonsterSND();
+    if (firstflag)
+    {
+        IncProgress();
+    }
+    InitObjectGFX();
+    if (firstflag)
+    {
+        IncProgress();
+    }
+    InitMissileGFX();
+    if (firstflag)
+    {
+        IncProgress();
+    }
+    InitSpellGFX();
+    if (firstflag)
+    {
+        IncProgress();
+    }
+}
+
 // CreateLevel	0000000000488C54
 
-void LoadGameLevel(BOOL firstflag, int lvldir)
+void LoadGameLevel(BOOL firstflag, int lvldir, BOOL first_flag)
 {
     // TODO
     // calls LoadLevel
@@ -552,4 +742,9 @@ void LoadGameLevel(BOOL firstflag, int lvldir)
 
 // InitLevels	000000000048947E
 // diablo_489510_plr_rel	0000000000489510
-// game_logic	0000000000489715
+
+// .text:00489715
+void game_logic()
+{
+    // TODO
+}

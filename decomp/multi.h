@@ -5,4 +5,7 @@
 
 extern BOOL isSinglePlayer;
 
+void DPlayHandleMessage();
+BOOL unknown_dplay_get_plractive();
+
 #endif
