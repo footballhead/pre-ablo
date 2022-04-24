@@ -16,12 +16,9 @@ char msgcnt = 0; // index into msgtable
 // uninitialized data (.data:004B87C0)
 //
 
-DWORD unused000; // could be part of spells.cpp
 char msgflag;
-DWORD unused001;
 char msgtable[80]; // queue of messages waiting to be shown
 char msgdelay;
-DWORD unused002; // could be part objects.cpp
 
 // .text:004578D0
 // Taken from Devilution and tweaked

@@ -125,7 +125,7 @@ typedef struct _PlayerStruct
   char anonymous_19;
   char _pName[32];
   _BYTE gap567[30];
-  char plr_pClass;
+  char _pClass;
   char anonymous_20[2];
   int _pStrength;
   int _pBaseStr;
@@ -230,8 +230,8 @@ typedef struct _PlayerStruct
   int anonymous_45;
   int plr_pIFlags;
   int anonymous_46;
-  char plr_pISplLvlAdd;
-  char plr_pISplCost;
+  char _pISplLvlAdd;
+  char _pISplCost;
   char anonymous_47;
   char anonymous_48;
   int plr_WarpActive;
@@ -402,5 +402,39 @@ struct ObjDataStruct
 };
 #pragma pack(pop)
 _STATIC_ASSERT(sizeof(ObjDataStruct) == 0x2C);
+
+#pragma pack(push, 8)
+struct SpellStruct
+{
+  int type;
+  int x;
+  int y;
+  int anonymous_2;
+  int anonymous_3;
+  int animdata;
+  int anonymous_5;
+  int anonymous_6;
+  int anonymous_7;
+  int anonymous_8;
+  int animWidth;
+  int animWidth2;
+  int anonymous_11;
+  int anonymous_12;
+  int anonymous_13;
+  int range;
+  int anonymous_15;
+  int delFlag;
+  int source;
+  int oldx;
+  int oldy;
+  int dir;
+  int nextx;
+  int nexty;
+  int anonymous_23;
+  int anonymous_24;
+  int anonymous_25;
+};
+#pragma pack(pop)
+_STATIC_ASSERT(sizeof(SpellStruct) == 0x6C);
 
 #endif

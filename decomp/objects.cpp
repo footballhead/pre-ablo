@@ -1,5 +1,7 @@
+#include "control.h"
 #include "defines.h"
 #include "enums.h"
+#include "error.h"
 #include "player.h"
 #include "structs.h"
 
@@ -17,7 +19,6 @@ extern char dPiece[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern char dMonster[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern ObjDataStruct AllObjects[69]; // objdat.cpp
 extern QuestStruct quests[MAXQUESTS];
-extern char tempstr[64]; // interfac.cpp ???
 extern int nSolidTable[MAXTILES + 1];
 extern ItemStruct golditem;
 
@@ -27,7 +28,6 @@ void ModifyPlrStr(int p, int l); // player.cpp
 void ModifyPlrMag(int p, int l); // player.cpp
 void ModifyPlrDex(int p, int l); // player.cpp
 void ModifyPlrVit(int p, int l); // player.cpp
-void InitDiabloMsg(char e); // error.cpp
 void CalcPlrInv(int pnum); // items.cpp
 void AddPlrExperience(int pnum, int lvl, int exp); // player.cpp
 void TakePlrsMoney(int cost); // stores.cpp
@@ -67,19 +67,14 @@ const char* shrinestrs[] = {
 int trapdir;
 int nobjects;
 int numobjfiles;
-DWORD unused000;
 char ObjFileList[40]; // indexed by numobjfiles
 int objectavail[MAXOBJECTS]; // indexed by nobjects
-DWORD unused001;
 ObjectStruct object[MAXOBJECTS];
 BOOL InitObjFlag;
 int leverid;
-DWORD unused002;
 int objectactive[MAXOBJECTS];
-DWORD unused003;
 BYTE *pObjCels[40];
 int trapid;
-DWORD dword_00603EEC; // UNUSED
 
 //
 // code (.text:00457E30)
