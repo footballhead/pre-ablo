@@ -4,6 +4,7 @@
 #include <windows.h>
 
 extern BYTE* gpBuffer;
+extern char fileLoadPrefix[64];
 
 void FreeGameMem();
 void LoadGameLevel(BOOL firstflag, int lvldir, BOOL first_flag);

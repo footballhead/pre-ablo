@@ -103,7 +103,10 @@ LPDIRECTDRAWSURFACE lpDDSBackBuf;
 HWND ghMainWnd;
 int MouseX;
 int MouseY;
-// ...
+DWORD dword_61B738; // UNUSED
+int screenshot_idx;
+DWORD dword_61B740; // TODO TODO TODO
+DWORD dword_61B744; // UNUSED
 BOOL can_fade;
 LPDIRECTDRAWPALETTE lpDDPalette;
 int main_menu_screen;
