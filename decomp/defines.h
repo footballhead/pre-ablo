@@ -10,6 +10,7 @@
 #define MAXOBJECTS 127
 #define MAXDUNX 112
 #define MAXDUNY 112
+#define MAXMISSILES 125
 #define MAXTILES 2048
 #define NUM_INV_GRID_ELEM 40
 

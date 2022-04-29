@@ -232,4 +232,57 @@ enum plr_class
     PC_SORCERER = 0x2,
 };
 
+enum cursor_id
+{
+    CURSOR_NONE = 0x1,
+    CURSOR_HAND = 0x2,
+    CURSOR_IDENTIFY = 0x3,
+    CURSOR_REPAIR = 0x4,
+    CURSOR_RECHARGE = 0x5,
+    CURSOR_DISARM = 0x6,
+    CURSOR_OIL = 0x7,
+    CURSOR_FIRSTITEM = 0x8,
+    CURSOR_LASTITEM = 0x7D,
+};
+
+enum missile_id
+{
+    MIS_ARROW = 0,
+    MIS_FIREBOLT = 1,
+    MIS_GUARDIAN = 2,
+    MIS_RNDTELEPORT = 3,
+    MIS_LIGHTBALL = 4,
+    MIS_FIREWALL = 5,
+    MIS_FIREBALL = 6,
+    MIS_LIGHTCTRL = 7,
+    MIS_TOWN = 10,
+    MIS_FLASH = 11,
+    MIS_FLASH2 = 12,
+    MIS_MANASHIELD = 13,
+    MIS_FIREMOVE = 14,
+    MIS_SENTINAL = 15,
+    MIS_CHAIN = 0x10,
+    MIS_CHAIN2 = 0x11, // this is demo exclusive (check beta??)
+    MIS_TELEPORT = 0x1B,
+    MIS_FARROW = 0x1C,
+    MIS_DOOMSERP = 0x1D,
+    MIS_STONE = 0x1F,
+    MIS_INVISIBL = 0x21,
+    MIS_GOLEM = 0x22,
+    MIS_ETHEREALIZE = 0x23,
+    MIS_BLODBUR = 0x24,
+};
+
+typedef enum dflag
+{
+    BFLAG_MISSILE = 0x01,
+    BFLAG_VISIBLE = 0x02,
+    BFLAG_DEAD_PLAYER = 0x04,
+    BFLAG_POPULATED = 0x08,
+    BFLAG_MONSTLR = 0x10,
+    BFLAG_PLAYERLR = 0x20,
+    BFLAG_LIT = 0x40,
+    BFLAG_EXPLORED = 0x80,
+} dflag;
+
 #endif

@@ -6,7 +6,7 @@
 
 #include <windows.h>
 
-_STATIC_ASSERT(sizeof(void*) == 4);
+_STATIC_ASSERT(sizeof(void *) == 4);
 
 // IDA export quirk: gaps of undefined data use this type, which is 8-bits
 typedef char _BYTE;
@@ -169,7 +169,7 @@ typedef struct _PlayerStruct
   int plr_pVar6;
   int plr_pVar7;
   int plr_pVar8;
-  int _pSeedTbl[17]; 
+  int _pSeedTbl[17];
   int _pLevelTypeTbl[17];
   int _pLvlVisited[17];
   int _pSLvlVisited[17];
@@ -411,7 +411,7 @@ struct SpellStruct
   int y;
   int anonymous_2;
   int anonymous_3;
-  int animdata;
+  BYTE *animdata;
   int anonymous_5;
   int anonymous_6;
   int anonymous_7;
@@ -422,19 +422,66 @@ struct SpellStruct
   int anonymous_12;
   int anonymous_13;
   int range;
-  int anonymous_15;
-  int delFlag;
+  int dam;
+  BOOL delFlag;
   int source;
-  int oldx;
-  int oldy;
-  int dir;
-  int nextx;
-  int nexty;
-  int anonymous_23;
-  int anonymous_24;
-  int anonymous_25;
+  int var1;
+  int var2;
+  int var3;
+  int var4;
+  int var5;
+  int var6;
+  int var7;
+  int var8;
 };
 #pragma pack(pop)
 _STATIC_ASSERT(sizeof(SpellStruct) == 0x6C);
+
+#pragma pack(push, 8)
+struct MissileStruct
+{
+  int _mitype;
+  int _mix;
+  int _miy;
+  int _mixoff;
+  int _miyoff;
+  int _mixvel;
+  int _miyvel;
+  int _misx;
+  int _misy;
+  int _mitxoff;
+  int _mityoff;
+  int _mimfnum;
+  int _miDelFlag;
+  int _miFlags;
+  int _miAnimData;
+  int anonymous_7;
+  int anonymous_8;
+  int _miAnimLen;
+  int anonymous_9;
+  int _miAnimFrame;
+  int _miAnimWidth;
+  int _miAnimWidth2;
+  int _miLightFlag;
+  int _miPreFlag;
+  int _miUniqTrans;
+  int _mirange;
+  int _misource;
+  int _micaster;
+  int _midam;
+  int _midist;
+  int _mirnd;
+  int _mlid;
+  int _miVar1;
+  int _miVar2;
+  int _miVar3;
+  int _miVar4;
+  int _miVar5;
+  int _miVar6;
+  int _miVar7;
+  int _miVar8;
+};
+#pragma pack(pop)
+_STATIC_ASSERT(sizeof(MissileStruct) == 0xA0);
 
 #endif
