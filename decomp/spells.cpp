@@ -21,6 +21,7 @@ void AddPlrExperience(int pnum, int lvl, int exp);
 void AddDead(int dx, int dy, char dv, int ddir);
 void SyncPlrKill(int pnum);
 void StartPlrHit(int pnum);
+void CalcPlrItemVals(int pnum);
 
 extern int dPiece[MAXDUNX][MAXDUNY];
 extern BOOLEAN nSolidTable[MAXTILES + 1];
@@ -325,30 +326,30 @@ void InitSpells()
         spells[i].type = SPL_NULL;
         spells[i].x = 0;
         spells[i].y = 0;
-        spells[i].anonymous_2 = 0;
-        spells[i].anonymous_11 = 0;
+        spells[i].animating = FALSE;
+        spells[i].field_30 = 0;
         spells[i].var1 = 0;
         spells[i].var2 = 0;
         spells[i].var3 = 0;
         spells[i].var4 = 0;
-        spells[i].delFlag = 0;
+        spells[i].delFlag = FALSE;
         availspells[i] = i;
         spellsactive[i] = 0;
     }
 }
 
 // .text:00453C0D
-void AddSpellStats(int i, BYTE *animdata, int arg_0, int arg_4, int width, int arg_c)
+void SetSpellAnims(int i, BYTE *animdata, int len, int delay, int width, int arg_c)
 {
     spells[i].animdata = animdata;
-    spells[i].anonymous_7 = arg_0;
-    spells[i].anonymous_8 = 1;
-    spells[i].anonymous_6 = 0;
-    spells[i].anonymous_5 = arg_4;
+    spells[i].animLen = len;
+    spells[i].animFrame = 1;
+    spells[i].animCnt = 0;
+    spells[i].animDelay = delay;
     spells[i].animWidth = width;
     spells[i].animWidth2 = (width - 64) >> 1;
-    spells[i].anonymous_2 = 1;
-    spells[i].anonymous_3 = arg_c;
+    spells[i].animating = TRUE;
+    spells[i].field_10 = arg_c;
 }
 
 // .text:00453CDB
@@ -670,8 +671,8 @@ static void cast_firewall(int id, int sidx, int sx, int sy, int dx, int dy)
         spells[sidx].var4 = (dir + 2) & 7;
         spells[sidx].range = 20;
 
-        AddSpellStats(sidx, pSpellLghningCel, 8, 0, 96, 0);
-        spells[sidx].anonymous_11 = 0;
+        SetSpellAnims(sidx, pSpellLghningCel, 8, 0, 96, 0);
+        spells[sidx].field_30 = 0;
         spells[sidx].delFlag = FALSE;
 
         UseMana(id, SPL_FIREWALL);
@@ -712,8 +713,8 @@ static void cast_infravision(int id, int sidx, int sx, int sy, int dx, int dy)
 
     spells[sidx].range = 255;
 
-    AddSpellStats(sidx, pSpellLghningCel, 8, 0, 96, 0);
-    spells[sidx].anonymous_11 = 0;
+    SetSpellAnims(sidx, pSpellLghningCel, 8, 0, 96, 0);
+    spells[sidx].field_30 = 0;
     spells[sidx].delFlag = FALSE;
 
     UseMana(id, SPL_INFRA);
@@ -1082,8 +1083,8 @@ static void cast_apoca(int id, int sidx, int sx, int sy, int dx, int dy)
     }
 
     spells[sidx].range = 255;
-    AddSpellStats(sidx, pSpellLghningCel, 8, 0, 96, 0);
-    spells[sidx].anonymous_11 = 0;
+    SetSpellAnims(sidx, pSpellLghningCel, 8, 0, 96, 0);
+    spells[sidx].field_30 = 0;
     spells[sidx].delFlag = FALSE;
 
     UseMana(id, SPL_APOCA);
@@ -1286,11 +1287,222 @@ void CastSpell(int id, int sn, int sx, int sy, int dx, int dy)
 
     numspells++;
 }
-// __dc_spells_hit_monst	0000000000456644
-// process_firewall_spell	00000000004567CC
-// process_infravision_spell	0000000000456A8A
-// process_apoc_spell	0000000000456B1C
-// __dc_process_unk_spell_456CA4	0000000000456CA4
-// ProcessSpells	0000000000457686
-// FreeSpells	000000000045787C
-// __nullsub_SetSpellGFX	00000000004578B2
+
+// TODO: __dc_spells_hit_monst	0000000000456644
+
+// .text:004567CC
+// Replaced by MI_FirewallC
+// The firewall is incrementally grown from the middle toward each end
+// each tick until it reaches its full extent (or hits a wall).
+// Use of myplr makes this multiplayer unfriendly :(
+static void process_firewall_spell(int i)
+{
+    int dp;
+
+    spells[i].range--;
+    if (spells[i].range == 0)
+    {
+        spells[i].delFlag = TRUE;
+        return;
+    }
+
+    // var1 == X location for next missile to grow side A
+    // var2 == Y location for next missile to grow side A
+    // var3 == direction to grow side A
+    // var4 == direction to grow side B
+    // var5 == X location for next missile to grow side B
+    // var6 == Y location for next missile to grow side B
+    // var7 == bool; stop growing side B
+    // var8 == bool; stop growing side A
+
+    // On initial cast, var1 == var2 == var5 == var6, which means this will
+    // create overlapping missiles in the middle of the firewall (where the
+    // player clicked). Does this mean the middle of the firewall does more
+    // damage???
+
+    // Process Side A
+    dp = dPiece[spells[i].var1][spells[i].var2];
+    if (nSolidTable[dp] == 0 && spells[i].var8 == 0)
+    {
+        AddMissile(spells[i].var1, spells[i].var2,
+                   spells[i].var1, spells[i].var2,
+                   plr[myplr]._pdir, MIS_FIREWALL, 0, myplr, 0);
+
+        spells[i].var1 += XDirAdd[spells[i].var3];
+        spells[i].var2 += YDirAdd[spells[i].var3];
+    }
+    else
+    {
+        spells[i].var8 = 1;
+    }
+
+    // Process Side B
+    dp = dPiece[spells[i].var5][spells[i].var6];
+    if (nSolidTable[dp] == 0 && spells[i].var7 == 0)
+    {
+        AddMissile(spells[i].var5, spells[i].var6,
+                   spells[i].var5, spells[i].var6,
+                   plr[myplr]._pdir, MIS_FIREWALL, 0, myplr, 0);
+
+        spells[i].var5 += XDirAdd[spells[i].var4];
+        spells[i].var6 += YDirAdd[spells[i].var4];
+    }
+    else
+    {
+        spells[i].var7 = 1;
+    }
+}
+
+// .text:00456A8A
+static void process_infravision_spell(int i)
+{
+    spells[i].range--;
+    plr[spells[i].source]._pInfraFlag = TRUE;
+    if (spells[i].range == 0)
+    {
+        spells[i].delFlag = TRUE;
+        CalcPlrItemVals(spells[i].source);
+    }
+}
+
+// .text:00456B1C
+// Scan one cell per tick inside a rectangle. Blow up any monsters found.
+static void process_apoc_spell(int i)
+{
+    BOOL exit;
+    int j, k;
+
+    // var2: Y location of cell to check
+    // var3: extent of Y to check
+    // var4: X location of cell to check
+    // var5: extent of X to check
+    // var6: X at beginning of row
+
+    exit = FALSE;
+    for (j = spells[i].var2; spells[i].var3 > j && exit == FALSE; j++)
+    {
+        for (k = spells[i].var4; spells[i].var5 > k && exit == FALSE; k++)
+        {
+            if (dMonster[k][j] > 0)
+            {
+                AddMissile(k, j, k, j, plr[myplr]._pdir, MIS_BOOM, 0, myplr, spells[i].dam);
+                exit = TRUE;
+            }
+        }
+
+        if (exit == FALSE)
+        {
+            spells[i].var4 = spells[i].var6;
+        }
+    }
+
+    if (exit == TRUE)
+    {
+        spells[i].var2 = j - 1;
+        spells[i].var4 = k;
+    }
+    else
+    {
+        spells[i].delFlag = TRUE;
+    }
+}
+
+// TODO: __dc_process_unk_spell_456CA4	0000000000456CA4
+
+// .text:00457686
+void ProcessSpells()
+{
+    int sidx;
+    int i;
+
+    for (i = 0; i < numspells; i++)
+    {
+        sidx = spellsactive[i];
+        switch (spells[sidx].type)
+        {
+        case SPL_FIREBOLT:
+        case SPL_HEAL:
+        case SPL_LIGHTNING:
+        case SPL_FLASH:
+        case SPL_IDENTIFY:
+        case SPL_TOWN:
+        case SPL_STONE:
+        case SPL_RNDTELEPORT:
+        case SPL_MANASHIELD:
+        case SPL_FIREBALL:
+        case SPL_GUARDIAN:
+        case SPL_WAVE:
+        case SPL_DOOMSERP:
+        case SPL_BLODRIT:
+        case SPL_NOVA:
+        case SPL_INVISIBIL:
+        case SPL_SENTINEL:
+        case SPL_GOLEM:
+        case SPL_BLODBOIL:
+        case SPL_TELEPORT:
+        case SPL_ETHEREALIZE:
+        case SPL_REPAIR:
+        case SPL_RECHARGE:
+        case SPL_DISARM:
+            // Don't process spells that either don't have logic after cast, or
+            // will be handled instead by ProcessMissiles
+            break;
+        case SPL_INFRA:
+            process_infravision_spell(sidx);
+            break;
+        case SPL_FIREWALL:
+            process_firewall_spell(sidx);
+            break;
+        case SPL_CHAIN:
+            // Yes this is empty.
+            break;
+        case SPL_APOCA:
+            process_apoc_spell(sidx);
+            break;
+        }
+
+        if (spells[sidx].animating)
+        {
+            if (spells[sidx].animDelay <= ++spells[sidx].animCnt)
+            {
+                spells[sidx].animCnt = 0;
+                if (++spells[sidx].animFrame > spells[sidx].animLen)
+                {
+                    spells[sidx].animFrame = 1;
+                }
+            }
+        }
+    }
+
+    i = 0;
+    while (i < numspells)
+    {
+        sidx = spellsactive[i];
+        if (spells[i].delFlag)
+        {
+            DeleteSpell(sidx, i);
+            i = 0;
+            continue;
+        }
+        else
+        {
+            i++;
+        }
+    }
+}
+
+// .text:0045787C
+void FreeSpells()
+{
+    GlobalUnlock(GlobalHandle(pSpellLghningCel));
+    GlobalFree(GlobalHandle(pSpellLghningCel));
+}
+
+// .text:004578B2
+// Called by LoadSpell and some multiplayer code. Theorized to be actual
+// graphics loading code that has since been removed (due to the migration from
+// spells to missiles)
+void __nullsub_SetSpellGFX(int i)
+{
+    // This space intentionally left blank.
+}

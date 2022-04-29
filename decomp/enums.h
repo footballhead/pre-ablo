@@ -271,6 +271,7 @@ enum missile_id
     MIS_GOLEM = 0x22,
     MIS_ETHEREALIZE = 0x23,
     MIS_BLODBUR = 0x24,
+    MIS_BOOM = 0x25,
 };
 
 typedef enum dflag

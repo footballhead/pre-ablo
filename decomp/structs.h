@@ -160,7 +160,7 @@ typedef struct _PlayerStruct
   char plr_pFireResist;
   char plr_pLghtResist;
   int _pGold;
-  int plr_pInfraFlag;
+  BOOL _pInfraFlag;
   int plr_pVar1;
   int plr_pVar2;
   int plr_pVar3;
@@ -409,18 +409,18 @@ struct SpellStruct
   int type;
   int x;
   int y;
-  int anonymous_2;
-  int anonymous_3;
-  BYTE *animdata;
-  int anonymous_5;
-  int anonymous_6;
-  int anonymous_7;
-  int anonymous_8;
-  int animWidth;
-  int animWidth2;
-  int anonymous_11;
-  int anonymous_12;
-  int anonymous_13;
+  BOOL animating;
+  int field_10; // Basically unused
+  BYTE *animdata; // Basically unused
+  int animDelay; // How many ticks between frames
+  int animCnt; // Current progress towards a new frame
+  int animLen; // How many frames in animdata
+  int animFrame; // Current animation frame
+  int animWidth; // Width of animdata
+  int animWidth2; // animWidth / 8
+  int field_30; // Basically unused
+  int field_34; // Basically unused
+  int field_38; // Basically unused
   int range;
   int dam;
   BOOL delFlag;
