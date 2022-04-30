@@ -6,6 +6,9 @@
 
 #include <stdio.h>
 
+//#define BUFFER_LEFT_AND_RIGHT (BUFFER_LEFT + BUFFER_RIGHT)
+#define BUFFER_LEFT_AND_RIGHT 128
+
 //
 // uninitialized vars (.data:005FD0A8)
 //
@@ -33,13 +36,15 @@ void FreeDebugGFX()
 // This function is not called.
 // Wrapper around TextOut for some kinds of numbers
 // @param fmt Either 'c' (char), 'i' (integer), or 'l' (long)
-void __dc_debug_print_number(int x, int y, char fmt, int to_print) {
+void __dc_debug_print_number(int x, int y, char fmt, int to_print)
+{
     char buffer[52];
     HDC hdc;
 
     hdc = GetDC(NULL);
 
-    switch (fmt) {
+    switch (fmt)
+    {
     case 'c':
         TextOutA(hdc, x, y, buffer, sprintf(buffer, "%c", to_print));
         break;
@@ -56,11 +61,11 @@ void __dc_debug_print_number(int x, int y, char fmt, int to_print) {
 
 // .text:0044ACCF
 // Encode gpBuffer as a PCX (RLE compress data, slap on PCX header) and save to disk
-void CaptureScreen(int pic_idx, BYTE* palette)
+void CaptureScreen(int pic_idx, BYTE *palette)
 {
     char path[512];
     DWORD dwBytes;
-    BYTE* buffer;
+    BYTE *lpBuffer;
     HFILE hFile;
 
     sprintf(path, "%sDScrn_%i.PCX", fileLoadPrefix, pic_idx);
@@ -68,35 +73,35 @@ void CaptureScreen(int pic_idx, BYTE* palette)
     // 0x100000 is ~1MB. I think was chosen as an arbitrarily big number to
     // ensure there's enough space. That gives ~3 bytes per pixel at 640x480
     // which, given that we're compressing the data, is way more than enough!
-    buffer = (BYTE*)GlobalLock(GlobalAlloc(0, 0x100000));
+    lpBuffer = (BYTE *)GlobalLock(GlobalAlloc(0, 0x100000));
     __asm {
-            mov     edi, [ebp+lpBuffer]
+            mov     edi, lpBuffer
 
-            ; PCX reference: https://docs.fileformat.com/image/pcx/
-            ; Store header
-            mov     al, 0Ah  ; PCX Id Number (always 0x0A)
+                     // PCX reference: https://docs.fileformat.com/image/pcx/
+                     // Store header
+            mov     al, 0Ah // PCX Id Number (always 0x0A)
             stosb
-            mov     al, 5   ; Version number (5 means PC Paintbrush 3.0)
+            mov     al, 5 // Version number (5 means PC Paintbrush 3.0)
             stosb
-            mov     al, 1   ; Encoding (1 means RLE)
+            mov     al, 1 // Encoding (1 means RLE)
             stosb
-            mov     al, SCREEN_BPP ; BitsPerPixel
+            mov     al, SCREEN_BPP // BitsPerPixel
             stosb
-            xor     ax, ax  ; Left of image
+            xor     ax, ax // Left of image
             stosw
-            xor     ax, ax  ; Top of image
+            xor     ax, ax // Top of image
             stosw
-            mov     ax, SCREEN_WIDTH - 1 ; Right of Image
+            mov     ax, SCREEN_WIDTH - 1 // Right of Image
             stosw
-            mov     ax, SCREEN_HEIGHT - 1 ; Bottom of Image
+            mov     ax, SCREEN_HEIGHT - 1 // Bottom of Image
             stosw
-            mov     ax, SCREEN_WIDTH ; Horizontal resolution
+            mov     ax, SCREEN_WIDTH // Horizontal resolution
             stosw
-            mov     ax, SCREEN_HEIGHT ; Vertical resolution
+            mov     ax, SCREEN_HEIGHT // Vertical resolution
             stosw
 
-            ; Store first 16 entries of palette
-            ; The entire 256-color palette is stored after image data
+                // Store first 16 entries of palette
+                // The entire 256-color palette is stored after image data
             mov     esi, palette
             mov     ecx, 16
         store_header_palette:
@@ -109,17 +114,17 @@ void CaptureScreen(int pic_idx, BYTE* palette)
             add     esi, 4
             loop    store_header_palette
 
-            xor     al, al ; Reserved (Always 0)
+            xor     al, al ; // Reserved (Always 0);
             stosb
-            mov     al, 1 ; Number of bit planes
+            mov     al, 1 // Number of bit planes
             stosb
-            mov     ax, SCREEN_WIDTH ; Bytes per scan-line
+            mov     ax, SCREEN_WIDTH // Bytes per scan-line
             stosw
-            xor     al, al  ; Rest of header (60 bytes) is 0
-                            ; This means    PaletteType = 0
-                            ;               HorzScreenSize = 0
-                            ;               VertScreenSize = 0
-                            ;               Reserved2[54] = {0}
+            xor     al, al // Rest of header (60 bytes) is 0
+           // This means    PaletteType = 0
+           //               HorzScreenSize = 0
+           //               VertScreenSize = 0
+           //               Reserved2[54] = {0}
             mov     ecx, 60
             rep stosb
 
@@ -136,56 +141,56 @@ void CaptureScreen(int pic_idx, BYTE* palette)
             push    ecx
             mov     ecx, SCREEN_WIDTH
         start_of_run:
-            mov     edx, 1      ; Runs start 1px long
-            xor     eax, eax    ; Ensure EAX is clean (both high and low)
-            lodsb               ; Load 1 byte from gpBuffer into AL
+            mov     edx, 1 // Runs start 1px long
+            xor     eax, eax // Ensure EAX is clean (both high and low)
+            lodsb // Load 1 byte from gpBuffer into AL
             dec ecx
-            jz      end_of_run  ; Treat the end of a row as the end of a run
-                                // Maybe to match "Bytes per scan-line"?
+            jz      end_of_run // Treat the end of a row as the end of a run
+                                  // Maybe to match "Bytes per scan-line"?
 
         run_read:
             mov     ah, [esi]
             cmp     ah, al
-            jnz     end_of_run  ; Diferent pixel, end of run!
+            jnz     end_of_run  ; // Diferent pixel, end of run!
 
             inc     edx
             inc     esi
             dec     ecx
             cmp     edx, 3Fh
             xor     ecx, ecx
-            jnz     run_read    ; Otherwise end of run is a run of size 63 or the end of the row (whatever is first)
+            jnz     run_read          // Otherwise end of run is a run of size 63 or the end of the row (whatever is first)
 
         end_of_run:
             cmp     edx, 1
             jz      end_of_run_of_1
 
         write_run:
-            ; Encode + write run length (0xC0 seems to indicate that the byte is encoding run length)
+                                  // Encode + write run length (0xC0 seems to indicate that the byte is encoding run length)
             or      dl, 0C0h
             mov     [edi], dl
             inc     edi
-            ; Write AL, the run pixel
+                                  // Write AL, the run pixel
             stosb
             jmp     check_new_row_or_run
 
         end_of_run_of_1:
-            ; Rows of size 1 may not need to write their length
+            // Rows of size 1 may not need to write their length
             cmp     al, 0BFh
             ja      write_run
-            stosb   ; Store the pixel without length (assumed run length is 1)
+            stosb                 // Store the pixel without length (assumed run length is 1)
 
         check_new_row_or_run:
             cmp     ecx, 0
             jnz     start_of_run
 
-            ; End of row, move to the next one
+            // End of row, move to the next one
             pop     ecx
-            add     esi, BUFFER_LEFT + BUFFER_RIGHT
+            add     esi, BUFFER_LEFT_AND_RIGHT
             loop start_of_row
 
-            ; END OF IMAGE DATA!
-            ; Start storting palette
-            mov     al, 12  ; Mark start of 256-color palette
+                // END OF IMAGE DATA!
+                // Start storing palette
+            mov     al, 12 // Mark start of 256-color palette
             stosb
 
             mov     esi, palette
@@ -201,13 +206,13 @@ void CaptureScreen(int pic_idx, BYTE* palette)
             loop    store_palette
 
             mov     eax, edi
-            sub     eax, buffer
+            sub     eax, lpBuffer
             mov     dwBytes, eax
     }
 
-    _lwrite(hFile, (LPCCH)buffer, dwBytes);
+    _lwrite(hFile, (LPCCH)lpBuffer, dwBytes);
     _lclose(hFile);
 
-    GlobalUnlock(GlobalHandle(buffer));
-    GlobalFree(GlobalHandle(buffer));
+    GlobalUnlock(GlobalHandle(lpBuffer));
+    GlobalFree(GlobalHandle(lpBuffer));
 }

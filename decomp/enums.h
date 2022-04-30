@@ -3,14 +3,6 @@
 #ifndef __ENUMS_H__
 #define __ENUMS_H__
 
-typedef enum quest_state
-{
-    QUEST_NOTAVAIL = 0,
-    QUEST_INIT = 1,
-    QUEST_ACTIVE = 2,
-    QUEST_DONE = 3
-} quest_state;
-
 typedef enum dungeon_type
 {
     DTYPE_TOWN = 0x0,
@@ -32,34 +24,6 @@ typedef enum lvl_entry
     ENTRY_TWARPDN = 6,
     ENTRY_TWARPUP = 7,
 } lvl_entry;
-
-typedef enum shrine_type
-{
-    SHRINE_MYSTERIOUS,
-    SHRINE_IMPOSING,
-    SHRINE_HIDDEN,
-    SHRINE_MAGICAL,
-    SHRINE_MYSTIC,
-    SHRINE_ENCHANTED,
-    SHRINE_THAUMATURGIC,
-    SHRINE_FASCINATING,
-    SHRINE_CRYPTIC,
-    SHRINE_SUPERNATURAL,
-    SHRINE_EERIE,
-    SHRINE_HOLY,
-    SHRINE_SPIRITUAL,
-    NUM_SHRINETYPE
-} shrine_type;
-
-typedef enum inv_body_loc
-{
-    INVLOC_HEAD,
-    INVLOC_CHEST,
-    INVLOC_RING_LEFT,
-    INVLOC_RING_RIGHT,
-    INVLOC_HAND_LEFT,
-    INVLOC_HAND_RIGHT
-} inv_body_loc;
 
 typedef enum spell_type
 {
@@ -144,56 +108,6 @@ typedef enum _object_id
     OBJ_NULL_68 = 0x44,
 } _object_id;
 
-typedef enum quest_id
-{
-    Q_SKELKING = 0,
-    Q_BUTCHER = 1,
-    Q_ROCK = 2,
-    Q_SCHAMB = 3,
-    Q_MAZE = 4,
-    Q_INVALID = -1
-} quest_id;
-
-typedef enum quest_state
-{
-    QUEST_NOTAVAIL = 0,
-    QUEST_INIT = 1,
-    QUEST_ACTIVE = 2,
-    QUEST_DONE = 3
-} quest_state;
-
-enum spell_id
-{
-    SPL_NULL = 0x0,
-    SPL_FIREBOLT = 0x1,
-    SPL_HEAL = 0x2,
-    SPL_LIGHTNING = 0x3,
-    SPL_FLASH = 0x4,
-    SPL_IDENTIFY = 0x5,
-    SPL_FIREWALL = 0x6,
-    SPL_TOWN = 0x7,
-    SPL_STONE = 0x8,
-    SPL_INFRA = 0x9,
-    SPL_RNDTELEPORT = 0xA,
-    SPL_MANASHIELD = 0xB,
-    SPL_FIREBALL = 0xC,
-    SPL_GUARDIAN = 0xD,
-    SPL_CHAIN = 0xE,
-    SPL_WAVE = 0xF,
-    SPL_DOOMSERP = 0x10,
-    SPL_BLODRIT = 0x11,
-    SPL_NOVA = 0x12,
-    SPL_INVISIBIL = 0x13,
-    SPL_SENTINEL = 0x14,
-    SPL_GOLEM = 0x15,
-    SPL_BLODBOIL = 0x16,
-    SPL_TELEPORT = 0x17,
-    SPL_APOCA = 0x18,
-    SPL_ETHEREALIZE = 0x19,
-    SPL_REPAIR = 0x1A,
-    SPL_RECHARGE = 0x1B,
-    SPL_DISARM = 0x1C,
-};
 
 enum monster_resistance
 {
@@ -216,62 +130,6 @@ enum game_mode
     MODE_INTRO_VID = 0xC,
     MODE_DEMO_END = 0xD,
     MODE_PROGRESS = 0xE,
-};
-
-enum magic_type
-{
-    STYPE_FIRE = 0x0,
-    STYPE_LIGHTNING = 0x1,
-    STYPE_MAGIC = 0x2,
-};
-
-enum plr_class
-{
-    PC_WARRIOR = 0x0,
-    PC_ROGUE = 0x1,
-    PC_SORCERER = 0x2,
-};
-
-enum cursor_id
-{
-    CURSOR_NONE = 0x1,
-    CURSOR_HAND = 0x2,
-    CURSOR_IDENTIFY = 0x3,
-    CURSOR_REPAIR = 0x4,
-    CURSOR_RECHARGE = 0x5,
-    CURSOR_DISARM = 0x6,
-    CURSOR_OIL = 0x7,
-    CURSOR_FIRSTITEM = 0x8,
-    CURSOR_LASTITEM = 0x7D,
-};
-
-enum missile_id
-{
-    MIS_ARROW = 0,
-    MIS_FIREBOLT = 1,
-    MIS_GUARDIAN = 2,
-    MIS_RNDTELEPORT = 3,
-    MIS_LIGHTBALL = 4,
-    MIS_FIREWALL = 5,
-    MIS_FIREBALL = 6,
-    MIS_LIGHTCTRL = 7,
-    MIS_TOWN = 10,
-    MIS_FLASH = 11,
-    MIS_FLASH2 = 12,
-    MIS_MANASHIELD = 13,
-    MIS_FIREMOVE = 14,
-    MIS_SENTINAL = 15,
-    MIS_CHAIN = 0x10,
-    MIS_CHAIN2 = 0x11, // this is demo exclusive (check beta??)
-    MIS_TELEPORT = 0x1B,
-    MIS_FARROW = 0x1C,
-    MIS_DOOMSERP = 0x1D,
-    MIS_STONE = 0x1F,
-    MIS_INVISIBL = 0x21,
-    MIS_GOLEM = 0x22,
-    MIS_ETHEREALIZE = 0x23,
-    MIS_BLODBUR = 0x24,
-    MIS_BOOM = 0x25,
 };
 
 typedef enum dflag

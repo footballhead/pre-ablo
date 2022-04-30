@@ -1,8 +1,13 @@
+#include "objects.h"
+
 #include "control.h"
 #include "defines.h"
 #include "enums.h"
 #include "error.h"
+#include "items.h"
+#include "objdat.h"
 #include "player.h"
+#include "quests.h"
 #include "structs.h"
 
 //
@@ -17,8 +22,7 @@ extern int currlevel;
 extern char dObject[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern char dPiece[MAXDUNX][MAXDUNY]; // gendung.cpp?
 extern char dMonster[MAXDUNX][MAXDUNY]; // gendung.cpp?
-extern ObjDataStruct AllObjects[69]; // objdat.cpp
-extern QuestStruct quests[MAXQUESTS];
+
 extern int nSolidTable[MAXTILES + 1];
 extern ItemStruct golditem;
 
@@ -38,8 +42,6 @@ void SetGoldCurs(int i);
 //
 // initialized data (.data:004B8A50)
 //
-
-// alignment at .data:004B8A4B ??? is this actually an unused DWORD?
 
 int bxadd[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
 int byadd[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -391,8 +393,11 @@ void AddObject(int ot, int ox, int oy)
 // Obj_Trap    000000000045B2C6    
 // ProcessObjects    000000000045B576    
 
-// ObjSetMicro    000000000045B823    
-void ObjSetMicro(int dx, int dy, int pn);
+// .text:0045B823    
+void ObjSetMicro(int dx, int dy, int pn)
+{
+    // TODO
+}
 
 // objects_set_door_piece    000000000045B8C7    
 // ObjSetMini    000000000045B967    

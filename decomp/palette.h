@@ -3,6 +3,10 @@
 
 #include "directx/DDRAW.H"
 
+//
+// variables
+//
+
 extern PALETTEENTRY system_palette[256];
 
 #endif

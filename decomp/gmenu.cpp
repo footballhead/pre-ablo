@@ -5,8 +5,9 @@
 #include "defines.h"
 #include "diablo.h"
 #include "enums.h"
+#include "inv.h"
 #include "player.h"
-#include "structs.h"
+#include "quests.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -17,17 +18,12 @@
 
 extern char savedir_abspath[64];
 
-extern BYTE* tbuff;
 extern BOOL demo_mode;
 extern BOOL setlevel;
 extern int setlvlnum;
 extern int currlevel;
 extern int leveltype;
 extern BOOL chrflag;
-extern BOOL invflag;
-extern int gbActivePlayers;
-extern int numquests;
-extern QuestStruct quests[MAXQUESTS];
 extern int monstkills[200];
 
 //
@@ -118,7 +114,7 @@ void LoadGame(BOOL firstflag) {
     HFILE hFile = _lopen(path_name, OF_SHARE_DENY_WRITE | OF_READ);
     LONG size = _llseek(hFile, 0, 2);
     LPVOID lpBuffer = GlobalLock(GlobalAlloc(GMEM_FIXED, size));
-    tbuff = lpBuffer;
+    tbuff = (BYTE*)lpBuffer;
     _llseek(hFile, 0, 0);
     _lread(hFile, lpBuffer, size);
     _lclose(hFile);

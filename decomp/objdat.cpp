@@ -1,8 +1,8 @@
+#include "objdat.h"
+
 //
 // initialized vars (data:004AB420)
 //
-
-#include "structs.h"
 
 int ObjTypeConv[] = {
     0, 4, 20, 21, 22, 24, 11, 12, 13, 0, 0, 0, 0, 0, 25,
@@ -87,8 +87,6 @@ ObjDataStruct AllObjects[69] = {
 /*68    */{-1,  0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,      0,     0,       0}
 
 };
-
-int unused000;
 
 const char* ObjMasterLoadList[] = {
     "L1Braz",

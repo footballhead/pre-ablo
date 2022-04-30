@@ -3,7 +3,15 @@
 
 #include <windows.h>
 
+//
+// variables
+//
+
 extern BOOL title_allow_loadgame;
+
+//
+// functions
+//
 
 void LoadGame(BOOL firstflag);
 

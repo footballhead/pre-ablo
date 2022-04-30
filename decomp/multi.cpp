@@ -1,8 +1,10 @@
 #include "multi.h"
 
-#include "dplay_stub.h"
+#include "directx/DPLAY.H"
 
+//
 // initialized vars (.data:004A3AA8)
+//
 
 LPDIRECTPLAY lpIDP = NULL;
 HANDLE dphEvent = NULL;

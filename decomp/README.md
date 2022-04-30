@@ -8,6 +8,13 @@ based on the (few) debug strings and Devilution.
 
 DirectX 1.0 sdk: https://archive.org/details/gamesdk
 
+## Test compile
+
+In a vcvars32 window, run `test_compile.bat`. This will run the compiler on all
+.cpp files. While this doesn't link, it's still useful: it checks that the
+headers are correct, the symbols are visible, and the structs are the right size
+(see typecheck.cpp).
+
 ## Code Segment Order
 
 1. monster.cpp

@@ -3,7 +3,15 @@
 
 #include <windows.h>
 
+//
+// variables
+//
+
 extern BYTE *pSquareCels;
+
+//
+// functions
+//
 
 void LoadDebugGFX();
 
