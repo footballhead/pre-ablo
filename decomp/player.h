@@ -250,5 +250,9 @@ extern int myplr;
 void AddPlrExperience(int pnum, int lvl, int exp);
 void SyncPlrKill(int pnum);
 void StartPlrHit(int pnum);
+void ModifyPlrStr(int p, int l);
+void ModifyPlrMag(int p, int l);
+void ModifyPlrDex(int p, int l);
+void ModifyPlrVit(int p, int l);
 
 #endif

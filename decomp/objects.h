@@ -77,11 +77,10 @@ struct ObjectStruct
 //
 
 extern ObjectStruct object[MAXOBJECTS];
+extern BOOL InitObjFlag;
 
 //
 // functions
 //
-
-void ObjSetMicro(int dx, int dy, int pn);
 
 #endif

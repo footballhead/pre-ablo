@@ -6,11 +6,11 @@
 
 #include "items.h"
 #include "missiles.h"
+#include "monster.h"
 #include "objdat.h"
 #include "objects.h"
 #include "player.h"
 #include "quests.h"
-#include "structs.h"
 
 // Scope to contain subscopes. Not actually called.
 void typecheck()

@@ -6,27 +6,17 @@
 #include "diablo.h"
 #include "engine.h"
 #include "enums.h"
+#include "gendung.h"
 #include "inv.h"
 #include "missiles.h"
 #include "monster.h"
 #include "player.h"
-#include "structs.h"
-
-//
-// imports
-//
 
 void CalcPlrItemVals(int pnum);
 
-extern int dPiece[MAXDUNX][MAXDUNY];
-extern BOOLEAN nSolidTable[MAXTILES + 1];
 extern BOOL drawmanaflag;
 extern BOOL drawhpflag;
-extern char dFlags[MAXDUNX][MAXDUNY];
-extern char dObject[MAXDUNX][MAXDUNY];
-extern char dMonster[MAXDUNX][MAXDUNY];
 extern BYTE vCrawlTable[23][30];
-extern MonsterStruct monster[MAXMONSTERS];
 
 //
 // initialized vars (.data:004B8218)

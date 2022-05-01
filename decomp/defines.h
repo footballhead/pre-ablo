@@ -1,11 +1,9 @@
 #ifndef __DEFINES_H__
 #define __DEFINES_H__
 
+#include <windows.h>
+
 // Array extents
-#define MAXMONSTERS 200
-#define MAXDUNX 112
-#define MAXDUNY 112
-#define MAXTILES 2048
 #define NUM_INV_GRID_ELEM 40
 
 // Basic window properties
@@ -45,5 +43,11 @@
 #define PANEL_HEIGHT 128
 //  #define VIEWPORT_WIDTH SCREEN_WIDTH
 #define VIEWPORT_HEIGHT (SCREEN_HEIGHT - PANEL_HEIGHT)
+
+#define UNLOCK_AND_FREE(x) \
+    GlobalUnlock(GlobalHandle(x)); \
+    GlobalFree(GlobalHandle(x));
+
+#define COL_RED 2
 
 #endif

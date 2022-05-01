@@ -5,6 +5,8 @@
 // variables
 //
 
+extern char infostr[64];
 extern char tempstr[64];
+extern char infoclr;
 
 #endif

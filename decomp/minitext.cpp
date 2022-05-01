@@ -1,3 +1,5 @@
+#include "minitext.h"
+
 #include <cstdlib>
 
 #include "diablo.h"
@@ -22,7 +24,7 @@ extern int PitchTbl[1024];
 // * the actual null-terminated c strings of rawtext in the data segment
 // * two functions in code segment, one called by __cinit (global initialization) which references the other. This sets up alltext with the expected elements of rawtext
 
-const char* rawtext[] = {
+const char *rawtext[] = {
     "   I would like to ask your help. Years ago a corrupt king ",
     "destroyed the land with necromancy.  He used his dark powers to kill all before him, ",
     "then he would raise the dead to join his army of evil.  One of the king's own knights ",
@@ -80,12 +82,11 @@ const char* rawtext[] = {
     "to help you in your quest.|",
     NULL,
     "Continue on your quest, my friend. Only the destruction ",
-    "of the evil that binds us can bring us peace.|"
-};
+    "of the evil that binds us can bring us peace.|"};
 
-const char* alltext[] = {
-    rawtext[0], // skelking intro
-    rawtext[8], // skelking nag
+const char *alltext[] = {
+    rawtext[0],  // skelking intro
+    rawtext[8],  // skelking nag
     rawtext[12], // skelking done
     rawtext[14], // butcher intro
     rawtext[17], // butcher nag
@@ -99,8 +100,7 @@ const char* alltext[] = {
     rawtext[42], // ogden greet
     rawtext[52], // ogden gossip
     rawtext[56], // ogden nag
-    NULL
-};
+    NULL};
 
 int txtspd[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0};
 
@@ -113,15 +113,13 @@ const BYTE mfontframe[] = {
     14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
     42, 0, 43, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
     12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    25, 26, 48, 0, 49, 0, 0
-};
+    25, 26, 48, 0, 49, 0, 0};
 
 const BYTE mfontkern[] = {
     5, 15, 10, 13, 14, 10, 9, 13, 11, 5, 5, 11, 10, 16,
     13, 16, 10, 15, 12, 10, 14, 17, 17, 22, 17, 16, 11,
     5, 11, 11, 11, 10, 11, 11, 11, 11, 15, 5, 10, 18, 15,
-    8, 6, 6, 7, 10, 9, 6, 10, 10, 5, 5, 5, 5, 11, 12
-};
+    8, 6, 6, 7, 10, 9, 6, 10, 10, 5, 5, 5, 5, 11, 12};
 
 //
 // uninitialized data, starting at .data:005DDD50
@@ -132,7 +130,7 @@ BOOL qtextflag;
 int scrolltexty;
 int qtexty;
 BYTE *pTextBoxCels;
-const char* qtextptr;
+const char *qtextptr;
 int qtextSpd;
 
 //
@@ -144,14 +142,16 @@ int qtextSpd;
 
 // .text:0040E0CB
 // I think this is basically unchanged from Devilution
-void InitQuestText() {
+void InitQuestText()
+{
     pMedTextCels = LoadFileInMem("Data\\MedTextS.CEL");
     pTextBoxCels = LoadFileInMem("Data\\TextBox.CEL");
     qtextflag = FALSE;
 }
 
 // .text:0040E103
-void InitQTextMsg(int m) {
+void InitQTextMsg(int m)
+{
     questlog = FALSE;
     qtextflag = TRUE;
     qtextptr = alltext[m];
@@ -162,7 +162,8 @@ void InitQTextMsg(int m) {
 
 // .text:0040E15F
 // I think this is basically unchanged from Devilution
-void DrawQTextBack() {
+void DrawQTextBack()
+{
     // Devilution has constants for all these magic numbers
     CelDraw(88, 487, pTextBoxCels, 1, 591);
     // According to Devilution, this is hand-written asm
@@ -173,14 +174,14 @@ void DrawQTextBack() {
         xor eax, eax
         mov edx, 148
     yloop:
-        // First row "on-pixel" dither
+            // First row "on-pixel" dither
         mov ecx, 292
     x0loop:
         stosb // store AL (which is 0) at address ES:EDI, then increment EDI
         inc edi // skip a pixel
         loop x0loop // decrement ECX then jump, unless ECX is now 0
         stosb
-        // Next row "off-pixel" dither
+                            // Next row "off-pixel" dither
         sub edi, 1353
         mov ecx, 292
     x1loop:
@@ -189,20 +190,22 @@ void DrawQTextBack() {
         loop x1loop
         sub edi, 1532
         dec edx
-        jnz yloop // Keep doing this until all rows done
-        // Final row
+        jnz yloop           // Keep doing this until all rows done
+                // Final row
         mov ecx, 292
     x2loop:
         stosb
         inc edi
         loop x2loop
         stosb
-    };
+    }
+    ;
 }
 
 // .text:0040E1CE
 // This is unchanged from Devilution
-void PrintQTextChr(int sx, int sy, BYTE *pCelBuff, int nCel) {
+void PrintQTextChr(int sx, int sy, BYTE *pCelBuff, int nCel)
+{
     BYTE *dst, *pStart, *pEnd, *end;
 
     dst = &gpBuffer[sx + PitchTbl[sy]];
@@ -266,10 +269,11 @@ void PrintQTextChr(int sx, int sy, BYTE *pCelBuff, int nCel) {
     }
 }
 
-// DrawQText    000000000040E2AA    
+// DrawQText    000000000040E2AA
 
 // .text:0040E569
-void FreeQuestText() {
+void FreeQuestText()
+{
     GlobalUnlock(GlobalHandle(pMedTextCels));
     GlobalFree(GlobalHandle(pMedTextCels));
     GlobalUnlock(GlobalHandle(pTextBoxCels));

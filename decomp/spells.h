@@ -7,7 +7,12 @@
 // defines
 //
 
+// Number of defined, castable spells.
 #define MAX_SPELLS 29
+
+// Useful for setting _pMemSpells given a spell_id.
+// E.g. plr[myplr]._pMemSpells |= SPELLBIT(SPL_NOVA)
+#define SPELLBIT(s) ((__int64)1 << (s - 1))
 
 //
 // enums
