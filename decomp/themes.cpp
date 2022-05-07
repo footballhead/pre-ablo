@@ -68,12 +68,14 @@ BOOL ThemeGoodIn[NUM_GOOD_THEMES];
 BOOL SpecialThemeFit(int i, int t)
 {
     // TODO
+    return TRUE;
 }
 
 // .text:00477EB2
 BOOL CheckThemeRoom(int i)
 {
     // TODO
+    return TRUE;
 }
 
 // .text:0047815D
@@ -118,31 +120,58 @@ void InitThemes()
 // PlaceThemeMonsts	0000000000478457
 
 // Theme_Barrel	0000000000478599
-static void Theme_Barrel(int i);
+static void Theme_Barrel(int i)
+{
+    // TODO
+}
 
 // Theme_Shrine	000000000047867E
-static void Theme_Shrine(int i);
+static void Theme_Shrine(int i)
+{
+    // TODO
+}
 
 // Theme_MonstPit	0000000000478736
-static void Theme_MonstPit(int i);
+static void Theme_MonstPit(int i)
+{
+    // TODO
+}
 
 // Theme_SkelRoom	0000000000478876
-static void Theme_SkelRoom(int i);
+static void Theme_SkelRoom(int i)
+{
+    // TODO
+}
 
 // Theme_Treasure	0000000000478A83
-static void Theme_Treasure(int i);
+static void Theme_Treasure(int i)
+{
+    // TODO
+}
 
 // Theme_Library	0000000000478BC5
-static void Theme_Library(int i);
+static void Theme_Library(int i)
+{
+    // TODO
+}
 
 // Theme_Torture	0000000000478CF0
-static void Theme_Torture(int i);
+static void Theme_Torture(int i)
+{
+    // TODO
+}
 
 // Theme_BloodFountain	0000000000478D9A
-static void Theme_BloodFountain(int i);
+static void Theme_BloodFountain(int i)
+{
+    // TODO
+}
 
 // Theme_Decap	0000000000478DDB
-static void Theme_Decap(int i);
+static void Theme_Decap(int i)
+{
+    // TODO
+}
 
 // .text:0000000000478E7D
 void CreateThemeRooms()

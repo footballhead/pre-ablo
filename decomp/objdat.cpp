@@ -97,14 +97,14 @@ const char* ObjMasterLoadList[] = {
     "Banner",
     "SkulPile",
     "SkulFire",
-    "SkulStik",
+    "SkulStik", // Not used :(
     "CruxSk1",
     "CruxSk2",
     "CruxSk3",
     "Book1",
     "Book2",
     "Rockstan",
-    "Angel",
+    "Angel", // Bad (see #127)
     "Chest3",
     "Burncros",
     "Candle2",
@@ -117,15 +117,15 @@ const char* ObjMasterLoadList[] = {
     "WTorch4",
     "WTorch3",
     "Sarc",
-    "Flame1",
-    "Prsrplt1",
+    "Flame1", // TODO (see #42)
+    "Prsrplt1", // Not used :(
     "Traphole",
-    "MiniWatr",
+    "MiniWatr", // TODO (see #42)
     "WTorch2",
     "WTorch1",
     "BCase",
-    "BShelf",
-    "WeapStnd",
+    "BShelf", // Not used :(
+    "WeapStnd", // Bad (see #127), also TODO (see #42)
     "Barrel",
     "Barrelex",
     "LShrineG",
@@ -133,3 +133,22 @@ const char* ObjMasterLoadList[] = {
     "BloodFnt",
     "Decap"
 };
+
+// present in demo MPQ but not included here:
+//
+// * bkurns
+// * candle
+// * candlabr
+// * cauldren
+// * dirtfall
+// * explod1
+// * explod2
+// * firewal1
+// * flame3
+// * ghost
+// * prsrplt1
+// * switch2
+// * switch3
+// * vapor1 (bad, see #127)
+// * water
+// * waterjug

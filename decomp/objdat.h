@@ -41,7 +41,7 @@ enum object_id
     OBJ_CRUX1 = 0x14, // Crucified Skeleton, in skeleton king chamber
     OBJ_CRUX2 = 0x15, // Crucified Skeleton, in skeleton king chamber
     OBJ_CRUX3 = 0x16, // Crucified Skeleton, in skeleton king chamber
-    OBJ_STAND = 0x17,
+    OBJ_STAND = 0x17, // Magic rock stand
     OBJ_ANGEL = 0x18,
     OBJ_BOOK2L = 0x19, // Book on Novaness. In Bone Chamber. Teaches Nova
     OBJ_BCROSS = 0x1A,

@@ -21,6 +21,8 @@
 
 extern int force_redraw; // interfac.cpp?
 extern ItemStruct golditem;
+extern BOOL lightflag;
+extern BYTE* pLevelPieces;
 
 void PlayRndSFX(int psfx); // effects.cpp
 void DoLighting(int nXPos, int nYPos, int nRadius, int Lnum);
@@ -28,6 +30,8 @@ void CreateRndItem(int x, int y);
 void CreateRndUseful(int x, int y);
 void SpawnSkeleton(int x, int y);
 void CreateTypeItem(int x, int y, BOOL onlygood, int itype, int imisc);
+int AddLight(int x, int y, int r);
+void AddUnLight(int i);
 
 //
 // initialized data (.data:004B8A50)
@@ -73,6 +77,12 @@ int trapid;
 //
 
 // .text:00457E30
+// Load all the object GFX that we think we need. Requires that themes are
+// alredy initailized. If an object is missed for some reason then the game will
+// run but only until the point where it tries to draw that object... then it
+// will crash.
+// @pre themes are initailized
+// @post pObjCels contains graphics data
 void InitObjectGFX()
 {
     int j;
@@ -124,6 +134,7 @@ void InitObjectGFX()
 }
 
 // .text:00458029
+// Free all pObjCels
 void FreeObjectGFX()
 {
     int i;
@@ -134,19 +145,310 @@ void FreeObjectGFX()
     }
 }
 
-// RndLocOk    000000000045808F
-// __dc_TrapLocOk    00000000004581D8
-// __dc_RoomLocOk    000000000045824E
-// InitRndLocObj    0000000000458312
-// InitRndLocBigObj    0000000000458438
-// ClrAllObjects    0000000000458593
-// AddTortures    0000000000458745
-// __dc_AddTrapLine    00000000004588B3
-// __dc_AddLeverObj    0000000000458C09
-// AddMazeBook    0000000000458D47
-// InitRndBarrels    0000000000458E90
+// .text:0045808F
+// Is the given location OK for placing an object?
+BOOL RndLocOk(int xp, int yp)
+{
+    BOOL ok;
+
+    ok = TRUE;
+    if (dMonster[xp][yp] != 0)
+    {
+        ok = FALSE;
+    }
+    if (dPlayer[xp][yp] != 0)
+    {
+        ok = FALSE;
+    }
+    if (dObject[xp][yp] != 0)
+    {
+        ok = FALSE;
+    }
+    if (dFlags[xp][yp] & BFLAG_POPULATED)
+    {
+        ok = FALSE;
+    }
+    if (nSolidTable[dPiece[xp][yp]])
+    {
+        ok = FALSE;
+    }
+    if (leveltype == DTYPE_CATHEDRAL || leveltype == DTYPE_OLD_CATHEDRAL)
+    {
+        if (dPiece[xp][yp] > 126 && dPiece[xp][yp] < 144)
+        {
+            ok = FALSE;
+        }
+    }
+
+    return ok;
+}
+
+// TODO: __dc_TrapLocOk    00000000004581D8
+// TODO: __dc_RoomLocOk    000000000045824E
+
+// .text:00458312
+// Create a random number of objects (between min and max) at random, valid
+// dungeon locations. A 3x3 square of free space is required to place the
+// object.
+//
+// If there's no free space then this will never return!
+static void InitRndLocObj(int min, int max, int objtype)
+{
+    int xp;
+    int yp;
+    BOOL ok;
+    int i;
+    int numobjs;
+
+    numobjs = random_(max - min) + min;
+    for (i = 0; i < numobjs; i++)
+    {
+        ok = FALSE;
+        while (!ok)
+        {
+            ok = TRUE;
+
+            xp = random_(80) + 16; // TODO: Magic numbers
+            yp = random_(80) + 16;
+
+            ok &= RndLocOk(xp - 1, yp - 1);
+            ok &= RndLocOk(xp, yp - 1);
+            ok &= RndLocOk(xp + 1, yp - 1);
+            ok &= RndLocOk(xp - 1, yp);
+            ok &= RndLocOk(xp, yp);
+            ok &= RndLocOk(xp + 1, yp);
+            ok &= RndLocOk(xp - 1, yp + 1);
+            ok &= RndLocOk(xp, yp + 1);
+            ok &= RndLocOk(xp + 1, yp + 1);
+        }
+
+        AddObject(objtype, xp, yp);
+    }
+}
+
+// .text:00458438
+// Like InitRndLocObj but the required space is 3x4
+static void InitRndLocBigObj(int min, int max, int objtype)
+{
+    int xp;
+    int yp;
+    BOOL ok;
+    int i;
+    int numobjs;
+
+    numobjs = random_(max - min) + min;
+    for (i = 0; i < numobjs; i++)
+    {
+        ok = FALSE;
+        while (!ok)
+        {
+            ok = TRUE;
+
+            xp = random_(80) + 16;
+            yp = random_(80) + 16;
+
+            ok &= RndLocOk(xp - 1, yp - 2);
+            ok &= RndLocOk(xp, yp - 2);
+            ok &= RndLocOk(xp + 1, yp - 2);
+            ok &= RndLocOk(xp - 1, yp - 1);
+            ok &= RndLocOk(xp, yp - 1);
+            ok &= RndLocOk(xp + 1, yp - 1);
+            ok &= RndLocOk(xp - 1, yp);
+            ok &= RndLocOk(xp, yp);
+            ok &= RndLocOk(xp + 1, yp);
+            ok &= RndLocOk(xp - 1, yp + 1);
+            ok &= RndLocOk(xp, yp + 1);
+            ok &= RndLocOk(xp + 1, yp + 1);
+        }
+
+        AddObject(objtype, xp, yp);
+    }
+}
+
+// .text:00458593
+// Reset objects and associated state. Basically the same as Devilution
+static void ClrAllObjects()
+{
+    int i;
+
+    for (i = 0; i < MAXOBJECTS; i++)
+    {
+        object[i]._ox = 0;
+        object[i]._oy = 0;
+        object[i]._oAnimData = 0;
+        object[i]._oAnimDelay = 0;
+        object[i]._oAnimCnt = 0;
+        object[i]._oAnimLen = 0;
+        object[i]._oAnimFrame = 0;
+        object[i]._oDelFlag = FALSE;
+        object[i]._oVar1 = 0;
+        object[i]._oVar2 = 0;
+        object[i]._oVar3 = 0;
+        object[i]._oVar4 = 0;
+    }
+
+    nobjects = 0;
+    for (i = 0; i < MAXOBJECTS; i++)
+    {
+        objectavail[i] = i;
+        objectactive[i] = 0;
+    }
+
+    trapid = 1;
+    trapdir = 0;
+    leverid = 1;
+}
+
+// .text:00458745
+// Add dead bodies in Butcher Chamber. Same as Devilution
+static void AddTortures()
+{
+    int ox, oy;
+
+    for (oy = 0; oy < MAXDUNY; oy++)
+    {
+        for (ox = 0; ox < MAXDUNX; ox++)
+        {
+            if (dPiece[ox][oy] == 367)
+            {
+                AddObject(OBJ_TORTURE1, ox, oy + 1);
+                AddObject(OBJ_TORTURE3, ox + 2, oy - 1);
+                AddObject(OBJ_TORTURE2, ox, oy + 3);
+                AddObject(OBJ_TORTURE4, ox + 4, oy - 1);
+                AddObject(OBJ_TORTURE5, ox, oy + 5);
+                AddObject(OBJ_TNUDEM1, ox + 1, oy + 3);
+                AddObject(OBJ_TNUDEM2, ox + 4, oy + 5);
+                AddObject(OBJ_TNUDEM3, ox + 2, oy);
+                AddObject(OBJ_TNUDEM4, ox + 3, oy + 2);
+                AddObject(OBJ_TNUDEW1, ox + 2, oy + 4);
+                AddObject(OBJ_TNUDEW2, ox + 2, oy + 1);
+                AddObject(OBJ_TNUDEW3, ox + 4, oy + 2);
+            }
+        }
+    }
+}
+
+// TODO: __dc_AddTrapLine    00000000004588B3
+// TODO: __dc_AddLeverObj    0000000000458C09
+
+// .text:00458D47
+static void AddBookLever(int lx1, int ly1, int lx2, int ly2, int x1, int y1, int x2, int y2, int msg)
+{
+    int xp;
+    int yp;
+    BOOL ok;
+    int ob;
+
+    ok = FALSE;
+    while (!ok)
+    {
+        ok = TRUE;
+
+        // TODO: Having trouble with the disassembly:
+        //   mov     eax, [ebp+x2]
+        //   sub     eax, [ebp+x1]
+        //   lea     ecx, [eax+1]    ; What the hell is this?
+        //   call    random_
+        //   mov     ecx, [ebp+x1]
+        //   add     ecx, eax
+        //   mov     [ebp+xp], ecx
+        xp = random_(lx2 - lx1) + lx1;
+        yp = random_(ly2 - ly1) + ly1;
+
+        // The hilarious part is that retail/Devilution doesn't use lx1..ly2.
+        // Looks like the function was rewritten at some point
+
+        ok &= RndLocOk(xp - 1, yp - 1);
+        ok &= RndLocOk(xp, yp - 1);
+        ok &= RndLocOk(xp + 1, yp - 1);
+        ok &= RndLocOk(xp - 1, yp);
+        ok &= RndLocOk(xp, yp);
+        ok &= RndLocOk(xp + 1, yp);
+        ok &= RndLocOk(xp - 1, yp + 1);
+        ok &= RndLocOk(xp, yp + 1);
+        ok &= RndLocOk(xp + 1, yp + 1);
+    }
+
+    AddObject(OBJ_BOOKLVR, xp, yp);
+    ob = dObject[xp][yp] - 1;
+    SetObjMapRange(ob, x1, y1, x2, y2, leverid);
+    SetBookMsg(ob, msg);
+    leverid++;
+}
+
+// .text:00458E90
+// Create [3..8] groups of barrels at random locations around the level. Does
+// not count theme rooms.
+static void InitRndBarrels()
+{
+    int xp, p, t, yp;
+    BOOL found;
+    int i, dir, numobjs, o;
+
+    // Generate [5..8] groups
+    numobjs = random_(5) + 3;
+    for (i = 0; numobjs > i; i++)
+    {
+        // Find a free spot for the first barrel
+        found = FALSE;
+        while (!found)
+        {
+            xp = random_(80) + 16;
+            yp = random_(80) + 16;
+            found = RndLocOk(xp, yp);
+        }
+
+        // Create a "seed" barrel, there a chance this group will grow
+        // 1 in 4 chance of the "seed" barrel being explosive
+        if (random_(4) != 0)
+        {
+            o = OBJ_BARREL;
+        }
+        else
+        {
+            o = OBJ_BARRELEX;
+        }
+        AddObject(o, xp, yp);
+
+        // Try to place additional barrels close by, creating a group.
+        // p is chance that group will continue to grow. Starts off at 100%,
+        // next is 50%, after is 25%, ... etc... Also, stop growing the group if
+        // we don't find empty space
+        p = 1;
+        while (random_(p >> 1) == 0 && found)
+        {
+            // Try 3 times to find a neighbouring empty space
+            t = 0;
+            found = FALSE;
+            while (!found && t < 3)
+            {
+                dir = random_(8);
+                xp += bxadd[dir];
+                yp += byadd[dir];
+                found = RndLocOk(xp, yp);
+                t++;
+            }
+
+            // Create another barrel. 1 in 5 chance of being explosive
+            if (found)
+            {
+                if (random_(5) != 0)
+                {
+                    o = OBJ_BARREL;
+                }
+                else
+                {
+                    o = OBJ_BARRELEX;
+                }
+                AddObject(o, xp, yp);
+                p++;
+            }
+        }
+    }
+}
 
 // .text:00459015
+// Add objects that go with certain cathedral tiles, e.g. doors and lights.
 // Same as devilution
 void AddL1Objs(int x1, int y1, int x2, int y2)
 {
@@ -168,7 +470,8 @@ void AddL1Objs(int x1, int y1, int x2, int y2)
 }
 
 // .text:004590FA
-// Same as Devilution
+// Add objects that go with certain cathedral tiles, e.g. doors.
+// Same as devilution
 void AddL2Objs(int x1, int y1, int x2, int y2)
 {
     int i, j, pn;
@@ -186,11 +489,162 @@ void AddL2Objs(int x1, int y1, int x2, int y2)
     }
 }
 
-// WallTrapLocOk    00000000004591DF
-// AddObjTraps    0000000000459255
-// InitObjects    000000000045951F
-// SetMapObjects    0000000000459817
-// DeleteObject_    0000000000459B79
+// .text:004591DF
+static BOOL WallTrapLocOok(int xp, int yp)
+{
+    BOOL ok;
+
+    ok = TRUE;
+
+    if (dFlags[xp][yp] & BFLAG_POPULATED)
+    {
+        ok = FALSE;
+    }
+
+    if (nTrapTable[dPiece[xp][yp]])
+    {
+        ok = FALSE;
+    }
+
+    return ok;
+}
+
+// .text:00459255
+static void AddObjTraps()
+{
+    // TODO
+
+    //     if (currlevel == 1)
+    //         rndv = 40;
+    //     if (currlevel >= 2)
+    //         rndv = 30;
+    //     if (currlevel >= 5)
+    //         rndv = 20;
+    //     if (currlevel >= 7)
+    //         rndv = 10;
+    //     for (j = 0; j < MAXDUNY; j++)
+    //     {
+    //         for (i = 0; i < MAXDUNX; i++)
+    //         {
+    //             if (dObject[i][j] > 0 && random_(rndv))
+    //             {
+    //                 oi = dObject[i][j] - 1;
+    //                 if (AllObjects[object[oi]._otype].oTrapFlag) {
+    //                     // TODO
+    //                 }
+    //             }
+    //         }
+    //     }
+}
+
+// .text:0045951F
+// Create all objects (apart from theme rooms) as part of level gen.
+// @pre Level tiles already generated
+void InitObjects()
+{
+    int i, j, pn;
+
+    ClrAllObjects();
+
+    InitObjFlag = TRUE;
+    if (leveltype == DTYPE_OLD_CATHEDRAL)
+    {
+        if (currlevel == quests[Q_BUTCHER]._qlevel)
+        {
+            AddTortures();
+        }
+
+        // BUG: OBJ_SKFIRE was changed to a theme room in DTYPE_CATHEDRAL so it
+        // it isn't loaded here. The game will start but then crash as soon as
+        // it tries to draw the object with missing graphics.
+        InitRndLocObj(5, 10, OBJ_SKFIRE);
+        InitRndLocBigObj(10, 15, OBJ_SARC);
+        AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
+    }
+
+    if (leveltype == DTYPE_CATACOMBS)
+    {
+        AddL2Objs(0, 0, MAXDUNX, MAXDUNY);
+
+        // Basically AddL2Torches
+        for (j = 0; j < MAXDUNY; j++)
+        {
+            for (i = 0; i < MAXDUNX; i++)
+            {
+                pn = dPiece[i][j];
+                if (pn == 1 && random_(3) == 0)
+                {
+                    AddObject(OBJ_TORCHL2, i, j);
+                }
+                if (pn == 5 && random_(3) == 0)
+                {
+                    AddObject(OBJ_TORCHR2, i, j);
+                }
+                if (pn == 37 && random_(10) == 0 && dObject[i - 1][j] == 0)
+                {
+                    AddObject(OBJ_TORCHL, i - 1, j);
+                }
+                if (pn == 41 && random_(10) == 0 && dObject[i][j - 1] == 0)
+                {
+                    AddObject(OBJ_TORCHR, i, j - 1);
+                }
+            }
+        }
+    }
+
+    if (leveltype == DTYPE_CATHEDRAL)
+    {
+        if (currlevel == quests[Q_BUTCHER]._qlevel)
+        {
+            AddTortures();
+        }
+
+        InitRndLocBigObj(10, 15, OBJ_SARC);
+        AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
+
+        if (currlevel == quests[Q_MAZE]._qlevel)
+        {
+            // TODO 11 is magic number
+            AddBookLever(0, 0, MAXDUNX, MAXDUNY,
+                         setpc_x, setpc_y, setpc_x + setpc_w + 1, setpc_y + setpc_h + 1,
+                         11);
+        }
+
+        InitRndBarrels();
+    }
+
+    if (currlevel == quests[Q_ROCK]._qlevel)
+    {
+        InitRndLocObj(1, 1, OBJ_STAND);
+    }
+    if (currlevel == quests[Q_SCHAMB]._qlevel - 1)
+    {
+        InitRndLocObj(1, 1, OBJ_BOOK2R);
+    }
+
+    InitRndLocObj(5, 10, OBJ_CHEST1);
+    InitRndLocObj(3, 6, OBJ_CHEST2);
+    InitRndLocObj(1, 5, OBJ_CHEST3);
+
+    AddObjTraps();
+    InitObjFlag = FALSE;
+}
+
+// TODO: SetMapObjects    0000000000459817
+
+// .text:00459B79
+void DeleteObject_(int oi, int i)
+{
+    int ox, oy;
+
+    ox = object[oi]._ox;
+    oy = object[oi]._oy;
+    dObject[ox][oy] = 0;
+    objectavail[-nobjects + MAXOBJECTS] = oi;
+    nobjects--;
+    if (nobjects > 0 && i != nobjects)
+        objectactive[i] = objectactive[nobjects];
+}
 
 // .text:00459C24
 void SetupObject(int i, int x, int y, int ot)
@@ -235,11 +689,28 @@ void SetupObject(int i, int x, int y, int ot)
     object[i]._oDoorFlag = FALSE;
 }
 
-// SetObjMapRange    0000000000459F97
-// SetBookMsg    000000000045A025
+// .text:00459F97
+// Configure an object to act like a lever (something that changes a rectangle
+// of the map when interacted with)
+void SetObjMapRange(int i, int x1, int y1, int x2, int y2, int v)
+{
+    object[i]._oVar1 = x1;
+    object[i]._oVar2 = y1;
+    object[i]._oVar3 = x2;
+    object[i]._oVar4 = y2;
+    object[i]._oVar8 = v;
+}
+
+// .text:0045A025
+// Store a QText message to play upon interacting (in var7). Only ever used here
+// but I think it was in the header.
+void SetBookMsg(int i, int msg)
+{
+    object[i]._oVar7 = msg;
+}
 
 // .text:0045A055
-void AddL1Door(int i, int x, int y, int ot)
+static void AddL1Door(int i, int x, int y, int ot)
 {
     object[i]._oDoorFlag = TRUE;
     if (ot == OBJ_L1LDOOR)
@@ -256,7 +727,7 @@ void AddL1Door(int i, int x, int y, int ot)
 }
 
 // .text:0045A15C
-void AddSCambBook(int i)
+static void AddSCambBook(int i)
 {
     if (quests[Q_SCHAMB]._qactive == QUEST_INIT)
     {
@@ -268,7 +739,7 @@ void AddSCambBook(int i)
 }
 
 // .text:0045A1AF
-void AddChest(int i, int t)
+static void AddChest(int i, int t)
 {
     if (random_(2) == 0)
     {
@@ -290,7 +761,7 @@ void AddChest(int i, int t)
 }
 
 // .text:0045A279
-void AddL2Door(int i, int x, int y, int ot)
+static void AddL2Door(int i, int x, int y, int ot)
 {
     object[i]._oDoorFlag = TRUE;
     if (ot == OBJ_L2LDOOR)
@@ -301,7 +772,7 @@ void AddL2Door(int i, int x, int y, int ot)
 }
 
 // .text:0045A2F3
-void AddSarc(int i)
+static void AddSarc(int i)
 {
     int x = object[i]._ox;
     int y = object[i]._oy - 1;
@@ -309,7 +780,7 @@ void AddSarc(int i)
 }
 
 // .text:0045A35A
-void AddFlameTrap(int i)
+static void AddFlameTrap(int i)
 {
     object[i]._oVar1 = trapid;
     object[i]._oVar2 = 0;
@@ -318,14 +789,14 @@ void AddFlameTrap(int i)
 }
 
 // .text:0045A3D2
-void AddFlameLvr(int i)
+static void AddFlameLvr(int i)
 {
     object[i]._oVar1 = trapid;
     object[i]._oVar2 = 49; // MIS_FLAMEC
 }
 
 // .text:0045A419
-void AddTrap(int i, int ot)
+static void AddTrap(int i, int ot)
 {
     int rand_max;
     int mt;
@@ -343,7 +814,7 @@ void AddTrap(int i, int ot)
 }
 
 // .text:0045A4CC
-void AddObjLight(int i, int r)
+static void AddObjLight(int i, int r)
 {
     if (InitObjFlag)
     {
@@ -357,13 +828,13 @@ void AddObjLight(int i, int r)
 }
 
 // .text:0045A55A
-void AddBarrel(int i, int t)
+static void AddBarrel(int i, int t)
 {
     object[i]._oVar1 = random_(5) + 5;
 }
 
 // .text:0045A594
-void AddShrine(int i)
+static void AddShrine(int i)
 {
     int val;
 
@@ -379,13 +850,13 @@ void AddShrine(int i)
 }
 
 // .text:0045A634
-void AddBookcase(int i)
+static void AddBookcase(int i)
 {
     object[i]._oPreFlag = TRUE;
 }
 
 // .text:0045A662
-void AddBloodFtn(int i)
+static void AddBloodFtn(int i)
 {
     int ox, oy;
 
@@ -399,7 +870,7 @@ void AddBloodFtn(int i)
 }
 
 // .text:0045A70E
-void AddDecap(int i)
+static void AddDecap(int i)
 {
     object[i]._oAnimFrame = random_(8) + 1;
     object[i]._oPreFlag = TRUE;
@@ -492,12 +963,93 @@ void AddObject(int ot, int ox, int oy)
 }
 
 // Obj_Light    000000000045A9F3
-// Obj_StopAnim    000000000045ABC7
+static void Obj_Light(int i, int lr)
+{
+    int p;
+    int tr;
+    BOOL turnon;
+    int ox;
+    int oy;
+    int dx;
+    int dy;
+
+    if (object[i]._oVar1 == -1)
+    {
+        return;
+    }
+
+    ox = object[i]._ox;
+    oy = object[i]._oy;
+    tr = lr + 10;
+    turnon = FALSE;
+
+    if (!lightflag)
+    {
+        for (p = 0; p < gbActivePlayers && !turnon; p++)
+        {
+            dx = abs(plr[p]._px - ox);
+            dy = abs(plr[p]._py - oy);
+            if (dx < tr && dy < tr)
+            {
+                turnon = TRUE;
+            }
+        }
+    }
+
+    if (turnon)
+    {
+        if (object[i]._oVar1 == 0)
+        {
+            object[i]._olid = AddLight(ox, oy, lr);
+        }
+        object[i]._oVar1 = 1;
+    }
+    else
+    {
+        if (object[i]._oVar1 == 1)
+        {
+            AddUnLight(object[i]._olid);
+        }
+        object[i]._oVar1 = 0;
+    }
+}
+
+// .text:0045ABC7
+// Same as Devilution
+static void Obj_StopAnim(int i)
+{
+    if (object[i]._oAnimFrame == object[i]._oAnimLen)
+    {
+        object[i]._oAnimCnt = 0;
+        object[i]._oAnimDelay = 1000;
+    }
+}
+
 // Obj_Door    000000000045AC3B
+static void Obj_Door(int i)
+{
+    // TODO
+}
+
 // Obj_Sarc    000000000045ADF9
-// ActivateTrapLine    000000000045AE55
+static void Obj_Sarc(int i)
+{
+    // TODO
+}
+
+// TODO: ActivateTrapLine    000000000045AE55
+
 // Obj_FlameTrap    000000000045AF62
+static void Obj_FlameTrap(int i)
+{
+    // TODO
+}
+
 // Obj_Trap    000000000045B2C6
+static void Obj_Trap(int i)
+{
+    // TODO
+}
 
 // ProcessObjects    000000000045B576
 void ProcessObjects()
@@ -587,7 +1139,7 @@ void ProcessObjects()
 // .text:0045B823
 // Change a tile at location (dx, dy) into the given tile.
 // Tiles are defined in the .MIN file.
-static void ObjSetMicro(int dx, int dy, int pn)
+void ObjSetMicro(int dx, int dy, int pn)
 {
     int i;
     MICROS *defs;
@@ -596,6 +1148,7 @@ static void ObjSetMicro(int dx, int dy, int pn)
     dPiece[dx][dy] = pn;
     pn--;
     defs = &dpiece_defs_map_1[IsometricCoord(dx, dy)];
+    v = (WORD*)pLevelPieces + 10 * pn;
 
     for (i = 0; i < 10; i++)
     {

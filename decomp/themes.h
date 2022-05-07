@@ -46,7 +46,7 @@ struct ThemeStruct
 //
 
 extern int numthemes;
-ThemeStruct themes[MAXTHEMES];
+extern ThemeStruct themes[MAXTHEMES];
 
 //
 // functions
