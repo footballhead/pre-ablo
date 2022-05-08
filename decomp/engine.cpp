@@ -1,4 +1,9 @@
-#include "stdlib.h"
+#include "engine.h"
+
+#include "diablo.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <windows.h>
 
 //
@@ -18,7 +23,20 @@ char byte_61B6FC;
 // LoadFileWithMem	000000000048283B	
 // get_alloc_file_4828D6	00000000004828D6	
 // get_seek_file_48297B	000000000048297B	
-// get_file_size_482A2A	0000000000482A2A	
+
+// FileGetSize	0000000000482A2A	
+// Demo specific!
+DWORD FileGetSize(const char* filename)
+{
+    char buffer[256];
+    sprintf(buffer, "%s%s", fileLoadPrefix, filename);
+    //SFileOpenFile
+    //SFileGetFileSize
+    //SFileCloseFile
+    // TODO
+    return 0;
+}
+
 // FileAddLoadPrefix	0000000000482A9D	
 // DecodeFullCel	0000000000482AD3	
 // CelDraw	0000000000482B53	

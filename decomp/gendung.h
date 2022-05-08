@@ -33,6 +33,15 @@ struct MICROS
     WORD mt[16];
 };
 
+struct ScrollStruct
+{
+    int _sxoff;
+    int _syoff;
+    int _sdx;
+    int _sdy;
+    int _sdir;
+};
+
 //
 // variables
 //

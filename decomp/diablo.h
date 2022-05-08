@@ -16,6 +16,8 @@
 extern BYTE* gpBuffer;
 extern char fileLoadPrefix[64];
 extern BOOL cheat_mode;
+extern BOOL gbActive;
+extern BOOL shouldStopPaintTimer;
 
 //
 // functions

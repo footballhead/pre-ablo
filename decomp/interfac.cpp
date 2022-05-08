@@ -1,3 +1,13 @@
+#include "diablo.h"
+
+#include <windows.h>
+
+void palette_update();
+
+//
+// code (.text:00418F10)
+//
+
 // print_title_str_large	0000000000418F10	
 // print_title_str_small	0000000000418FB2	
 // DrawProgress	0000000000419044	
@@ -15,7 +25,27 @@
 // WNDPROC_mode1_title_newloadquit	000000000041A06E	
 // WNDPROC_mode2_selclass_entname	000000000041A5DD	
 // WNDPROC_mode13_exit_5screenshots	000000000041AD3E	
+
 // ShowProgress	000000000041B180	
+LRESULT ShowProgress(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (Msg) {
+    case WM_ACTIVATEAPP:
+        gbActive = wParam;
+        if (gbActive) {
+            palette_update();
+        }
+        return 0;
+    case WM_DESTROY:
+        shouldStopPaintTimer = TRUE;
+        // TODO
+        break;
+    // TODO other cases
+    }
+
+    return DefWindowProc(hWnd, Msg, wParam, lParam);
+}
+
 // interfac_play_vid_draw_quotes	000000000041BC8B	
 // interfac_init_title_play_music	000000000041BD5E	
 // interfac_set_player_some	000000000041BE60	

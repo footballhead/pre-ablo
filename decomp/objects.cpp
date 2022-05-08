@@ -962,7 +962,7 @@ void AddObject(int ot, int ox, int oy)
     nobjects++;
 }
 
-// Obj_Light    000000000045A9F3
+// .text:0045A9F3
 static void Obj_Light(int i, int lr)
 {
     int p;
