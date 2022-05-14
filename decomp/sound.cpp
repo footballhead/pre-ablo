@@ -1,10 +1,10 @@
-// #include directsound
+#include "directx/DSOUND.H"
 
 //
-// initialized data, starting at .data:004A3444
+// initialized variables (.data:004A3444)
 //
 
-// LPDIRECTSOUND sglpDS = NULL;
+LPDIRECTSOUND sglpDS = NULL;
 
 // .text:0040E5D0
 // void snd_init();

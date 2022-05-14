@@ -98,4 +98,22 @@ extern MonsterStruct monster[MAXMONSTERS];
 
 void M_StartKill(int i, int pnum);
 
+void MAI_Zombie(int i);
+void MAI_Fat(int i);
+void MAI_SkelSd(int i);
+void MAI_SkelBow(int i);
+void MAI_Scav(int i);
+void MAI_Rhino(int i);
+void MAI_GoatMc(int i);
+void MAI_GoatBow(int i);
+void MAI_Fallen(int i);
+void MAI_Magma(int i);
+void MAI_SkelKing(int i);
+void MAI_Bat(int i);
+void MAI_Garg(int i);
+void MAI_Cleaver(int i);
+void MAI_Succ(int i);
+void MAI_Sneak(int i);
+void MAI_Storm(int i);
+
 #endif
