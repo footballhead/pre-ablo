@@ -85,11 +85,7 @@ BYTE ItemAnimLs[] = {
     16,
     16,
     16,
-    16,
-    0,
-    0,
-    0,
-    0};
+    16};
 // TODO: Sound enums
 int ItemDropSnds[] = {
     IS_FHARM,
