@@ -32,6 +32,9 @@ void typecheck()
         _STATIC_ASSERT(sizeof(MissileStruct) == 0xA0);
     }
     {
+        _STATIC_ASSERT(sizeof(MonsterData) == 0x70);
+    }
+    {
         _STATIC_ASSERT(sizeof(MonsterStruct) == 0xC4);
     }
     {

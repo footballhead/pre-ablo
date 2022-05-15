@@ -64,11 +64,14 @@ extern int setpc_x;
 extern int setpc_y;
 extern int setpc_w;
 extern int setpc_h;
+extern int setlvlnum;
 
 //
 // functions
 //
 
 int IsometricCoord(int x, int y);
+void DRLG_ListTrans(int num, BYTE *List);
+void DRLG_AreaTrans(int num, BYTE *List);
 
 #endif

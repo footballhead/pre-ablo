@@ -13,7 +13,7 @@ DWORD dword_61A94C;
 UINT delayed_Msg;
 DWORD dword_61A954;
 PALETTEENTRY system_palette[256];
-BYTE *palette_buffer[256 * 4]; // Array of tuples: (r, g, b, unused)
+BYTE palette_buffer[256 * 4]; // Array of tuples: (r, g, b, unused)
 DWORD dword_61B160[32];
 DWORD dword_61B1E0;
 PALETTEENTRY menu_palette[256];
@@ -51,7 +51,18 @@ void LoadPalette(char *pszFilename, BYTE *dest)
 // DoFadeOut	00000000004821E1
 // PaletteFadeIn	000000000048233A
 // PaletteFadeOut	000000000048237B
-// CopyPalette	00000000004823BC
+
+// .text:004823BC
+void CopyPalette(PALETTEENTRY* palette, BYTE* buffer)
+{
+    int i;
+    for (i = 0; i< 256; ++i) {
+        palette[i].peRed = buffer[i * 4];
+        palette[i].peGreen = buffer[i * 4 + 1];
+        palette[i].peBlue = buffer[i * 4 + 2];
+    }
+}
+
 // ApplyGamma	0000000000482430
 // LoadRndLvlPal	00000000004825A6
 // palette_482623_cycle	0000000000482623

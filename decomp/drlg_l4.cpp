@@ -1,3 +1,13 @@
+//
+// initialized variables (.data:004AC390)
+//
+
+// TODO!
+
+//
+// code (.text:00425560)
+//
+
 // L4FixRim	0000000000425560	
 // L4makeDmt	0000000000425660	
 // L4AddWall	000000000042574E	

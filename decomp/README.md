@@ -36,6 +36,7 @@ headers are correct, the symbols are visible, and the structs are the right size
 1. drlg_l3.cpp
 1. wave2.cpp
 1. missiles.cpp
+1. monstdat.cpp
 1. town.cpp
 1. debug.cpp
 1. help.cpp

@@ -1,9 +1,13 @@
 #include <decomp/itemdat.h>
+#include <decomp/monstdat.h>
 #include <decomp/spells.h>
 
 #include <array>
 #include <cstdio>
 #include <diabutil/file.hpp>
+#include <iomanip>
+#include <sstream>
+#include <vector>
 
 namespace {
 
@@ -63,6 +67,17 @@ std::string right_pad_string(std::string const& str, size_t length) {
   return builder;
 }
 
+std::string escape_str(std::string const& str) {
+  std::string builder = str;
+  size_t found = builder.find('\\');
+  while (found != std::string::npos) {
+    builder.insert(builder.begin() + found, '\\');
+    // +2, one for the initial result and another for the inserted character
+    found = builder.find('\\', found + 2);
+  }
+  return builder;
+}
+
 void pretty_print_table(std::vector<std::vector<std::string>> rows,
                         char const* struct_name, char const* var) {
   std::vector<size_t> column_max = calculate_max_column_lengths(rows);
@@ -72,8 +87,7 @@ void pretty_print_table(std::vector<std::vector<std::string>> rows,
     printf("{");
     for (size_t i = 0; i < row.size(); ++i) {
       auto const& column = row.at(i);
-      // +2 for ", "
-      auto const& column_desired_length = column_max.at(i) + 2;
+      auto const& column_desired_length = column_max.at(i);
 
       printf("%s, ", right_pad_string(column, column_desired_length).c_str());
     }
@@ -278,6 +292,52 @@ char const* to_str(unique_base_item ubi) {
   return string_lookup[ubi + 1];
 }
 
+char const* to_str(_mai_id mai) {
+  static std::array lookup = {
+      "AI_ZOMBIE",   "AI_FAT",    "AI_SKELSD",  "AI_SKELBOW", "AI_SCAV",
+      "AI_RHINO",    "AI_GOATMC", "AI_GOATBOW", "AI_FALLEN",  "AI_MAGMA",
+      "AI_SKELKING", "AI_BAT",    "AI_GARG",    "AI_CLEAVER", "AI_SUCC",
+      "AI_SNEAK",    "AI_STORM",
+  };
+  return lookup[mai];
+}
+
+char const* to_str(_mc_id mc) {
+  static std::array lookup = {
+      "MC_UNDEAD",
+      "MC_DEMON",
+      "MC_ANIMAL",
+  };
+  return lookup[mc];
+}
+
+char const* to_str(_monster_id mid) {
+  static std::array lookup = {
+      "MT_NULL",     // -1
+      "MT_NZOMBIE",  // 0
+      "MT_BZOMBIE",  "MT_GZOMBIE",  "MT_YZOMBIE",  "MT_RFALLSP",  "MT_DFALLSP",
+      "MT_YFALLSP",  "MT_BFALLSP",  "MT_WSKELAX",  "MT_TSKELAX",  "MT_RSKELAX",
+      "MT_XSKELAX",  "MT_RFALLSD",  "MT_DFALLSD",  "MT_YFALLSD",  "MT_BFALLSD",
+      "MT_NSCAV",    "MT_BSCAV",    "MT_WSCAV",    "MT_YSCAV",    "MT_WSKELBW",
+      "MT_TSKELBW",  "MT_RSKELBW",  "MT_XSKELBW",  "MT_WSKELSD",  "MT_TSKELSD",
+      "MT_RSKELSD",  "MT_XSKELSD",  "MT_SNEAK",    "MT_STALKER",  "MT_UNSEEN",
+      "MT_ILLWEAV",  "MT_NGOATMC",  "MT_BGOATMC",  "MT_RGOATMC",  "MT_GGOATMC",
+      "MT_FIEND",    "MT_BLINK",    "MT_GLOOM",    "MT_FAMILIAR", "MT_NGOATBW",
+      "MT_BGOATBW",  "MT_RGOATBW",  "MT_GGOATBW",  "MT_NACID",    "MT_RACID",
+      "MT_BACID",    "MT_XACID",    "MT_SKING",    "MT_FAT",      "MT_MUDMAN",
+      "MT_TOAD",     "MT_FLAYED",   "MT_WYRM",     "MT_NMAGMA",   "MT_YMAGMA",
+      "MT_BMAGMA",   "MT_WMAGMA",   "MT_HORNED",   "MT_MUDRUN",   "MT_FROSTC",
+      "MT_OBLORD",   "MT_STORM",    "MT_RSTORM",   "MT_STORML",   "MT_MAEL",
+      "MT_WINGED",   "MT_GARGOYLE", "MT_BLOODCLW", "MT_DEATHW",   "MT_NSNAKE",
+      "MT_RSNAKE",   "MT_BSNAKE",   "MT_GSNAKE",   "MT_NBLACK",   "MT_RTBLACK",
+      "MT_BTBLACK",  "MT_RBLACK",   "MT_CLEAVER",  "MT_SUCCUBUS", "MT_SNOWWICH",
+      "MT_HLSPWN",   "MT_SOLBRNR",  "MT_MEGA",     "MT_GUARD",    "MT_VTEXLRD",
+      "MT_BALROG",   "MT_COUNSLR",  "MT_INCIN",    "MT_UNRAV",    "MT_LRDSAYTR",
+      "MT_INVILORD", "MT_DIABLO",
+  };
+  return lookup[mid + 1];
+}
+
 std::string plt_to_str(int plt) {
   auto append_flag_with_or = [](std::string& str, std::string const& flag) {
     if (!str.empty()) {
@@ -293,6 +353,30 @@ std::string plt_to_str(int plt) {
   if (plt & PLT_WEAP) append_flag_with_or(builder, "PLT_WEAP");
   if (plt & PLT_SHLD) append_flag_with_or(builder, "PLT_SHLD");
   if (plt & PLT_ARMO) append_flag_with_or(builder, "PLT_ARMO");
+
+  if (builder.empty()) {
+    return "0";
+  }
+
+  return builder;
+}
+
+std::string res_to_str(int res) {
+  auto append_flag_with_or = [](std::string& str, std::string const& flag) {
+    if (!str.empty()) {
+      str += " | ";
+    }
+    str += flag;
+  };
+
+  std::string builder;
+  if (res & RESIST_MAGIC) append_flag_with_or(builder, "RESIST_MAGIC");
+  if (res & RESIST_FIRE) append_flag_with_or(builder, "RESIST_FIRE");
+  if (res & RESIST_LIGHTNING) append_flag_with_or(builder, "RESIST_LIGHTNING");
+  if (res & IMMUNE_MAGIC) append_flag_with_or(builder, "IMMUNE_MAGIC");
+  if (res & IMMUNE_FIRE) append_flag_with_or(builder, "IMMUNE_FIRE");
+  if (res & IMMUNE_LIGHTNING) append_flag_with_or(builder, "IMMUNE_LIGHTNING");
+  if (res & IMMUNE_NULL_40) append_flag_with_or(builder, "IMMUNE_NULL_40");
 
   if (builder.empty()) {
     return "0";
@@ -382,6 +466,90 @@ std::vector<std::string> to_row(UItemStruct const& item,
   return builder;
 }
 
+std::vector<std::string> to_row(MonsterData const& monster,
+                                diabutil::byte_vector const& diablo) {
+  auto format_Frames = [](int const* const frames) -> std::string {
+    std::string builder;
+    builder += '{';
+    builder += std::to_string(frames[0]);
+    builder += ", ";
+    builder += std::to_string(frames[1]);
+    builder += ", ";
+    builder += std::to_string(frames[2]);
+    builder += ", ";
+    builder += std::to_string(frames[3]);
+    builder += ", ";
+    builder += std::to_string(frames[4]);
+    builder += ", ";
+    builder += std::to_string(frames[5]);
+    builder += '}';
+    return builder;
+  };
+
+  auto to_hex = [](int i) -> std::string {
+    std::stringstream builder;
+    builder << "0x" << std::hex << i;
+    return builder.str();
+  };
+
+  std::vector<std::string> builder;
+  builder.push_back(std::to_string(monster.mAnimWidth));
+  builder.push_back(std::to_string(monster.mImgSize));
+  builder.push_back(
+      escape_str(find_string_maybe_null(diablo, monster.GraphicType)));
+  builder.push_back(bool_to_str(monster.has_special));
+  builder.push_back(
+      escape_str(find_string_maybe_null(diablo, monster.sndfile)));
+  builder.push_back(bool_to_str(monster.snd_special));
+  builder.push_back(bool_to_str(monster.has_trans));
+  builder.push_back(
+      escape_str(find_string_maybe_null(diablo, monster.TransFile)));
+  builder.push_back(format_Frames(monster.Frames));
+  builder.push_back(format_Frames(monster.Rate));
+  builder.push_back(find_string_maybe_null(diablo, monster.mName));
+  builder.push_back(std::to_string(monster.mMinDLvl));
+  builder.push_back(std::to_string(monster.mMaxDLvl));
+  builder.push_back(std::to_string(monster.mLevel));
+  builder.push_back(std::to_string(monster.mMinHP));
+  builder.push_back(std::to_string(monster.mMaxHP));
+  builder.push_back(to_str(static_cast<_mai_id>(monster.mAi)));
+  builder.push_back(std::to_string(monster.mInt));
+  builder.push_back(std::to_string(monster.mHit));
+  builder.push_back(std::to_string(monster.mAFNum));
+  builder.push_back(std::to_string(monster.mMinDamage));
+  builder.push_back(std::to_string(monster.mMaxDamage));
+  builder.push_back(std::to_string(monster.mHit2));
+  builder.push_back(std::to_string(monster.mAFNum2));
+  builder.push_back(std::to_string(monster.mMinDamage2));
+  builder.push_back(std::to_string(monster.mMaxDamage2));
+  builder.push_back(std::to_string(monster.mArmorClass));
+  builder.push_back(to_str(static_cast<_mc_id>(monster.mMonstClass)));
+  builder.push_back(res_to_str(monster.mMagicRes));
+  builder.push_back(to_hex(monster.mTreasure));
+  builder.push_back(std::to_string(monster.mSelFlag));
+  builder.push_back(std::to_string(monster.mExp));
+  return builder;
+}
+
+std::vector<std::string> to_row(UniqMonstStruct const& monster,
+                                diabutil::byte_vector const& diablo) {
+  std::vector<std::string> builder;
+  builder.push_back(to_str(static_cast<_monster_id>(monster.mType)));
+  builder.push_back(find_string_maybe_null(diablo, monster.mName));
+  builder.push_back(find_string_maybe_null(diablo, monster.mTrnName));
+  builder.push_back(std::to_string(monster.mlevel));
+  builder.push_back(std::to_string(monster.maxhp));
+  builder.push_back(to_str(static_cast<_mai_id>(monster.mAi)));
+  builder.push_back(std::to_string(monster.mint));
+  builder.push_back(std::to_string(monster.mMinDamage));
+  builder.push_back(std::to_string(monster.mMaxDamage));
+  builder.push_back(res_to_str(monster.mMagicRes));
+  builder.push_back(std::to_string(monster.mUniqAttr));
+  builder.push_back(std::to_string(monster.mUnqVar1));
+  builder.push_back(std::to_string(monster.mUnqVar2));
+  return builder;
+}
+
 //
 // READING FUNCTIONS
 //
@@ -415,22 +583,18 @@ int main(int argc, char** argv) {
     return 2;
   }
 
-  {
-    pretty_print_table(read_table<ItemDataStruct>(*file, 0xA2300, 118),
-                       "ItemDataStruct", "AllItemsList");
-  }
-  {
-    pretty_print_table(read_table<PLStruct>(*file, 0xA4430, 75), "PLStruct",
-                       "PL_Prefix");
-  }
-  {
-    pretty_print_table(read_table<PLStruct>(*file, 0xA5370, 94), "PLStruct",
-                       "PL_Suffix");
-  }
-  {
-    pretty_print_table(read_table<UItemStruct>(*file, 0xA6688, 60),
-                       "UItemStruct", "UniqueItemList");
-  }
+  pretty_print_table(read_table<ItemDataStruct>(*file, 0xA2300, 118),
+                     "ItemDataStruct", "AllItemsList");
+  pretty_print_table(read_table<PLStruct>(*file, 0xA4430, 75), "PLStruct",
+                     "PL_Prefix");
+  pretty_print_table(read_table<PLStruct>(*file, 0xA5370, 94), "PLStruct",
+                     "PL_Suffix");
+  pretty_print_table(read_table<UItemStruct>(*file, 0xA6688, 60), "UItemStruct",
+                     "UniqueItemList");
+  pretty_print_table(read_table<MonsterData>(*file, 0xACC10, 93), "MonsterData",
+                     "monsterdata");
+  pretty_print_table(read_table<UniqMonstStruct>(*file, 0xAF580, 72),
+                     "UniqMonstStruct", "UniqMonst");
 
   return 0;
 }

@@ -218,10 +218,58 @@ void MakeSpeedCels()
 // DRLG_InitTrans	000000000040DAAA
 // DRLG_MRectTrans	000000000040DB47
 // __dc_gendung_41264A	000000000040DBEE
-// DLRG_RectTrans	000000000040DCE1
+
+// .text:0040DCE1
+void DRLG_RectTrans(int x1, int y1, int x2, int y2)
+{
+    int i, j;
+
+    for (j = y1; j <= y2; j++)
+    {
+        for (i = x1; i <= x2; i++)
+        {
+            dTransVal[i][j] = TransVal;
+        }
+    }
+    TransVal++;
+}
+
 // DRLG_CopyTrans	000000000040DD5C
-// DRLG_ListTrans	000000000040DDA5
-// DRLG_AreaTrans	000000000040DE27
+
+// .text:0040DDA5
+void DRLG_ListTrans(int num, BYTE *List)
+{
+    BYTE x1, x2, y1, y2;
+    int i;
+
+    for (i = 0; i < num; i++)
+    {
+        x1 = *List++;
+        y1 = *List++;
+        x2 = *List++;
+        y2 = *List++;
+        DRLG_RectTrans(x1, y1, x2, y2);
+    }
+}
+
+// .text:0040DE27
+void DRLG_AreaTrans(int num, BYTE *List)
+{
+    BYTE x1, x2, y1, y2;
+    int i;
+
+    for (i = 0; i < num; i++)
+    {
+        x1 = *List++;
+        y1 = *List++;
+        x2 = *List++;
+        y2 = *List++;
+        DRLG_RectTrans(x1, y1, x2, y2);
+        TransVal--;
+    }
+    TransVal++;
+}
+
 // DRLG_SetPC	000000000040DEB5
 // gendung_GetPortalLevel	000000000040DF73
 // gendung_GetPortalLvlPos	000000000040DFD1

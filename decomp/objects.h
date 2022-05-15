@@ -87,5 +87,7 @@ void SetObjMapRange(int i, int x1, int y1, int x2, int y2, int v);
 void SetBookMsg(int i, int msg);
 void AddObject(int ot, int ox, int oy);
 void ObjSetMicro(int dx, int dy, int pn);
+void AddL1Objs(int x1, int y1, int x2, int y2);
+void AddL2Objs(int x1, int y1, int x2, int y2);
 
 #endif
