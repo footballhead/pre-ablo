@@ -98,7 +98,7 @@ struct SpellStruct
 //
 // variables
 //
-
+extern int spelldata_sManaCost[MAX_SPELLS];
 extern SpellStruct spells[MAX_SPELLS];
 extern int spellsactive[MAX_SPELLS];
 extern int numspells;

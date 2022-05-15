@@ -16,7 +16,6 @@
 // enums
 //
 
-// TODO: From Devilution, verify!
 enum item_effect_type
 {
     IPL_TOHIT = 0x0,
@@ -84,6 +83,13 @@ enum item_effect_type
     // TODO: Any more???
 };
 
+enum item_quality
+{
+    ITEM_QUALITY_NORMAL = 0,
+    ITEM_QUALITY_MAGIC = 1,
+    ITEM_QUALITY_UNIQUE = 2,
+};
+
 //
 // structs
 //
@@ -140,13 +146,13 @@ struct ItemStruct
     char _iSplLvlAdd;
     char _iPLSplCost; // Demo specific
     char _iPLSplDur;  // Demo specific
-    char _iPrePower;
-    char _iSufPower;
+    char _iPrePower; // IPL_*
+    char _iSufPower; // IPL_*
     char _iMinStr;
     char _iMinMag;
     char _iMinDex;
-    int _iStatFlag;
-    int IDidx;
+    BOOL _iStatFlag;
+    int IDidx; // Index into AllItemsList
     int field_134; // unused?
 };
 #pragma pack(pop)
@@ -156,5 +162,6 @@ struct ItemStruct
 //
 
 void CalcPlrInv(int p);
+void UseItem(int p, int Mid, int spl);
 
 #endif

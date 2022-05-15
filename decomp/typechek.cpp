@@ -41,6 +41,9 @@ void typecheck()
         _STATIC_ASSERT(sizeof(ObjectStruct) == 0x74);
     }
     {
+        _STATIC_ASSERT(sizeof(PLStruct) == 0x34);
+    }
+    {
         // TODO: This is currently not the right size!
         _STATIC_ASSERT(sizeof(PlayerStruct) == 0x4270);
     }
@@ -49,5 +52,8 @@ void typecheck()
     }
     {
         _STATIC_ASSERT(sizeof(SpellStruct) == 0x6C);
+    }
+    {
+        _STATIC_ASSERT(sizeof(UItemStruct) == 0x58);
     }
 }

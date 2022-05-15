@@ -1,13 +1,22 @@
 #include "items.h"
 
 #include "control.h"
+#include "effects.h"
+#include "engine.h"
+#include "player.h"
 
 #include <stdio.h>
+
+extern BOOL pinfoflag;
+void AddPanelString(const char *str, BOOL just);
+extern BOOL drawhpflag;
+extern BOOL drawmanaflag;
 
 //
 // initialized variables (.data:004AAB20)
 //
 
+// (objcurs.cel frame - 8) => ItemDropNames index
 BYTE ItemCAnimTbl[] = {
     20, 16, 0, 12, 12, 4, 4, 4, 2, 21, 12, 12, 12, 12, 12,
     12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 19, 22, 23,
@@ -16,7 +25,9 @@ BYTE ItemCAnimTbl[] = {
     18, 0, 5, 5, 7, 1, 3, 17, 1, 15, 10, 14, 3, 11, 8, 0,
     1, 7, 0, 7, 6, 7, 3, 3, 3, 6, 6, 11, 11, 11, 0, 14,
     14, 14, 6, 6, 7, 3, 8, 14, 14, 14, 14, 0, 0, 1, 1, 1,
-    1, 1, 7, 7, 7, 14, 14, 4, 0};
+    1, 1, 7, 7, 7, 14, 14,
+    // These two are past the end of objcurs.cel...
+    4, 0};
 const char *ItemDropNames[] = {
     "Armor2",
     "Axe",
@@ -81,68 +92,71 @@ BYTE ItemAnimLs[] = {
     0};
 // TODO: Sound enums
 int ItemDropSnds[] = {
-    20,
-    17,
-    24,
-    18,
-    30,
-    19,
-    29,
-    27,
-    29,
-    43,
-    17,
-    28,
-    25,
-    19,
-    21,
-    27,
-    26,
-    20,
-    21,
-    21,
-    24,
-    24,
-    24,
-    24,
-    24,
-    24,
-    24,
-    24};
+    IS_FHARM,
+    IS_FAXE,
+    IS_FPOT,
+    IS_FBOW,
+    IS_GOLD,
+    IS_FCAP,
+    IS_FSWOR,
+    IS_FSHLD,
+    IS_FSWOR,
+    IS_MAGIC,
+    IS_FAXE,
+    IS_FSTAF,
+    IS_FRING,
+    IS_FCAP,
+    IS_FLARM,
+    IS_FSHLD,
+    IS_FSCRL,
+    IS_FHARM,
+    IS_FLARM,
+    IS_FLARM,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT,
+    IS_FPOT};
 int ItemInvSnds[] = {
-    35,
-    31,
-    37,
-    32,
-    30,
-    33,
-    42,
-    40,
-    42,
-    34,
-    31,
-    41,
-    38,
-    33,
-    36,
-    40,
-    39,
-    35,
-    35,
-    35,
-    37,
-    37,
-    37,
-    37,
-    37,
-    37,
-    37,
-    37};
+    IS_IHARM,
+    IS_IAXE,
+    IS_IPOT,
+    IS_IBOW,
+    IS_GOLD,
+    IS_ICAP,
+    IS_ISWORD,
+    IS_ISHIEL,
+    IS_ISWORD,
+    IS_IGRAB,
+    IS_IAXE,
+    IS_ISTAF,
+    IS_IRING,
+    IS_ICAP,
+    IS_ILARM,
+    IS_ISHIEL,
+    IS_ISCROL,
+    IS_IHARM,
+    IS_IHARM,
+    IS_IHARM,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT,
+    IS_IPOT};
 
 //
 // uninitialized variables
 //
 
+// ???
+ItemStruct curruitem;
+BOOL uitemflag;
 // ???
 BYTE *itemanims[ITEMTYPES];
 ItemStruct item[MAXITEMS];
@@ -392,9 +406,196 @@ void PrintItemPower(char plidx, ItemStruct x)
 }
 
 // DrawUniqueInfo	0000000000423BA4
-// PrintItemDetails	0000000000423E53
+
+// .text:00423E53
+void PrintItemDetails(ItemStruct x)
+{
+    if (x._iMagical != ITEM_QUALITY_UNIQUE && x._iPrePower != -1)
+    {
+        PrintItemPower(x._iPrePower, x);
+        AddPanelString(tempstr, TRUE);
+    }
+
+    if (x._iSufPower != -1)
+    {
+        PrintItemPower(x._iSufPower, x);
+        AddPanelString(tempstr, TRUE);
+    }
+
+    if (x._iMagical == ITEM_QUALITY_UNIQUE)
+    {
+        AddPanelString("unique item", TRUE);
+        uitemflag = TRUE;
+        curruitem = x;
+    }
+
+    if (x._iMiscID == IMISC_STAFF && x._iMaxCharges != 0)
+    {
+        sprintf(tempstr, "Charges : %i/%i", x._iCharges, x._iMaxCharges);
+        AddPanelString(tempstr, TRUE);
+    }
+
+    if (x._iClass == ICLASS_WEAPON || x._iClass == ICLASS_ARMOR)
+    {
+        if (x._iMaxDur == 1000)
+        {
+            strcpy(tempstr, "Indestructible");
+        }
+        else
+        {
+            sprintf(tempstr, "Durability : %i/%i", x._iDurability, x._iMaxDur);
+        }
+        AddPanelString(tempstr, TRUE);
+    }
+
+    if (x._iMinStr + x._iMinMag + x._iMinDex)
+    {
+        strcpy(tempstr, "Required :");
+        if (x._iMinStr)
+        {
+            sprintf(tempstr, "%s %i Str", tempstr, x._iMinStr);
+        }
+        if (x._iMinMag)
+        {
+            sprintf(tempstr, "%s %i Mag", tempstr, x._iMinMag);
+        }
+        if (x._iMinDex)
+        {
+            sprintf(tempstr, "%s %i Dex", tempstr, x._iMinDex);
+        }
+        AddPanelString(tempstr, TRUE);
+    }
+
+    pinfoflag = TRUE;
+}
+
 // PrintItemDur	00000000004240B2
-// UseItem	0000000000424284
+
+// .text:00424284
+void UseItem(int p, int Mid, int spl)
+{
+    int rnd, j;
+
+    switch (Mid)
+    {
+    case IMISC_HEAL:
+    case IMISC_FOOD:
+        j = plr[p]._pMaxHP >> 8;
+        j = ((j >> 1) + random_(j)) << 6;
+        if (plr[p]._pClass == PC_WARRIOR)
+        {
+            j <<= 1;
+        }
+        if (plr[p]._pClass == PC_ROGUE)
+        {
+            j += j >> 1;
+        }
+        plr[p]._pHitPoints += j;
+        if (plr[p]._pMaxHP < plr[p]._pHitPoints)
+        {
+            plr[p]._pHitPoints = plr[p]._pMaxHP;
+        }
+        plr[p]._pHPBase += j;
+        if (plr[p]._pHPBase > plr[p]._pMaxHPBase)
+        {
+            plr[p]._pHPBase = plr[p]._pMaxHPBase;
+        }
+        drawhpflag = TRUE;
+        break;
+    case IMISC_FULLHEAL:
+        plr[p]._pHitPoints = plr[p]._pMaxHP;
+        plr[p]._pHPBase = plr[p]._pMaxHPBase;
+        drawhpflag = TRUE;
+        break;
+    case IMISC_MANA:
+        j = plr[p]._pMaxMana >> 8;
+        j = ((j >> 1) + random_(j)) << 6;
+        if (plr[p]._pClass == PC_SORCERER)
+        {
+            j <<= 1;
+        }
+        if (plr[p]._pClass == PC_ROGUE)
+        {
+            j += j >> 1;
+        }
+        plr[p]._pMana += j;
+        if (plr[p]._pMana > plr[p]._pMaxMana)
+        {
+            plr[p]._pMana = plr[p]._pMaxMana;
+        }
+        plr[p]._pManaBase += j;
+        if (plr[p]._pManaBase > plr[p]._pMaxManaBase)
+        {
+            plr[p]._pManaBase = plr[p]._pMaxManaBase;
+        }
+        drawmanaflag = TRUE;
+        break;
+    case IMISC_FULLMANA:
+        plr[p]._pMana = plr[p]._pMaxMana;
+        plr[p]._pManaBase = plr[p]._pMaxManaBase;
+        drawmanaflag = TRUE;
+        break;
+    case IMISC_POTEXP:
+        AddPlrExperience(p, plr[p]._pLevel, plr[p]._pExperience);
+        break;
+    case IMISC_ELIXSTR:
+        rnd = random_(3) + 1;
+        plr[p]._pStrength += rnd;
+        plr[p]._pBaseStr += rnd;
+        break;
+    case IMISC_ELIXMAG:
+        rnd = random_(3) + 1;
+        plr[p]._pMagic += rnd;
+        plr[p]._pBaseMag += rnd;
+        break;
+    case IMISC_ELIXDEX:
+        rnd = random_(3) + 1;
+        plr[p]._pDexterity += rnd;
+        plr[p]._pBaseDex += rnd;
+        break;
+    case IMISC_ELIXVIT:
+        rnd = random_(3) + 1;
+        plr[p]._pVitality += rnd;
+        plr[p]._pBaseVit += rnd;
+        break;
+    case IMISC_ELIXWEAK:
+        rnd = random_(3) + 1;
+        plr[p]._pStrength -= rnd;
+        plr[p]._pBaseStr -= rnd;
+        break;
+    case IMISC_ELIXDIS:
+        rnd = random_(3) + 1;
+        plr[p]._pMagic -= rnd;
+        plr[p]._pBaseMag -= rnd;
+        break;
+    case IMISC_ELIXCLUM:
+        rnd = random_(3) + 1;
+        plr[p]._pDexterity -= rnd;
+        plr[p]._pBaseDex -= rnd;
+        break;
+    case IMISC_ELIXSICK:
+        rnd = random_(3) + 1;
+        plr[p]._pVitality -= rnd;
+        plr[p]._pBaseVit -= rnd;
+        break;
+    case IMISC_BOOK:
+        plr[p]._pMemSpells |= SPELLBIT(spl);
+        plr[p]._pSplLvl[spl]++;
+        plr[p]._pMana += spelldata_sManaCost[spl] << 6;
+        if (plr[p]._pMana > plr[p]._pMaxMana)
+        {
+            plr[p]._pMana = plr[p]._pMaxMana;
+        }
+        plr[p]._pManaBase += spelldata_sManaCost[spl] << 6;
+        if (plr[p]._pManaBase > plr[p]._pMaxManaBase)
+        {
+            plr[p]._pManaBase = plr[p]._pMaxManaBase;
+        }
+        drawmanaflag = TRUE;
+        break;
+    }
+}
+
 // SmithItemOk	0000000000424C0F
 // RndSmithItem	0000000000424CA6
 // SpawnSmith	0000000000424D67
