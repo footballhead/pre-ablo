@@ -32,6 +32,9 @@ add_subdirectory(cel2png)
 add_subdirectory(drawtext)
 add_subdirectory(drawtextpcx)
 add_subdirectory(png2cel)
+if (MSVC)
+    add_subdirectory(allitemslist)
+endif()
 
 #
 # StormLib is causing problems so isolate
