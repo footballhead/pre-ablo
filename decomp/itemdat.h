@@ -133,14 +133,23 @@ enum item_effect_type
     IPL_ABSHALFTRAP = 0x34,   // NW
     IPL_KNOCKBACK = 0x35,     // NW
     IPL_NOHEALMON = 0x36,     // NW
-    // Devilution has additional things here... we don't though
+    // Devilution has additional things here. We don't though.
     IPL_DAMMOD = 55,
     IPL_RNDARROWVEL = 56,
     IPL_SETDAM = 57,
     IPL_SETDUR = 58,
-    // TODO: What is here? The message is "Another ability (NW)"
-    IPL_DRAINLIFE = 66,
-    // TODO: Any more???
+    // This chunk doesn't function... they are named after their uniques
+    IPL_GLOOMFANG,
+    IPL_GONNAGAL,
+    IPL_FALCON,
+    IPL_GRANDFATHER,
+    IPL_SKULLCHAIN,
+    IPL_DUFUS,
+    IPL_GLEAMSONG,
+    // This one works! Constricting Ring
+    IPL_DRAINLIFE,
+    // Non-functional placeholder used by uniques (e.g. Ring of Engagement)
+    IPL_X,
     IPL_INVALID = -1,
 };
 
