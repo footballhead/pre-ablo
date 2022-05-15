@@ -144,7 +144,12 @@ enum item_effect_type
     IPL_INVALID = -1,
 };
 
-// TODO ISPL
+enum item_special_effect
+{
+    ISPL_NONE = 0x00000000,
+    ISPL_INFRAVISION = 0x00000001,
+    ISPL_RNDSTEALLIFE = 0x00000002,
+};
 
 // TODO UITYPE
 
@@ -220,7 +225,7 @@ enum affix_item_type
 
 struct ItemDataStruct
 {
-    BOOL iRnd;
+    BOOL iRnd;   // I only see 0 and 1 here so assuming it's a BOOL
     char iClass; // enum item_class
     char iLoc;   // enum item_equip_type
     int iCurs;
