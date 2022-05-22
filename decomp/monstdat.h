@@ -4,6 +4,21 @@
 #include <windows.h>
 
 //
+// Defines
+//
+
+#define MAT_NEVER 0
+#define MAT_ALWAYS 1
+#define MAT_RETAIL 2
+
+// mTreasure; signals that the monster will always drop a unique item
+#define DROP_UNIQUE 0x8000
+// Leftover denotes which unique item (index into UniqueItemList)
+#define DROP_UNIQUE_MASK 0xFFF
+
+#define NUM_MTYPES 93
+
+//
 // enums
 //
 
@@ -144,13 +159,19 @@ enum monster_resistance
     IMMUNE_NULL_40 = 0x40,
 };
 
+enum UniqueMonsterAttribute {
+    UA_GROUP = 0x1, // something about group placement/unoty
+    UA_HIT = 0x2, // mHit/mHit2 is mUnqVar1
+    UA_AC = 0x4, // mArmorClass is mUnqVar1
+};
+
 //
 // structs
 //
 
 struct MonsterData
 {
-    int mAnimWidth;
+    int width;
     int mImgSize;
     const char *GraphicType;
     BOOL has_special;
@@ -158,8 +179,8 @@ struct MonsterData
     BOOL snd_special;
     BOOL has_trans;
     const char *TransFile;
-    int Frames[6];
-    int Rate[6];
+    int Frames[6]; // NWAHDS
+    int Rate[6]; // NWAHDS
     const char *mName;
     unsigned char mMinDLvl;
     unsigned char mMaxDLvl;
@@ -188,7 +209,7 @@ struct UniqMonstStruct
 {
     char mType; // enum _monster_id
     const char *mName;
-    const char *mTrnName;
+    const char *mTrnName; // Monsters\\Monsters\\%s.TRN
     unsigned char mlevel;
     unsigned short maxhp;
     unsigned char mAi; // enum _mai_id
@@ -196,9 +217,9 @@ struct UniqMonstStruct
     unsigned char mMinDamage;
     unsigned char mMaxDamage;
     unsigned short mMagicRes; // enum monster_resistance
-    unsigned short mUniqAttr; // probably an enum?
-    unsigned char mUnqVar1;
-    unsigned char mUnqVar2;
+    unsigned short mUnqAttr; // enum UniqueMonsterAttribute
+    unsigned char mUnqVar1; // see enum UniqueMonsterAttribute
+    unsigned char mUnqVar2; // Unused?
 };
 
 //

@@ -9,7 +9,6 @@
 
 // nice
 #define ALL_OBJECTS_SIZE 69
-
 #define OBJ_LOAD_LIST_SIZE 43
 
 //
@@ -33,15 +32,15 @@ enum object_id
     OBJ_BANNERM = 0xC,
     OBJ_BANNERR = 0xD,
     OBJ_SKPILE = 0xE,
-    OBJ_SKSTICK1 = 0xF,
-    OBJ_SKSTICK2 = 0x10,
-    OBJ_SKSTICK3 = 0x11,
-    OBJ_SKSTICK4 = 0x12,
-    OBJ_SKSTICK5 = 0x13,
-    OBJ_CRUX1 = 0x14, // Crucified Skeleton, in skeleton king chamber
-    OBJ_CRUX2 = 0x15, // Crucified Skeleton, in skeleton king chamber
-    OBJ_CRUX3 = 0x16, // Crucified Skeleton, in skeleton king chamber
-    OBJ_STAND = 0x17, // Magic rock stand
+    OBJ_SKSTICK1 = 0xF,  // This is called skstick but doesn't use OFILE_SKULSTIK...
+    OBJ_SKSTICK2 = 0x10, // This is called skstick but doesn't use OFILE_SKULSTIK...
+    OBJ_SKSTICK3 = 0x11, // This is called skstick but doesn't use OFILE_SKULSTIK...
+    OBJ_SKSTICK4 = 0x12, // This is called skstick but doesn't use OFILE_SKULSTIK...
+    OBJ_SKSTICK5 = 0x13, // This is called skstick but doesn't use OFILE_SKULSTIK...
+    OBJ_CRUX1 = 0x14,    // Crucified Skeleton, in skeleton king chamber
+    OBJ_CRUX2 = 0x15,    // Crucified Skeleton, in skeleton king chamber
+    OBJ_CRUX3 = 0x16,    // Crucified Skeleton, in skeleton king chamber
+    OBJ_STAND = 0x17,    // Magic rock stand
     OBJ_ANGEL = 0x18,
     OBJ_BOOK2L = 0x19, // Book on Novaness. In Bone Chamber. Teaches Nova
     OBJ_BCROSS = 0x1A,
@@ -59,7 +58,7 @@ enum object_id
     OBJ_TORTURE3 = 0x26,
     OBJ_TORTURE4 = 0x27,
     OBJ_TORTURE5 = 0x28,
-    OBJ_BOOK2R = 0x29, // Book on dlvl 6, opens stairs on dlvl 7 to Bone Chamber
+    OBJ_BOOK2R = 0x29,  // Book on dlvl 6, opens stairs on dlvl 7 to Bone Chamber
     OBJ_L2LDOOR = 0x2A, // Catacomb door
     OBJ_L2RDOOR = 0x2B, // Catacomb door
     OBJ_TORCHL = 0x2C,
@@ -89,19 +88,74 @@ enum object_id
     OBJ_NULL_68 = 0x44,
 };
 
+enum object_graphic_id
+{
+    OFILE_L1BRAZ = 0x0,
+    OFILE_L1DOORS = 0x1,
+    OFILE_LEVER = 0x2,
+    OFILE_CHEST1 = 0x3,
+    OFILE_CHEST2 = 0x4,
+    OFILE_BANNER = 0x5,
+    OFILE_SKULPILE = 0x6,
+    OFILE_SKULFIRE = 0x7,
+    OFILE_SKULSTIK = 0x8, // Not used :(
+    OFILE_CRUXSK1 = 0x9,
+    OFILE_CRUXSK2 = 0xA,
+    OFILE_CRUXSK3 = 0xB,
+    OFILE_BOOK1 = 0xC,
+    OFILE_BOOK2 = 0xD,
+    OFILE_ROCKSTAN = 0xE,
+    OFILE_ANGEL = 0xF, // Bad (see #127)
+    OFILE_CHEST3 = 0x10,
+    OFILE_BURNCROS = 0x11,
+    OFILE_CANDLE2 = 0x12,
+    OFILE_NUDE2 = 0x13,
+    OFILE_SWITCH4 = 0x14,
+    OFILE_TNUDEM = 0x15,
+    OFILE_TNUDEW = 0x16,
+    OFILE_TSOUL = 0x17,
+    OFILE_L2DOORS = 0x18,
+    OFILE_WTORCH4 = 0x19,
+    OFILE_WTORCH3 = 0x1A,
+    OFILE_SARC = 0x1B,
+    OFILE_FLAME1 = 0x1C,   // TODO (see #42)
+    OFILE_PRSRPLT1 = 0x1D, // Not used :(
+    OFILE_TRAPHOLE = 0x1E,
+    OFILE_MINIWATR = 0x1F, // TODO (see #42)
+    OFILE_WTORCH2 = 0x20,
+    OFILE_WTORCH1 = 0x21,
+    OFILE_BCASE = 0x22,
+    OFILE_BSHELF = 0x23,   // Not used :(
+    OFILE_WEAPSTND = 0x24, // Bad (see #127), also TODO (see #42)
+    OFILE_BARREL = 0x25,
+    OFILE_BARRELEX = 0x26,
+    OFILE_LSHRINEG = 0x27,
+    OFILE_RSHRINEG = 0x28,
+    OFILE_BLOODFNT = 0x29,
+    OFILE_DECAP = 0x2A,
+};
+
+enum object_load
+{
+    OLOAD_STOP = -1,
+    // ??? Where's 0?
+    OLOAD_YES = 1,   // Load if inside level and type
+    OLOAD_NO = 2,    // Don't consider for loading
+    OLOAD_THEME = 3, // Not really distinct from OLOAD_NO but has theme set
+};
+
 //
 // structs
 //
 
-#pragma pack(push, 8)
 struct ObjDataStruct
 {
-    char oload; // TODO is this an enum??? -1 means "ignore", 1 means "consider for loading"
-    char ofindex;
+    char oload;   // enum object_load
+    char ofindex; // enum object_graphic_id
     char ominlvl;
     char omaxlvl;
-    char olvltype;
-    char otheme; // one of enum theme_id
+    char olvltype; // enum level_type
+    char otheme;   // enum theme_id
     int oAnimFlag;
     int oAnimDelay;
     int oAnimLen;
@@ -113,13 +167,12 @@ struct ObjDataStruct
     char oSelFlag;
     BOOL oTrapFlag;
 };
-#pragma pack(pop)
 
 //
 // variables
 //
 
-extern ObjDataStruct AllObjects[ALL_OBJECTS_SIZE]; // nice
-extern const char* ObjMasterLoadList[OBJ_LOAD_LIST_SIZE];
+extern ObjDataStruct AllObjects[ALL_OBJECTS_SIZE];
+extern const char *ObjMasterLoadList[OBJ_LOAD_LIST_SIZE];
 
 #endif

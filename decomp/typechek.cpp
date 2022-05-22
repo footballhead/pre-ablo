@@ -23,6 +23,9 @@ void typecheck()
     }
 
     {
+        _STATIC_ASSERT(sizeof(CMonster) == 0x2B8);
+    }
+    {
         _STATIC_ASSERT(sizeof(ItemDataStruct) == 0x48);
     }
     {

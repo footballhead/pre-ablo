@@ -64,8 +64,9 @@ int unused001 = 0;
 int unused002 = 1;
 int unused003 = 1;
 int unused004 = -1;
-char version_string[8] = "V1.0";
+const char* version_string = "V1.0";
 BOOL debug_mode = FALSE;
+// If TRUE then restrict to dlvl 1 and warrior
 BOOL demo_mode = TRUE;
 BOOL show_intros = TRUE;
 BOOL debugMusicOn = TRUE;

@@ -4,9 +4,18 @@
 #include <windows.h>
 
 //
+// defines
+//
+
+#define MemFreeDbg(x) \
+    GlobalUnlock(GlobalHandle(x)); \
+    GlobalFree(GlobalHandle(x));
+
+//
 // functions
 //
 
+void CelApplyTrans(BYTE *p, BYTE *ttbl, int nCel);
 DWORD FileGetSize(const char* filename);
 void CelDraw(int sx, int sy, BYTE *pCelBuff, int nCel, int nWidth);
 BYTE* LoadFileInMem(const char *pszName);

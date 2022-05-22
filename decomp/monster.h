@@ -3,17 +3,19 @@
 
 #include <windows.h>
 
+#include "monstdat.h"
+
 //
 // defines
 //
 
 #define MAXMONSTERS 200
+#define MAX_LVLMTYPES 16
 
 //
 // structs
 //
 
-#pragma pack(push, 8)
 struct MonsterStruct
 {
     int _mMTidx;
@@ -40,14 +42,14 @@ struct MonsterStruct
     int _mAnimFrame;
     int anonymous_4;
     int _mDelFlag;
-    int monster_mVar1;
-    int monster_mVar2;
-    int monster_mVar3;
-    int monster_mVar4;
-    int monster_mVar5;
-    int monster_mVar6;
-    int monster_mVar7;
-    int monster_mVar8;
+    int _mVar1;
+    int _mVar2;
+    int _mVar3;
+    int _mVar4;
+    int _mVar5;
+    int _mVar6;
+    int _mVar7;
+    int _mVar8;
     int _mmaxhp;
     int _mhitpoints;
     char anonymous_8;
@@ -82,7 +84,35 @@ struct MonsterStruct
     void *MType;
     int _MData;
 };
-#pragma pack(pop)
+
+struct AnimStruct
+{
+    BYTE *CMem; // Pointer to beginng of CEL data
+    BYTE *Cels[8]; // CEL animation data for each direction
+    int Frames; // # of frames for each direction
+    int Rate; // delay between each frame
+};
+
+// TODO: TSnd struct and Snds var
+struct CMonster
+{
+    char mtype;
+    AnimStruct Anims[6];
+    DWORD field_10C;
+    DWORD field_110;
+    DWORD field_114;
+    char Snds;        // TODO: Define TSnd (size == 48?)
+    BYTE gap119[387]; // TODO: Define TSnd
+    int width;
+    int width2;
+    unsigned char mMinHP;
+    unsigned char mMaxHP;
+    int has_special;
+    char mAFNum;
+    char mdeadval;
+    MonsterData *MData;
+    BYTE *trans_file;
+};
 
 //
 // variables

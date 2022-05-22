@@ -54,6 +54,7 @@ extern char dFlags[MAXDUNX][MAXDUNY];
 extern char dMonster[MAXDUNX][MAXDUNY];
 extern char dSpecial[MAXDUNX][MAXDUNY];
 extern char dPlayer[MAXDUNX][MAXDUNY];
+extern char dMissile[MAXDUNX][MAXDUNY];
 extern BOOLEAN nSolidTable[MAXTILES + 1];
 extern BOOLEAN nTrapTable[MAXTILES + 1];
 extern BYTE *pMegaTiles;
@@ -65,6 +66,7 @@ extern int setpc_y;
 extern int setpc_w;
 extern int setpc_h;
 extern int setlvlnum;
+extern BOOL setlevel;
 
 //
 // functions

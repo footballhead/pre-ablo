@@ -1,91 +1,171 @@
 #include "objdat.h"
 
+#include "enums.h"
+#include "themes.h"
+
 //
 // initialized vars (data:004AB420)
 //
 
 int ObjTypeConv[] = {
-    0, 4, 20, 21, 22, 24, 11, 12, 13, 0, 0, 0, 0, 0, 25,
-    41, 26, 0, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49,
-    0, 0, 0, 0, 0, 0, 0, 3, 14, 15, 16, 17, 18, 19, 0, 0,
-    0, 0, 0, 0, 28, 0, 53, 54, 36, 37, 38, 39, 40, 0, 0,
-    0, 0, 0, 27, 0, 0, 0, 0, 29, 30, 31, 32, 33, 34, 35,
-    5, 5, 5, 6, 6, 6, 7, 7, 7
+    OBJ_L1LIGHT,
+    OBJ_LEVER,
+    OBJ_CRUX1,
+    OBJ_CRUX2,
+    OBJ_CRUX3,
+    OBJ_ANGEL,
+    OBJ_BANNERL,
+    OBJ_BANNERM,
+    OBJ_BANNERR,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_BOOK2L,
+    OBJ_BOOK2R,
+    OBJ_BCROSS,
+    OBJ_L1LIGHT,
+    OBJ_CANDLE1,
+    OBJ_CANDLE2,
+    OBJ_CANDLEO,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_FLAMEHOLE,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_SKFIRE,
+    OBJ_SKPILE,
+    OBJ_SKSTICK1,
+    OBJ_SKSTICK2,
+    OBJ_SKSTICK3,
+    OBJ_SKSTICK4,
+    OBJ_SKSTICK5,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_SWITCHSKL,
+    OBJ_L1LIGHT,
+    OBJ_TRAPL,
+    OBJ_TRAPR,
+    OBJ_TORTURE1,
+    OBJ_TORTURE2,
+    OBJ_TORTURE3,
+    OBJ_TORTURE4,
+    OBJ_TORTURE5,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_NUDEW2R,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_L1LIGHT,
+    OBJ_TNUDEM1,
+    OBJ_TNUDEM2,
+    OBJ_TNUDEM3,
+    OBJ_TNUDEM4,
+    OBJ_TNUDEW1,
+    OBJ_TNUDEW2,
+    OBJ_TNUDEW3,
+    OBJ_CHEST1,
+    OBJ_CHEST1,
+    OBJ_CHEST1,
+    OBJ_CHEST2,
+    OBJ_CHEST2,
+    OBJ_CHEST2,
+    OBJ_CHEST3,
+    OBJ_CHEST3,
+    OBJ_CHEST3,
 };
 
-ObjDataStruct AllObjects[69] = {
-
-//         load fidx    minlvl  maxlvl  lvltype theme   AnimFlg Delay   AnimLen Width  Solid    Miss   Light    Break  Sel  Trap
-/*0     */{1,   0,      1,      4,      5,      -1,     1,      1,      26,     64,     1,      1,      0,      0,     0,       0}, // L1Braz
-/*1     */{1,   1,      1,      4,      5,      -1,     0,      1,      0,      64,     0,      0,      1,      0,     3,       1}, // L1Doors
-/*2     */{1,   1,      1,      4,      5,      -1,     0,      2,      0,      64,     0,      0,      1,      0,     3,       1}, // L1Doors
-/*3     */{3,   7,      1,      8,      0,      3,      1,      2,      11,     96,     1,      1,      0,      0,     0,       0}, // SkulFire
-/*4     */{1,   2,      1,      4,      5,      -1,     0,      1,      1,      96,     1,      1,      1,      0,     1,       1}, // Lever
-/*5     */{1,   3,      1,      16,     0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     1,       1}, // Chest1
-/*6     */{1,   4,      1,      16,     0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     1,       1}, // Chest2
-/*7     */{1,   16,     1,      16,     0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     1,       1}, // Chest3
-/*8     */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*9     */{3,   18,     0,      0,      0,      1,      1,      2,      4,      96,     1,      0,      1,      0,     0,       0}, // Candle2
-/*10    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*11    */{3,   5,      0,      0,      0,      3,      0,      2,      0,      96,     1,      1,      1,      0,     0,       0}, // Banner
-/*12    */{3,   5,      0,      0,      0,      3,      0,      1,      0,      96,     1,      1,      1,      0,     0,       0}, // Banner
-/*13    */{3,   5,      0,      0,      0,      3,      0,      3,      0,      96,     1,      1,      1,      0,     0,       0}, // Banner
-/*14    */{2,   6,      1,      4,      0,      -1,     0,      0,      1,      96,     1,      1,      1,      0,     0,       0}, // SkulPile
-/*15    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*16    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*17    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*18    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*19    */{2,   0,      0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,     0,       0}, // L1Braz
-/*20    */{2,   9,      0,      0,      0,      -1,     0,      1,      15,     96,     1,      0,      1,      1,     3,       0}, // CruxSk1
-/*21    */{2,   10,     0,      0,      0,      -1,     0,      1,      15,     96,     1,      0,      1,      1,     3,       0}, // CruxSk2
-/*22    */{2,   11,     0,      0,      0,      -1,     0,      1,      15,     96,     1,      0,      1,      1,     3,       0}, // CruxSk3
-/*23    */{1,   14,     5,      5,      0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     0,       0}, // Rockstan
-/*24    */{2,   15,     0,      0,      0,      -1,     0,      1,      0,      96,     1,      0,      1,      0,     0,       0}, // Angel
-/*25    */{2,   13,     0,      0,      0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     3,       0}, // Book2
-/*26    */{2,   17,     0,      0,      0,      -1,     1,      0,      10,     160,    1,      0,      0,      0,     0,       0}, // Burncros
-/*27    */{2,   19,     0,      0,      0,      -1,     1,      3,      6,      128,    1,      0,      1,      0,     0,       0}, // Nude2
-/*28    */{2,   20,     0,      0,      0,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     1,       1}, // Switch4
-/*29    */{1,   21,     1,      1,      0,      -1,     0,      1,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeM
-/*30    */{1,   21,     1,      1,      0,      6,      0,      2,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeM
-/*31    */{1,   21,     1,      1,      0,      6,      0,      3,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeM
-/*32    */{1,   21,     1,      1,      0,      6,      0,      4,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeM
-/*33    */{1,   22,     1,      1,      0,      6,      0,      1,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeW
-/*34    */{1,   22,     1,      1,      0,      6,      0,      2,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeW
-/*35    */{1,   22,     1,      1,      0,      6,      0,      3,      0,      128,    1,      0,      1,      0,     0,       0}, // TNudeW
-/*36    */{1,   23,     1,      1,      0,      -1,     0,      1,      0,      128,    1,      0,      1,      0,     0,       0}, // TSoul
-/*37    */{1,   23,     1,      1,      0,      -1,     0,      2,      0,      128,    1,      0,      1,      0,     0,       0}, // TSoul
-/*38    */{1,   23,     1,      1,      0,      -1,     0,      3,      0,      128,    1,      0,      1,      0,     0,       0}, // TSoul
-/*39    */{1,   23,     1,      1,      0,      -1,     0,      4,      0,      128,    1,      0,      1,      0,     0,       0}, // TSoul
-/*40    */{1,   23,     1,      1,      0,      -1,     0,      5,      0,      128,    1,      0,      1,      0,     0,       0}, // TSoul
-/*41    */{1,   13,     6,      6,      0,      -1,     0,      4,      0,      96,     1,      1,      1,      0,     3,       0}, // Book2
-/*42    */{1,   24,     5,      8,      2,      -1,     0,      1,      0,      64,     0,      0,      1,      0,     3,       1}, // L2Doors
-/*43    */{1,   24,     5,      8,      2,      -1,     0,      2,      0,      64,     0,      0,      1,      0,     3,       1}, // L2Doors
-/*44    */{1,   25,     5,      8,      2,      -1,     1,      1,      9,      96,     0,      1,      0,      0,     0,       0}, // WTorch4
-/*45    */{1,   26,     5,      8,      2,      -1,     1,      1,      9,      96,     0,      1,      0,      0,     0,       0}, // WTorch3
-/*46    */{1,   33,     5,      8,      2,      -1,     1,      1,      9,      96,     0,      1,      0,      0,     0,       0}, // WTorch1
-/*47    */{1,   32,     5,      8,      2,      -1,     1,      1,      9,      96,     0,      1,      0,      0,     0,       0}, // WTorch2
-/*48    */{1,   27,     1,      4,      5,      -1,     0,      1,      5,      128,    1,      1,      1,      0,     3,       1}, // Sarc
-/*49    */{2,   28,     1,      4,      5,      -1,     0,      1,      20,     96,     0,      1,      1,      0,     0,       0}, // Flame1
-/*50    */{2,   2,      1,      4,      5,      -1,     0,      1,      2,      96,     1,      1,      1,      0,     1,       1}, // Lever
-/*51    */{2,   31,     1,      4,      5,      -1,     1,      1,      10,     64,     1,      0,      1,      0,     0,       0}, // MiniWatr
-/*52    */{1,   12,     3,      4,      5,      -1,     0,      1,      0,      96,     1,      1,      1,      0,     3,       0}, // Book1
-/*53    */{1,   30,     1,      16,     0,      -1,     0,      1,      0,      64,     0,      1,      1,      0,     0,       0}, // Traphole
-/*54    */{1,   30,     1,      16,     0,      -1,     0,      2,      0,      64,     0,      1,      1,      0,     0,       0}, // Traphole
-/*55    */{2,   34,     0,      0,      0,      -1,     0,      1,      0,      96,     1,      0,      1,      0,     0,       0}, // BCase
-/*56    */{2,   36,     0,      0,      0,      -1,     0,      1,      0,      96,     1,      0,      1,      0,     0,       0}, // WeapStnd
-/*57    */{1,   37,     1,      4,      5,      0,      0,      1,      9,      96,     1,      1,      1,      1,     3,       0}, // Barrel
-/*58    */{1,   38,     1,      4,      5,      0,      0,      1,      10,     96,     1,      1,      1,      1,     3,       0}, // Barrelex
-/*59    */{3,   39,     1,      4,      5,      1,      0,      1,      11,     128,    0,      0,      1,      0,     3,       0}, // LShrineG
-/*60    */{3,   40,     1,      4,      5,      1,      0,      1,      11,     128,    0,      0,      1,      0,     3,       0}, // RShrineG
-/*61    */{3,   13,     0,      0,      0,      3,      0,      4,      0,      96,     1,      1,      1,      0,     3,       0}, // Book2
-/*62    */{3,   34,     0,      0,      0,      5,      0,      3,      0,      96,     0,      0,      1,      0,     3,       0}, // BCase
-/*63    */{3,   34,     0,      0,      0,      5,      0,      4,      0,      96,     0,      0,      1,      0,     3,       0}, // BCase
-/*64    */{3,   13,     0,      0,      0,      5,      0,      1,      0,      96,     1,      1,      1,      0,     3,       0}, // Book2
-/*65    */{3,   18,     0,      0,      0,      5,      1,      2,      4,      96,     1,      0,      1,      0,     0,       0}, // Candle2
-/*66    */{3,   41,     0,      0,      0,      7,      1,      2,      10,     96,     1,      1,      1,      0,     3,       0}, // BloodFnt
-/*67    */{3,   42,     0,      0,      0,      8,      0,      1,      0,      96,     1,      1,      1,      0,     1,       0}, // Decap
-/*68    */{-1,  0,      0,      0,      -1,     0,      0,      0,      0,      0,      0,      0,      0,      0,     0,       0}
-
+ObjDataStruct AllObjects[ALL_OBJECTS_SIZE] = {
+{OLOAD_YES  , OFILE_L1BRAZ  , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , TRUE , 1, 26, 64 , TRUE , TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_L1DOORS , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 0 , 64 , FALSE, FALSE, TRUE , FALSE, 3, TRUE , },
+{OLOAD_YES  , OFILE_L1DOORS , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 2, 0 , 64 , FALSE, FALSE, TRUE , FALSE, 3, TRUE , },
+{OLOAD_THEME, OFILE_SKULFIRE, 1, 8 , DTYPE_TOWN     , THEME_SKELROOM     , TRUE , 2, 11, 96 , TRUE , TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_LEVER   , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 1 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_YES  , OFILE_CHEST1  , 1, 16, DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_YES  , OFILE_CHEST2  , 1, 16, DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_YES  , OFILE_CHEST3  , 1, 16, DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_THEME, OFILE_CANDLE2 , 0, 0 , DTYPE_TOWN     , THEME_SHRINE       , TRUE , 2, 4 , 96 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_THEME, OFILE_BANNER  , 0, 0 , DTYPE_TOWN     , THEME_SKELROOM     , FALSE, 2, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_THEME, OFILE_BANNER  , 0, 0 , DTYPE_TOWN     , THEME_SKELROOM     , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_THEME, OFILE_BANNER  , 0, 0 , DTYPE_TOWN     , THEME_SKELROOM     , FALSE, 3, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_SKULPILE, 1, 4 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 1 , 96 , TRUE , TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_L1BRAZ  , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_CRUXSK1 , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 15, 96 , TRUE , FALSE, TRUE , TRUE , 3, FALSE, },
+{OLOAD_NO   , OFILE_CRUXSK2 , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 15, 96 , TRUE , FALSE, TRUE , TRUE , 3, FALSE, },
+{OLOAD_NO   , OFILE_CRUXSK3 , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 15, 96 , TRUE , FALSE, TRUE , TRUE , 3, FALSE, },
+{OLOAD_YES  , OFILE_ROCKSTAN, 5, 5 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_ANGEL   , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_BOOK2   , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_NO   , OFILE_BURNCROS, 0, 0 , DTYPE_TOWN     , THEME_NONE         , TRUE , 0, 10, 160, TRUE , FALSE, FALSE, FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_NUDE2   , 0, 0 , DTYPE_TOWN     , THEME_NONE         , TRUE , 3, 6 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_SWITCH4 , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_YES  , OFILE_TNUDEM  , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEM  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 2, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEM  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 3, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEM  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 4, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEW  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 1, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEW  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 2, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TNUDEW  , 1, 1 , DTYPE_TOWN     , THEME_TORTURE      , FALSE, 3, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TSOUL   , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TSOUL   , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 2, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TSOUL   , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 3, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TSOUL   , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 4, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TSOUL   , 1, 1 , DTYPE_TOWN     , THEME_NONE         , FALSE, 5, 0 , 128, TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_BOOK2   , 6, 6 , DTYPE_TOWN     , THEME_NONE         , FALSE, 4, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_YES  , OFILE_L2DOORS , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , FALSE, 1, 0 , 64 , FALSE, FALSE, TRUE , FALSE, 3, TRUE , },
+{OLOAD_YES  , OFILE_L2DOORS , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , FALSE, 2, 0 , 64 , FALSE, FALSE, TRUE , FALSE, 3, TRUE , },
+{OLOAD_YES  , OFILE_WTORCH4 , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , TRUE , 1, 9 , 96 , FALSE, TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_WTORCH3 , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , TRUE , 1, 9 , 96 , FALSE, TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_WTORCH1 , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , TRUE , 1, 9 , 96 , FALSE, TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_WTORCH2 , 5, 8 , DTYPE_CATACOMBS, THEME_NONE         , TRUE , 1, 9 , 96 , FALSE, TRUE , FALSE, FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_SARC    , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 5 , 128, TRUE , TRUE , TRUE , FALSE, 3, TRUE , },
+{OLOAD_NO   , OFILE_FLAME1  , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 20, 96 , FALSE, TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_LEVER   , 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 2 , 96 , TRUE , TRUE , TRUE , FALSE, 1, TRUE , },
+{OLOAD_NO   , OFILE_MINIWATR, 1, 4 , DTYPE_CATHEDRAL, THEME_NONE         , TRUE , 1, 10, 64 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_BOOK1   , 3, 4 , DTYPE_CATHEDRAL, THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_YES  , OFILE_TRAPHOLE, 1, 16, DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 64 , FALSE, TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_TRAPHOLE, 1, 16, DTYPE_TOWN     , THEME_NONE         , FALSE, 2, 0 , 64 , FALSE, TRUE , TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_BCASE   , 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_NO   , OFILE_WEAPSTND, 0, 0 , DTYPE_TOWN     , THEME_NONE         , FALSE, 1, 0 , 96 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_YES  , OFILE_BARREL  , 1, 4 , DTYPE_CATHEDRAL, THEME_BARREL       , FALSE, 1, 9 , 96 , TRUE , TRUE , TRUE , TRUE , 3, FALSE, },
+{OLOAD_YES  , OFILE_BARRELEX, 1, 4 , DTYPE_CATHEDRAL, THEME_BARREL       , FALSE, 1, 10, 96 , TRUE , TRUE , TRUE , TRUE , 3, FALSE, },
+{OLOAD_THEME, OFILE_LSHRINEG, 1, 4 , DTYPE_CATHEDRAL, THEME_SHRINE       , FALSE, 1, 11, 128, FALSE, FALSE, TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_RSHRINEG, 1, 4 , DTYPE_CATHEDRAL, THEME_SHRINE       , FALSE, 1, 11, 128, FALSE, FALSE, TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_BOOK2   , 0, 0 , DTYPE_TOWN     , THEME_SKELROOM     , FALSE, 4, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_BCASE   , 0, 0 , DTYPE_TOWN     , THEME_LIBRARY      , FALSE, 3, 0 , 96 , FALSE, FALSE, TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_BCASE   , 0, 0 , DTYPE_TOWN     , THEME_LIBRARY      , FALSE, 4, 0 , 96 , FALSE, FALSE, TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_BOOK2   , 0, 0 , DTYPE_TOWN     , THEME_LIBRARY      , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_CANDLE2 , 0, 0 , DTYPE_TOWN     , THEME_LIBRARY      , TRUE , 2, 4 , 96 , TRUE , FALSE, TRUE , FALSE, 0, FALSE, },
+{OLOAD_THEME, OFILE_BLOODFNT, 0, 0 , DTYPE_TOWN     , THEME_BLOODFOUNTAIN, TRUE , 2, 10, 96 , TRUE , TRUE , TRUE , FALSE, 3, FALSE, },
+{OLOAD_THEME, OFILE_DECAP   , 0, 0 , DTYPE_TOWN     , THEME_DECAPITATED  , FALSE, 1, 0 , 96 , TRUE , TRUE , TRUE , FALSE, 1, FALSE, },
+{OLOAD_STOP , OFILE_L1BRAZ  , 0, 0 , -1             , THEME_BARREL       , FALSE, 0, 0 , 0  , FALSE, FALSE, FALSE, FALSE, 0, FALSE, },
 };
 
 const char* ObjMasterLoadList[] = {

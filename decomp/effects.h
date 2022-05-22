@@ -29,8 +29,8 @@ enum _sfx_id
     IS_FCAP,
     IS_FHARM,
     IS_FLARM,
-    IS_FMAG,
-    IS_FMAG1,
+    IS_FLIPMAG,
+    IS_FLIPMAG1,
     IS_FPOT,
     IS_FRING,
     IS_FSCRL,
@@ -83,5 +83,11 @@ enum _sfx_id
     IS_WALLLOOP,
     IS_WALLSTRT,
 };
+
+//
+// functions
+//
+
+void PlayRndSFX(int psfx);
 
 #endif

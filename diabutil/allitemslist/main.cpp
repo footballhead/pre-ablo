@@ -1,6 +1,9 @@
+#include <decomp/enums.h>
 #include <decomp/itemdat.h>
 #include <decomp/monstdat.h>
+#include <decomp/objdat.h>
 #include <decomp/spells.h>
+#include <decomp/themes.h>
 
 #include <array>
 #include <cstdio>
@@ -338,6 +341,75 @@ char const* to_str(_monster_id mid) {
   return lookup[mid + 1];
 }
 
+char const* to_str(object_graphic_id ogid) {
+  static std::array lookup = {
+      "OFILE_L1BRAZ",   "OFILE_L1DOORS",  "OFILE_LEVER",    "OFILE_CHEST1",
+      "OFILE_CHEST2",   "OFILE_BANNER",   "OFILE_SKULPILE", "OFILE_SKULFIRE",
+      "OFILE_SKULSTIK", "OFILE_CRUXSK1",  "OFILE_CRUXSK2",  "OFILE_CRUXSK3",
+      "OFILE_BOOK1",    "OFILE_BOOK2",    "OFILE_ROCKSTAN", "OFILE_ANGEL",
+      "OFILE_CHEST3",   "OFILE_BURNCROS", "OFILE_CANDLE2",  "OFILE_NUDE2",
+      "OFILE_SWITCH4",  "OFILE_TNUDEM",   "OFILE_TNUDEW",   "OFILE_TSOUL",
+      "OFILE_L2DOORS",  "OFILE_WTORCH4",  "OFILE_WTORCH3",  "OFILE_SARC",
+      "OFILE_FLAME1",   "OFILE_PRSRPLT1", "OFILE_TRAPHOLE", "OFILE_MINIWATR",
+      "OFILE_WTORCH2",  "OFILE_WTORCH1",  "OFILE_BCASE",    "OFILE_BSHELF",
+      "OFILE_WEAPSTND", "OFILE_BARREL",   "OFILE_BARRELEX", "OFILE_LSHRINEG",
+      "OFILE_RSHRINEG", "OFILE_BLOODFNT", "OFILE_DECAP",
+  };
+  return lookup[ogid];
+}
+
+char const* to_str(object_load ol) {
+  static std::array lookup = {
+      "OLOAD_STOP",  // -1
+      "???",         // 0
+      "OLOAD_YES",  "OLOAD_NO", "OLOAD_THEME",
+  };
+  return lookup[ol + 1];
+}
+
+char const* to_str(dungeon_type dt) {
+  static std::array lookup = {
+      "-1",          "DTYPE_TOWN", "DTYPE_OLD_CATHEDRAL", "DTYPE_CATACOMBS",
+      "DTYPE_CAVES", "DTYPE_HELL", "DTYPE_CATHEDRAL",
+  };
+  return lookup[dt + 1];
+}
+
+char const* to_str(theme_id tid) {
+  static std::array lookup = {
+      "THEME_NONE",    // -1
+      "THEME_BARREL",  // 0
+      "THEME_SHRINE",        "THEME_MONSTPIT",    "THEME_SKELROOM",
+      "THEME_TREASURE",      "THEME_LIBRARY",     "THEME_TORTURE",
+      "THEME_BLOODFOUNTAIN", "THEME_DECAPITATED",
+  };
+  return lookup[tid + 1];
+}
+
+char const* to_str(object_id oid) {
+  static std::array lookup = {
+      "OBJ_L1LIGHT",   "OBJ_L1LDOOR",    "OBJ_L1RDOOR",   "OBJ_SKFIRE",
+      "OBJ_LEVER",     "OBJ_CHEST1",     "OBJ_CHEST2",    "OBJ_CHEST3",
+      "OBJ_CANDLE1",   "OBJ_CANDLE2",    "OBJ_CANDLEO",   "OBJ_BANNERL",
+      "OBJ_BANNERM",   "OBJ_BANNERR",    "OBJ_SKPILE",    "OBJ_SKSTICK1",
+      "OBJ_SKSTICK2",  "OBJ_SKSTICK3",   "OBJ_SKSTICK4",  "OBJ_SKSTICK5",
+      "OBJ_CRUX1",     "OBJ_CRUX2",      "OBJ_CRUX3",     "OBJ_STAND",
+      "OBJ_ANGEL",     "OBJ_BOOK2L",     "OBJ_BCROSS",    "OBJ_NUDEW2R",
+      "OBJ_SWITCHSKL", "OBJ_TNUDEM1",    "OBJ_TNUDEM2",   "OBJ_TNUDEM3",
+      "OBJ_TNUDEM4",   "OBJ_TNUDEW1",    "OBJ_TNUDEW2",   "OBJ_TNUDEW3",
+      "OBJ_TORTURE1",  "OBJ_TORTURE2",   "OBJ_TORTURE3",  "OBJ_TORTURE4",
+      "OBJ_TORTURE5",  "OBJ_BOOK2R",     "OBJ_L2LDOOR",   "OBJ_L2RDOOR",
+      "OBJ_TORCHL",    "OBJ_TORCHR",     "OBJ_TORCHL2",   "OBJ_TORCHR2",
+      "OBJ_SARC",      "OBJ_FLAMEHOLE",  "OBJ_FLAMELVR",  "OBJ_WATER",
+      "OBJ_BOOKLVR",   "OBJ_TRAPL",      "OBJ_TRAPR",     "OBJ_BOOKSHELF",
+      "OBJ_WEAPRACK",  "OBJ_BARREL",     "OBJ_BARRELEX",  "OBJ_SHRINEL",
+      "OBJ_SHRINER",   "OBJ_SKELBOOK",   "OBJ_BOOKCASEL", "OBJ_BOOKCASER",
+      "OBJ_BOOKSTAND", "OBJ_BOOKCANDLE", "OBJ_BLOODFTN",  "OBJ_DECAP",
+      "OBJ_NULL_68",
+  };
+  return lookup[oid];
+}
+
 std::string plt_to_str(int plt) {
   auto append_flag_with_or = [](std::string& str, std::string const& flag) {
     if (!str.empty()) {
@@ -383,6 +455,35 @@ std::string res_to_str(int res) {
   }
 
   return builder;
+}
+
+std::string attr_to_str(int uniq_attr) {
+  auto append_flag_with_or = [](std::string& str, std::string const& flag) {
+    if (!str.empty()) {
+      str += " | ";
+    }
+    str += flag;
+  };
+
+  std::string builder;
+  if (uniq_attr & UA_GROUP) append_flag_with_or(builder, "UA_GROUP");
+  if (uniq_attr & UA_HIT) append_flag_with_or(builder, "UA_HIT");
+  if (uniq_attr & UA_AC) append_flag_with_or(builder, "UA_AC");
+
+  if (builder.empty()) {
+    return "0";
+  }
+
+  return builder;
+}
+
+std::string treasure_to_str(int treasure) {
+  if (treasure & DROP_UNIQUE) {
+    return std::string{"DROP_UNIQUE | "} +
+           std::to_string(treasure & DROP_UNIQUE_MASK);
+  }
+
+  return std::to_string(treasure);
 }
 
 //
@@ -486,12 +587,6 @@ std::vector<std::string> to_row(MonsterData const& monster,
     return builder;
   };
 
-  auto to_hex = [](int i) -> std::string {
-    std::stringstream builder;
-    builder << "0x" << std::hex << i;
-    return builder.str();
-  };
-
   std::vector<std::string> builder;
   builder.push_back(std::to_string(monster.mAnimWidth));
   builder.push_back(std::to_string(monster.mImgSize));
@@ -525,7 +620,7 @@ std::vector<std::string> to_row(MonsterData const& monster,
   builder.push_back(std::to_string(monster.mArmorClass));
   builder.push_back(to_str(static_cast<_mc_id>(monster.mMonstClass)));
   builder.push_back(res_to_str(monster.mMagicRes));
-  builder.push_back(to_hex(monster.mTreasure));
+  builder.push_back(treasure_to_str(monster.mTreasure));
   builder.push_back(std::to_string(monster.mSelFlag));
   builder.push_back(std::to_string(monster.mExp));
   return builder;
@@ -544,9 +639,31 @@ std::vector<std::string> to_row(UniqMonstStruct const& monster,
   builder.push_back(std::to_string(monster.mMinDamage));
   builder.push_back(std::to_string(monster.mMaxDamage));
   builder.push_back(res_to_str(monster.mMagicRes));
-  builder.push_back(std::to_string(monster.mUniqAttr));
+  builder.push_back(attr_to_str(monster.mUnqAttr));
   builder.push_back(std::to_string(monster.mUnqVar1));
   builder.push_back(std::to_string(monster.mUnqVar2));
+  return builder;
+}
+
+std::vector<std::string> to_row(ObjDataStruct const& obj,
+                                diabutil::byte_vector const& diablo) {
+  std::vector<std::string> builder;
+  builder.push_back(to_str(static_cast<object_load>(obj.oload)));
+  builder.push_back(to_str(static_cast<object_graphic_id>(obj.ofindex)));
+  builder.push_back(std::to_string(obj.ominlvl));
+  builder.push_back(std::to_string(obj.omaxlvl));
+  builder.push_back(to_str(static_cast<dungeon_type>(obj.olvltype)));
+  builder.push_back(to_str(static_cast<theme_id>(obj.otheme)));
+  builder.push_back(bool_to_str(obj.oAnimFlag));
+  builder.push_back(std::to_string(obj.oAnimDelay));
+  builder.push_back(std::to_string(obj.oAnimLen));
+  builder.push_back(std::to_string(obj.oAnimWidth));
+  builder.push_back(bool_to_str(obj.oSolidFlag));
+  builder.push_back(bool_to_str(obj.oMissFlag));
+  builder.push_back(bool_to_str(obj.oLightFlag));
+  builder.push_back(bool_to_str(obj.oBreak));
+  builder.push_back(std::to_string(obj.oSelFlag));
+  builder.push_back(bool_to_str(obj.oTrapFlag));
   return builder;
 }
 
@@ -595,6 +712,8 @@ int main(int argc, char** argv) {
                      "monsterdata");
   pretty_print_table(read_table<UniqMonstStruct>(*file, 0xAF580, 72),
                      "UniqMonstStruct", "UniqMonst");
+  pretty_print_table(read_table<ObjDataStruct>(*file, 0xA9D78, 69),
+                     "ObjDataStruct", "AllObjects");
 
   return 0;
 }

@@ -1,6 +1,8 @@
 #ifndef __MISSILES_H__
 #define __MISSILES_H__
 
+#include <windows.h>
+
 //
 // defines
 //
@@ -16,28 +18,41 @@ enum missile_id
     MIS_ARROW = 0,
     MIS_FIREBOLT = 1,
     MIS_GUARDIAN = 2,
-    MIS_RNDTELEPORT = 3,
-    MIS_LIGHTBALL = 4,
+    MIS_RNDTELEPORT = 3, // phasing
+    MIS_LIGHTBALL = 4,   // nova
     MIS_FIREWALL = 5,
     MIS_FIREBALL = 6,
     MIS_LIGHTCTRL = 7,
+    MIS_LIGHTNING = 8,
+    MIS_MISEXP = 9,
     MIS_TOWN = 10,
     MIS_FLASH = 11,
     MIS_FLASH2 = 12,
     MIS_MANASHIELD = 13,
     MIS_FIREMOVE = 14,
-    MIS_SENTINAL = 15,
-    MIS_CHAIN = 0x10,
-    MIS_CHAIN2 = 0x11, // this is demo exclusive (check beta??)
-    MIS_TELEPORT = 0x1B,
-    MIS_FARROW = 0x1C,
-    MIS_DOOMSERP = 0x1D,
-    MIS_STONE = 0x1F,
-    MIS_INVISIBL = 0x21,
-    MIS_GOLEM = 0x22,
-    MIS_ETHEREALIZE = 0x23,
-    MIS_BLODBUR = 0x24,
-    MIS_BOOM = 0x25,
+    MIS_SENTINAL = 15, // same as guardian
+    MIS_CHAIN = 16,
+    MIS_CHAIN2 = 17,  // this is demo exclusive (check beta??)
+    MIS_BLOOD = 18,   // TODO does anyone use?
+    MIS_BONE = 19,    // TODO does anyone use?
+    MIS_METLHIT = 20, // TODO does anyone use?
+    MIS_RHINO = 21,
+    MIS_MAGMABALL = 22,
+    MIS_LIGHTCTRL2 = 23,
+    MIS_LIGHTNING2 = 24,
+    MIS_FLARE = 25,
+    MIS_MISEXP2 = 26,
+    MIS_TELEPORT = 27,
+    MIS_FARROW = 28,
+    MIS_DOOMSERP = 29,
+    MIS_FIREWALLA = 30, // TODO: who makes this?
+    MIS_STONE = 31,
+    MIS_32 = 32,          // TODO: what is this? given that mindmace is still loaded maybe it's mindmace?
+    MIS_INVISIBL = 33,    // does nothing (broken MIS_STONE)
+    MIS_GOLEM = 34,       // does nothing (broken MIS_STONE)
+    MIS_ETHEREALIZE = 35, // does nothing (broken MIS_STONE)
+    MIS_BLODBUR = 36,
+    MIS_BOOM = 37,
 };
 
 //
@@ -60,12 +75,12 @@ struct MissileStruct
     int _mityoff;
     int _mimfnum;
     int _miDelFlag;
-    int _miFlags;
-    int _miAnimData;
-    int anonymous_7;
-    int anonymous_8;
+    int _miAnimFlags;
+    BYTE *_miAnimData;
+    int _miAnimDelay;
+    int _miAnimCnt;
     int _miAnimLen;
-    int anonymous_9;
+    int _miAnimAdd;
     int _miAnimFrame;
     int _miAnimWidth;
     int _miAnimWidth2;
@@ -97,6 +112,11 @@ struct MissileStruct
 extern int nummissiles;
 extern int missileactive[MAXMISSILES];
 extern MissileStruct missile[MAXMISSILES];
+
+BYTE *pMagballCels[8];
+BYTE *pThinLghningCel;
+BYTE *pFlareCel;
+BYTE *pFlarexpCel;
 
 //
 // functions

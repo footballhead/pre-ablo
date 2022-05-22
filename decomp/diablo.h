@@ -18,6 +18,8 @@ extern char fileLoadPrefix[64];
 extern BOOL cheat_mode;
 extern BOOL gbActive;
 extern BOOL shouldStopPaintTimer;
+extern BOOL demo_mode;
+extern BOOL debug_mode;
 
 //
 // functions
