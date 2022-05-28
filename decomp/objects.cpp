@@ -792,7 +792,7 @@ static void AddFlameTrap(int i)
 static void AddFlameLvr(int i)
 {
     object[i]._oVar1 = trapid;
-    object[i]._oVar2 = 49; // MIS_FLAMEC
+    object[i]._oVar2 = 49;
 }
 
 // .text:0045A419

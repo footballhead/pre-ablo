@@ -47,19 +47,26 @@ enum missile_id
     MIS_DOOMSERP = 29,
     MIS_FIREWALLA = 30, // TODO: who makes this?
     MIS_STONE = 31,
-    MIS_32 = 32,          // TODO: what is this? given that mindmace is still loaded maybe it's mindmace?
+    MIS_32 = 32,          // TODO: what is this?
     MIS_INVISIBL = 33,    // does nothing (broken MIS_STONE)
     MIS_GOLEM = 34,       // does nothing (broken MIS_STONE)
     MIS_ETHEREALIZE = 35, // does nothing (broken MIS_STONE)
     MIS_BLODBUR = 36,
-    MIS_BOOM = 37,
+    MIS_BOOM = 37, // Apocalypse
+};
+
+enum missile_resistance
+{
+    MISR_NONE = 0,
+    MISR_FIRE = 1,
+    MISR_LIGHTNING = 2,
+    MISR_MAGIC = 3,
 };
 
 //
 // structs
 //
 
-#pragma pack(push, 8)
 struct MissileStruct
 {
     int _mitype;
@@ -87,7 +94,7 @@ struct MissileStruct
     int _miLightFlag;
     int _miPreFlag;
     int _miUniqTrans;
-    int _mirange;
+    int _mirange; // Can either mean "how far the missile can travel" or "how long the effect lasts"; depends on the spell specifically
     int _misource;
     int _micaster;
     int _midam;
@@ -103,7 +110,6 @@ struct MissileStruct
     int _miVar7;
     int _miVar8;
 };
-#pragma pack(pop)
 
 //
 // variables
@@ -112,11 +118,10 @@ struct MissileStruct
 extern int nummissiles;
 extern int missileactive[MAXMISSILES];
 extern MissileStruct missile[MAXMISSILES];
-
-BYTE *pMagballCels[8];
-BYTE *pThinLghningCel;
-BYTE *pFlareCel;
-BYTE *pFlarexpCel;
+extern BYTE *pMagballCels[8];
+extern BYTE *pThinLghningCel;
+extern BYTE *pFlareCel;
+extern BYTE *pFlarexpCel;
 
 //
 // functions

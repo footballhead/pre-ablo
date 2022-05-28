@@ -3,7 +3,7 @@
 #ifndef __ENUMS_H__
 #define __ENUMS_H__
 
- enum dungeon_type
+enum dungeon_type
 {
     DTYPE_TOWN = 0x0,
     DTYPE_OLD_CATHEDRAL = 0x1,
@@ -43,18 +43,6 @@ enum game_mode
     MODE_INTRO_VID = 0xC,
     MODE_DEMO_END = 0xD,
     MODE_PROGRESS = 0xE,
-};
-
-enum dflag
-{
-    BFLAG_MISSILE = 0x01,
-    BFLAG_VISIBLE = 0x02,
-    BFLAG_DEAD_PLAYER = 0x04,
-    BFLAG_POPULATED = 0x08,
-    BFLAG_MONSTLR = 0x10,
-    BFLAG_PLAYERLR = 0x20,
-    BFLAG_LIT = 0x40,
-    BFLAG_EXPLORED = 0x80,
 };
 
 #endif

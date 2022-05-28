@@ -1,7 +1,7 @@
 #include "palette.h"
 
 #include "diablo.h"
-#include "storm.h"
+#include "storm/storm.h"
 
 #include <stdio.h>
 

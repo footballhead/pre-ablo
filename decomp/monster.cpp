@@ -2,12 +2,16 @@
 
 #include "debug.h"
 #include "diablo.h"
+#include "enums.h"
 #include "engine.h"
 #include "gendung.h"
 #include "missiles.h"
+#include "player.h"
 #include "quests.h"
 
 #include <stdio.h>
+
+void PlaySFX();
 
 //
 // Initialized variables (.data:004A2040)
@@ -99,7 +103,7 @@ void InitMonsterTRN(int monst, BOOL special)
         xor     eax, eax
     top:
         mov     al, [esi]
-        cmp     al, FFh
+        cmp     al, 255
         jnz     next
         mov     [esi], ah ; // If (*f == 255) { *f = 0; } (AH is 0 due to xor eax, eax)
     next:
@@ -308,14 +312,14 @@ void InitMonsterGFX()
 // ClearMVars	00000000004019B0
 void ClearMVars(int i)
 {
-	monster[i]._mVar1 = 0;
-	monster[i]._mVar2 = 0;
-	monster[i]._mVar3 = 0;
-	monster[i]._mVar4 = 0;
-	monster[i]._mVar5 = 0;
-	monster[i]._mVar6 = 0;
-	monster[i]._mVar7 = 0;
-	monster[i]._mVar8 = 0;
+    monster[i]._mVar1 = 0;
+    monster[i]._mVar2 = 0;
+    monster[i]._mVar3 = 0;
+    monster[i]._mVar4 = 0;
+    monster[i]._mVar5 = 0;
+    monster[i]._mVar6 = 0;
+    monster[i]._mVar7 = 0;
+    monster[i]._mVar8 = 0;
 }
 
 // InitMonster	0000000000401A8E
@@ -330,11 +334,50 @@ void ClearMVars(int i)
 // StartPlacingMonsters	0000000000403095
 // InitMonsters	0000000000403177
 // SetMapMonsters	000000000040329B
-// DeleteMonster	00000000004035FB
+
+// .text:004035FB
+void DeleteMonster(int i)
+{
+    int temp;
+
+    nummonsters--;
+    temp = monstactive[nummonsters];
+    monstactive[nummonsters] = monstactive[i];
+    monstactive[i] = temp;
+}
+
 // AddMonster	000000000040364A
 // NewMonsterAnim	000000000040373E
 // M_Enemy	000000000040380E
+
 // M_CheckEFlag	0000000000403973
+void M_CheckEFlag(int i)
+{
+    int j;
+    int f;
+    WORD *m;
+    int x;
+    int y;
+
+    x = monster[i]._mx - 1;
+    y = monster[i]._my + 1;
+    f = 0;
+    m = dpiece_defs_map_2[x][y].mt;
+    // j < 10 beacuse there are 10 microtiles per tile in dungeon?
+    // j = 2 to ignore the first two floor microtiles?
+    for (j = 2; j < 10; j++)
+    {
+        f |= m[j];
+    }
+
+    if (f | dSpecial[x][y])
+        monster[i]._meflag = TRUE;
+    else
+    {
+        monster[i]._meflag = FALSE;
+    }
+}
+
 // M_StartStand	0000000000403A64
 // M_StartDelay	0000000000403BAB
 // M_StartSpStand	0000000000403BFF
@@ -354,28 +397,120 @@ void ClearMVars(int i)
 // M_StartHeal	00000000004053D3
 // M_ChangeLightOffset	0000000000405468
 // M_DoWalk	0000000000405565
+BOOL M_DoWalk(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoWalk2	0000000000405821
+BOOL M_DoWalk2(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoWalk3	0000000000405A4A
+BOOL M_DoWalk3(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_TryH2HHit	0000000000405D7F
 // M_DoAttack	000000000040641F
+BOOL M_DoAttack(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoRAttack	00000000004066ED
+BOOL M_DoRAttack(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoRSpAttack	0000000000406859
+BOOL M_DoRSpAttack(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoSAttack	00000000004069CB
+BOOL M_DoSAttack(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoFadein	0000000000406ADF
+BOOL M_DoFadein(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoFadeout	0000000000406B53
+BOOL M_DoFadeout(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoHeal	0000000000406BC9
+BOOL M_DoHeal(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_Teleport	0000000000406C72
 // M_DoGotHit	0000000000406E63
+BOOL M_DoGotHit(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoDeath	0000000000406EDD
+BOOL M_DoDeath(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoSpStand	0000000000407181
+BOOL M_DoSpStand(int i)
+{
+    // TODO
+    return FALSE;
+}
 // M_DoDelay	0000000000407237
-// M_DoStone	000000000040736F
+BOOL M_DoDelay(int i)
+{
+    // TODO
+    return FALSE;
+}
+
+// .text:0040736F
+BOOL M_DoStone(int i)
+{
+    // Don't update the monster, which makes them act like they're frozen.
+    //
+    // Remove the enemy if they run out of health. This is in contrast to other
+    // ways of death which create a dead body.
+    //
+    // If this was caused by casting stone curse then MIS_STONE will handle
+    // creating the shatter effect.
+    if (monster[i]._mhitpoints == 0)
+    {
+        dMonster[monster[i]._mx][monster[i]._my] = 0;
+        monster[i]._mDelFlag = TRUE;
+    }
+    return FALSE;
+}
+
 // M_WalkDir	00000000004073FB
 // GroupUnity	00000000004075E4
+void GroupUnity(int i)
+{
+    // TODO
+}
 // M_CallWalk	0000000000407A10
-// M_PathWalk	0000000000407C1A
+// M_DumbWalk	0000000000407C1A
 // M_RoundWalk	0000000000407C59
-// __dc_M_Face	0000000000407D84
+// M_Face	0000000000407D84    dead code
 
 // MAI_Zombie	0000000000407E52
 void MAI_Zombie(int i)
@@ -418,23 +553,37 @@ void MAI_Cleaver(int i)
 {
     // TODO
 }
+
 // MAI_Round	00000000004093C0
+void MAI_Round(int i, BOOL special)
+{
+    // TODO
+}
+
 // MAI_GoatMc	0000000000409809
 void MAI_GoatMc(int i)
 {
-    // TODO
+    MAI_Round(i, TRUE);
 }
+
 // MAI_Ranged	000000000040982C
-// MAI_GoatBow	0000000000409A55
+static void MAI_Ranged(int i, int missile_type)
+{
+    // tODO
+}
+
+// .text:00409A55
 void MAI_GoatBow(int i)
 {
-    // TODO
+    MAI_Ranged(i, MIS_ARROW);
 }
-// MAI_Succ	0000000000409A75
+
+// .text:00409A75
 void MAI_Succ(int i)
 {
-    // TODO
+    MAI_Ranged(i, MIS_FLARE);
 }
+
 // MAI_Scav	0000000000409A98
 void MAI_Scav(int i)
 {
@@ -445,22 +594,31 @@ void MAI_Garg(int i)
 {
     // TODO
 }
+
 // MAI_RoundRanged	000000000040A04A
-// MAI_Magma	000000000040A5B6
+void MAI_RoundRanged(int i, int missile_type)
+{
+    // TODO
+}
+
+// .text:0040A5B6
 void MAI_Magma(int i)
 {
-    // TODO
+    MAI_RoundRanged(i, MIS_MAGMABALL);
 }
-// MAI_Storm	000000000040A5D9
+
+// .text:0040A5D9
 void MAI_Storm(int i)
 {
-    // TODO
+    MAI_RoundRanged(i, MIS_LIGHTCTRL2);
 }
+
 // MAI_SkelKing	000000000040A5FC
 void MAI_SkelKing(int i)
 {
     // TODO
 }
+
 // MAI_Rhino	000000000040AB24
 void MAI_Rhino(int i)
 {
@@ -468,6 +626,159 @@ void MAI_Rhino(int i)
 }
 
 // ProcessMonsters	000000000040B08A
+void ProcessMonsters()
+{
+    BOOL raflag;
+    int i;
+    int mx;
+    int my;
+    int mi;
+
+    for (int i = 0; i < nummonsters; i++)
+    {
+        mi = monstactive[i];
+        raflag = 0;
+
+        // Regenerate monster health based on its level
+        // As much as this decomp looks weird I think it's true to the assembly:
+        //   mov     eax, monster._mhitpoints[eax*4]
+        //   and     eax, 0FFFFFFC0h
+        //   xor     ecx, ecx
+        //   and     ecx, 0FFFFFFC0h
+        //   cmp     eax, ecx
+        //   jle     loc_40B144
+        if (monster[mi]._mmaxhp > monster[mi]._mhitpoints && (monster[mi]._mhitpoints & 0xFFFFFFC0) > (0 & 0xFFFFFFC0))
+        {
+            monster[mi]._mhitpoints += monster[mi].mLevel;
+        }
+
+        mx = monster[mi]._mx;
+        my = monster[mi]._my;
+
+        // Devilution checks BFLAG_VISIBLE instead...
+        if (dFlags[mx][my] & BFLAG_LIT && monster[mi]._msquelch == 0 && monster[mi].MType->mtype == MT_CLEAVER)
+        {
+            PlaySFX();
+        }
+
+        if (dFlags[mx][my] & BFLAG_LIT)
+        {
+            monster[mi]._msquelch = UCHAR_MAX;
+            monster[mi]._lastx = plr[monster[mi]._menemy]._pfutx;
+            monster[mi]._lasty = plr[monster[mi]._menemy]._pfuty;
+        }
+        else if (monster[mi]._msquelch != 0)
+        {
+            monster[mi]._msquelch--;
+        }
+
+        do
+        {
+            AiProc[monster[mi]._mAi](mi);
+            switch (monster[mi]._mmode)
+            {
+            case MM_STAND:
+                monster[mi]._mVar2++;
+                raflag = FALSE;
+                break;
+            case MM_WALK:
+                raflag = M_DoWalk(mi);
+                break;
+            case MM_WALK2:
+                raflag = M_DoWalk2(mi);
+                break;
+            case MM_WALK3:
+                raflag = M_DoWalk3(mi);
+                break;
+            case MM_ATTACK:
+                raflag = M_DoAttack(mi);
+                break;
+            case MM_RATTACK:
+                raflag = M_DoRAttack(mi);
+                break;
+            case MM_GOTHIT:
+                raflag = M_DoGotHit(mi);
+                break;
+            case MM_DEATH:
+                raflag = M_DoDeath(mi);
+                break;
+            case MM_SATTACK:
+                raflag = M_DoSAttack(mi);
+                break;
+            case MM_FADEIN:
+                raflag = M_DoFadein(mi);
+                break;
+            case MM_FADEOUT:
+                raflag = M_DoFadeout(mi);
+                break;
+            case MM_SPSTAND:
+                raflag = M_DoSpStand(mi);
+                break;
+            case MM_RSPATTACK:
+                raflag = M_DoRSpAttack(mi);
+                break;
+            case MM_DELAY:
+                raflag = M_DoDelay(mi);
+                break;
+            case MM_CHARGE:
+                raflag = FALSE;
+                break;
+            case MM_STONE:
+                raflag = M_DoStone(mi);
+                break;
+            case MM_HEAL:
+                raflag = M_DoHeal(mi);
+                break;
+            }
+
+            if (raflag)
+            {
+                GroupUnity(mi);
+            }
+        } while (raflag);
+
+        if (monster[mi]._mmode != MM_STONE)
+        {
+            monster[mi]._mAnimCnt++;
+            if (monster[mi]._mAnimDelay <= monster[mi]._mAnimCnt)
+            {
+                monster[mi]._mAnimCnt = 0;
+                if (monster[mi]._mFlags & MFLAG_LOCK_ANIMATION)
+                {
+                    monster[mi]._mAnimFrame--;
+                    if (monster[mi]._mAnimFrame == 0)
+                    {
+                        monster[mi]._mAnimFrame = monster[mi]._mAnimLen;
+                    }
+                }
+                else if (!(monster[mi]._mFlags & MFLAG_ALLOW_SPECIAL))
+                {
+                    monster[mi]._mAnimFrame++;
+                    if (monster[mi]._mAnimLen < monster[mi]._mAnimFrame)
+                    {
+                        monster[mi]._mAnimFrame = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    i = 0;
+    while (i < nummonsters)
+    {
+        mi = monstactive[i];
+        if (monster->_mDelFlag)
+        {
+            DeleteMonster(i);
+            i = 0;
+        }
+        else
+        {
+            i++;
+        }
+    }
+}
+
 // FreeMonsters	000000000040B67A
 // DirOK	000000000040B876
 // LineClear	000000000040BDB5

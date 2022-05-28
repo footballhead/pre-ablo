@@ -336,7 +336,7 @@ void PrintItemPower(char plidx, ItemStruct x)
         sprintf(tempstr, "Decreases light radius %i%%", light);
         break;
     case IPL_INVIS:
-        sprintf(tempstr, "Invisibility (NW)", light);
+        sprintf(tempstr, "Invisibility (NW)");
         break;
     case IPL_MULT_ARROWS:
         sprintf(tempstr, "Increase arrows per shot (NW)");

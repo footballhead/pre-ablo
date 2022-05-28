@@ -17,6 +17,7 @@
 // variables
 //
 
+extern int stonendx;
 extern int spurtndx;
 
 //

@@ -30,11 +30,13 @@ cl /c gmenu.cpp
 cl /c help.cpp
 cl /c interfac.cpp
 cl /c inv.cpp
+cl /c itemdat.cpp
 cl /c items.cpp
 cl /c lighting.cpp
 cl /c minitext.cpp
 cl /c missiles.cpp
 cl /c monst2.cpp
+cl /c monstdat.cpp
 cl /c monster.cpp
 cl /c mopaq.cpp
 cl /c multi.cpp

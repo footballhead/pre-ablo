@@ -88,7 +88,7 @@ void CelApplyTrans(BYTE *p, BYTE *ttbl, int nCel)
             sub     edx, [ebx]
             sub     edx, 10 ; // Size is (next offset) - (this offset) - (skip header size)
 
-            move    edi, esi
+            mov     edi, esi
             mov     ebx, ttbl // Used in XLAT instruction below
 
         top:

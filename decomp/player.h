@@ -70,8 +70,8 @@ struct PlayerStruct
     int walkPathRelated;
     int _px;
     int _py;
-    int anonymous_7;
-    int anonymous_8;
+    int _pfutx;
+    int _pfuty;
     int _pxoff;
     int _pyoff;
     int anonymous_9;

@@ -21,6 +21,23 @@
 // minitile buffer around the perimeter of the level
 
 //
+// enums
+//
+
+// TODO: Copied from Devilution, verify
+enum dflag
+{
+    BFLAG_MISSILE = 0x01,
+    BFLAG_VISIBLE = 0x02,
+    BFLAG_DEAD_PLAYER = 0x04,
+    BFLAG_POPULATED = 0x08,
+    BFLAG_MONSTLR = 0x10,
+    BFLAG_PLAYERLR = 0x20,
+    BFLAG_LIT = 0x40,
+    BFLAG_EXPLORED = 0x80,
+};
+
+//
 // structs
 //
 
@@ -49,18 +66,19 @@ struct ScrollStruct
 extern BYTE dungeon[DMAXX][DMAXY];
 extern BYTE pdungeon[DMAXX][DMAXY];
 extern char dObject[MAXDUNX][MAXDUNY];
-extern char dPiece[MAXDUNX][MAXDUNY];
+extern int dPiece[MAXDUNX][MAXDUNY];
 extern char dFlags[MAXDUNX][MAXDUNY];
-extern char dMonster[MAXDUNX][MAXDUNY];
+extern int dMonster[MAXDUNX][MAXDUNY];
 extern char dSpecial[MAXDUNX][MAXDUNY];
 extern char dPlayer[MAXDUNX][MAXDUNY];
 extern char dMissile[MAXDUNX][MAXDUNY];
-extern BOOLEAN nSolidTable[MAXTILES + 1];
-extern BOOLEAN nTrapTable[MAXTILES + 1];
+extern BOOL nSolidTable[MAXTILES + 1];
+extern BOOL nTrapTable[MAXTILES + 1];
 extern BYTE *pMegaTiles;
 extern int currlevel;
 extern int leveltype;
 extern MICROS dpiece_defs_map_1[MAXDUNX * MAXDUNY];
+extern MICROS dpiece_defs_map_2[MAXDUNX][MAXDUNY];
 extern int setpc_x;
 extern int setpc_y;
 extern int setpc_w;
