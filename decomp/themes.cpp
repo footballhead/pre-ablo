@@ -4,9 +4,8 @@
 
 #include "engine.h"
 #include "enums.h"
+#include "gendung.h"
 #include "objects.h"
-
-extern int leveltype;
 
 //
 // defines

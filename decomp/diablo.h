@@ -20,6 +20,8 @@ extern BOOL gbActive;
 extern BOOL shouldStopPaintTimer;
 extern BOOL demo_mode;
 extern BOOL debug_mode;
+extern char savedir_abspath[64];
+extern int force_redraw;
 
 //
 // functions

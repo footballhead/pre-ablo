@@ -44,10 +44,6 @@
 //  #define VIEWPORT_WIDTH SCREEN_WIDTH
 #define VIEWPORT_HEIGHT (SCREEN_HEIGHT - PANEL_HEIGHT)
 
-#define UNLOCK_AND_FREE(x) \
-    GlobalUnlock(GlobalHandle(x)); \
-    GlobalFree(GlobalHandle(x));
-
 #define COL_RED 2
 
 #endif

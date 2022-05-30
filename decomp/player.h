@@ -37,7 +37,6 @@ enum plr_class
 // structs
 //
 
-#pragma pack(push, 8)
 struct PlayerStruct
 {
     int _pmode;
@@ -233,7 +232,6 @@ struct PlayerStruct
     BYTE *_pDData;
     BYTE *_pBData;
 };
-#pragma pack(pop)
 
 //
 // variables
@@ -248,8 +246,8 @@ extern int myplr;
 //
 
 void AddPlrExperience(int pnum, int lvl, int exp);
-void SyncPlrKill(int pnum);
 void StartPlrHit(int pnum);
+void SyncPlrKill(int pnum);
 void ModifyPlrStr(int p, int l);
 void ModifyPlrMag(int p, int l);
 void ModifyPlrDex(int p, int l);

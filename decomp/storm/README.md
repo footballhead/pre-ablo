@@ -1,17 +1,19 @@
 # STORM
 
-Tools and stuff related to stormlib.
+Tools and stuff related to using demo storm.dll.
 
-storm.def is incomplete and still requires manual adjustment.
+WARNING: storm.def is incomplete! It still requires manual adjustment!
 
 ## Header
 
-storm.h is the header of functions used by the demo decomp
+storm.h is the header of functions used by the demo decomp.
+
+Most of it is copy-pasted from Devilution.
 
 ## Library
 
-We don't have an original storm.lib (and probably never will) so we can't link
-against storm.dll and the decomp will never compile...
+We don't have an original storm.lib (and probably never will) so decomp can't
+link against storm.dll...
 
 ... Except we can make our own .lib based on .dll contents! The demo Storm.dll
 includes both names and oridinals.
@@ -26,11 +28,11 @@ Based on https://stackoverflow.com/questions/9946322/how-to-generate-an-import-l
 
 I have tools for 1 and 2. (See next section) 3 must be run manually.
 
-Unfortunately, step 2 is harder than it appears. Storm functions are declared
-`__stdcall` which means name decoration happens. (Reference:
-https://docs.microsoft.com/en-us/cpp/cpp/stdcall?view=msvc-170) In a perfect
-world, we just rearrange the dumpbin output. However, now we have to postfix
-names with `@XYZ` where XYZ is the number of bytes that the callerpushes onto
+Unfortunately, step 2 is slighty harder than it appears. Storm functions are
+declared `__stdcall` which means name decoration happens (reference:
+https://docs.microsoft.com/en-us/cpp/cpp/stdcall?view=msvc-170). In a perfect
+world, we'd just rearrange the dumpbin output. However, now we have to postfix
+names with `@XYZ` where XYZ is the number of bytes that the caller pushes onto
 the stack. (The prefix is handled by the compiler for ??? reasons).
 
 (I'm unsure why Devilution doesn't have this problem.)
@@ -39,7 +41,7 @@ the stack. (The prefix is handled by the compiler for ??? reasons).
 
 ### make_storm_def.py
 
-This runs dumpbin on storm.dll and massage the output to produce a base .DEF.
+This runs dumpbin on storm.dll and massages the output to produce a base .DEF.
 It does not include name-decoration!
 
 You shouldn't need to run this. The .DEF included in this repo has manual

@@ -3,6 +3,12 @@
 
 #include <windows.h>
 
+#include "../directx/DDRAW.H"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef STORMAPI
 #define STORMAPI __stdcall
 #endif
@@ -45,5 +51,9 @@ SDrawManualInitialize(
      LPDIRECTDRAWSURFACE backSurface,
      LPDIRECTDRAWPALETTE ddPalette,
      HPALETTE hPalette);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

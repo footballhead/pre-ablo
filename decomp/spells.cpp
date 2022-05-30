@@ -1,5 +1,6 @@
 #include "spells.h"
 
+#include "control.h"
 #include "cursor.h"
 #include "defines.h"
 #include "dead.h"
@@ -8,15 +9,10 @@
 #include "enums.h"
 #include "gendung.h"
 #include "inv.h"
+#include "lighting.h"
 #include "missiles.h"
 #include "monster.h"
 #include "player.h"
-
-void CalcPlrItemVals(int pnum);
-
-extern BOOL drawmanaflag;
-extern BOOL drawhpflag;
-extern BYTE vCrawlTable[23][30];
 
 //
 // initialized vars (.data:004B8218)
@@ -1534,8 +1530,7 @@ void ProcessSpells()
 // .text:0045787C
 void FreeSpells()
 {
-    GlobalUnlock(GlobalHandle(pSpellLghningCel));
-    GlobalFree(GlobalHandle(pSpellLghningCel));
+    MemFreeDbg(pSpellLghningCel);
 }
 
 // .text:004578B2

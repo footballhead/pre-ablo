@@ -28,8 +28,7 @@ void LoadDebugGFX()
 // .text:0044AB9F
 void FreeDebugGFX()
 {
-    GlobalUnlock(GlobalHandle(pSquareCels));
-    GlobalFree(GlobalHandle(pSquareCels));
+    MemFreeDbg(pSquareCels);
 }
 
 // .text:000000000044ABD5
@@ -73,7 +72,7 @@ void CaptureScreen(int pic_idx, BYTE *palette)
     // 0x100000 is ~1MB. I think was chosen as an arbitrarily big number to
     // ensure there's enough space. That gives ~3 bytes per pixel at 640x480
     // which, given that we're compressing the data, is way more than enough!
-    lpBuffer = (BYTE *)GlobalLock(GlobalAlloc(0, 0x100000));
+    lpBuffer = (BYTE *)DiabloAllocPtr(0x100000);
     __asm {
             mov     edi, lpBuffer
 
@@ -120,11 +119,11 @@ void CaptureScreen(int pic_idx, BYTE *palette)
             stosb
             mov     ax, SCREEN_WIDTH // Bytes per scan-line
             stosw
-            xor     al, al // Rest of header (60 bytes) is 0
-           // This means    PaletteType = 0
-           //               HorzScreenSize = 0
-           //               VertScreenSize = 0
-           //               Reserved2[54] = {0}
+            xor     al, al  // Rest of header (60 bytes) is 0
+            // This means    PaletteType = 0
+            //               HorzScreenSize = 0
+            //               VertScreenSize = 0
+            //               Reserved2[54] = {0}
             mov     ecx, 60
             rep stosb
 
@@ -213,6 +212,5 @@ void CaptureScreen(int pic_idx, BYTE *palette)
     _lwrite(hFile, (LPCCH)lpBuffer, dwBytes);
     _lclose(hFile);
 
-    GlobalUnlock(GlobalHandle(lpBuffer));
-    GlobalFree(GlobalHandle(lpBuffer));
+    MemFreeDbg(lpBuffer);
 }

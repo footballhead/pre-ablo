@@ -5,11 +5,14 @@
 #include "control.h"
 #include "cursor.h"
 #include "defines.h"
+#include "diablo.h"
+#include "effects.h"
 #include "engine.h"
 #include "enums.h"
 #include "error.h"
 #include "gendung.h"
 #include "items.h"
+#include "lighting.h"
 #include "monster.h"
 #include "minitext.h"
 #include "missiles.h"
@@ -18,20 +21,6 @@
 #include "quests.h"
 #include "stores.h"
 #include "themes.h"
-
-extern int force_redraw; // interfac.cpp?
-extern ItemStruct golditem;
-extern BOOL lightflag;
-extern BYTE* pLevelPieces;
-
-void PlayRndSFX(int psfx); // effects.cpp
-void DoLighting(int nXPos, int nYPos, int nRadius, int Lnum);
-void CreateRndItem(int x, int y);
-void CreateRndUseful(int x, int y);
-void SpawnSkeleton(int x, int y);
-void CreateTypeItem(int x, int y, BOOL onlygood, int itype, int imisc);
-int AddLight(int x, int y, int r);
-void AddUnLight(int i);
 
 //
 // initialized data (.data:004B8A50)
@@ -141,7 +130,7 @@ void FreeObjectGFX()
 
     for (i = 0; i < numobjfiles; i++)
     {
-        UNLOCK_AND_FREE(pObjCels[i])
+        MemFreeDbg(pObjCels[i])
     }
 }
 

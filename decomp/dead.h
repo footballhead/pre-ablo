@@ -5,6 +5,8 @@
 // defines
 //
 
+#define MAXDEAD 31
+
 //
 // enums
 //
@@ -12,6 +14,15 @@
 //
 // structs
 //
+
+struct DeadStruct
+{
+    unsigned char *_deadData[8];
+    int _deadFrame;
+    int _deadWidth;
+    int _deadWidth2;
+    char _deadtrans;
+};
 
 //
 // variables

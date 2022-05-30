@@ -91,10 +91,21 @@ struct ItemStruct
 #pragma pack(pop)
 
 //
+// variables
+//
+
+BYTE ItemCAnimTbl[];
+int ItemInvSnds[];
+
+//
 // functions
 //
 
 void CalcPlrInv(int p);
+void CalcPlrItemVals(int pnum);
 void UseItem(int p, int Mid, int spl);
+void CreateTypeItem(int x, int y, BOOL onlygood, int itype, int imisc);
+void CreateRndItem(int x, int y);
+void CreateRndUseful(int x, int y);
 
 #endif

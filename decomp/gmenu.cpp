@@ -2,10 +2,13 @@
 
 #include "gmenu.h"
 
-#include "defines.h"
+#include "control.h"
 #include "diablo.h"
+#include "engine.h"
 #include "enums.h"
+#include "gendung.h"
 #include "inv.h"
+#include "monster.h"
 #include "player.h"
 #include "quests.h"
 
@@ -13,32 +16,18 @@
 #include <windows.h>
 
 //
-// externs
-//
-
-extern char savedir_abspath[64];
-
-extern BOOL demo_mode;
-extern BOOL setlevel;
-extern int setlvlnum;
-extern int currlevel;
-extern int leveltype;
-extern BOOL chrflag;
-extern int monstkills[200];
-
-//
 // uninitialized data (.data:00603EF0)
 //
 
-BYTE* sgpLogo;
-BYTE* PentSpin_cel;
+BYTE *sgpLogo;
+BYTE *PentSpin_cel;
 int qactive_bkup[5];
 char sgCurrentMenuIdx;
 BOOL title_allow_loadgame;
 char sgpMenu;
 DWORD memspells_bkup;
-BYTE* BigTGold_cel;
-BYTE* tbuff;
+BYTE *BigTGold_cel;
+BYTE *tbuff;
 char byte_603F24;
 DWORD dword_603F28; // always 5?
 // potential for another DWORD?
@@ -55,11 +44,15 @@ DWORD dword_603F28; // always 5?
 // gmenu_down
 // BLoad
 
-int WLoad() {
+int WLoad()
+{
     int rv;
-    if (*tbuff & 0x80) {
+    if (*tbuff & 0x80)
+    {
         rv = 0xFFFF0000;
-    } else {
+    }
+    else
+    {
         rv = 0;
     }
     rv |= *tbuff++ << 8;
@@ -69,11 +62,15 @@ int WLoad() {
 
 // ILoad
 
-BOOL OLoad() {
-    char* v = (char*)tbuff++;
-    if (*v == TRUE) {
+BOOL OLoad()
+{
+    char *v = (char *)tbuff++;
+    if (*v == TRUE)
+    {
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }
@@ -91,7 +88,8 @@ static void LoadPlayer(int i)
 // LoadObject
 // LoadItem
 
-static void LoadQuest(int i) {
+static void LoadQuest(int i)
+{
     memcpy(&quests[i], tbuff, sizeof(*quests));
     tbuff += sizeof(*quests);
 }
@@ -100,10 +98,12 @@ static void LoadQuest(int i) {
 // LoadVision
 
 // .text:00460D3F
-void LoadGame(BOOL firstflag) {
+void LoadGame(BOOL firstflag)
+{
     int i;
 
-    if (firstflag == FALSE) {
+    if (firstflag == FALSE)
+    {
         FreeGameMem();
     }
 
@@ -113,16 +113,19 @@ void LoadGame(BOOL firstflag) {
 
     HFILE hFile = _lopen(path_name, OF_SHARE_DENY_WRITE | OF_READ);
     LONG size = _llseek(hFile, 0, 2);
-    LPVOID lpBuffer = GlobalLock(GlobalAlloc(GMEM_FIXED, size));
-    tbuff = (BYTE*)lpBuffer;
+    LPVOID lpBuffer = DiabloAllocPtr(size);
+    tbuff = (BYTE *)lpBuffer;
     _llseek(hFile, 0, 0);
     _lread(hFile, lpBuffer, size);
     _lclose(hFile);
 
     // Yes this is literally the decomp.
-    if (demo_mode != FALSE) {
+    if (demo_mode != FALSE)
+    {
         tbuff += 3;
-    } else {
+    }
+    else
+    {
         tbuff += 3;
     }
 
@@ -145,14 +148,17 @@ void LoadGame(BOOL firstflag) {
     plr[2].plractive = OLoad();
     plr[3].plractive = OLoad();
 
-    for (i = 0; i < gbActivePlayers; ++i) {
-        if (plr[i].plractive) {
+    for (i = 0; i < gbActivePlayers; ++i)
+    {
+        if (plr[i].plractive)
+        {
             LoadPlayer(i);
         }
     }
 
     numquests = WLoad();
-    for (i = 0; i < MAXQUESTS; i++) {
+    for (i = 0; i < MAXQUESTS; i++)
+    {
         LoadQuest(i);
     }
 

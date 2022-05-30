@@ -323,9 +323,9 @@ struct UItemStruct
 // variables
 //
 
-extern ItemDataStruct AllItemsList[]; // TODO
+extern ItemDataStruct AllItemsList[];
 extern PLStruct PL_Prefix[];
 extern PLStruct PL_Suffix[];
-extern UItemStruct UniqueItemList[]; // TODO
+extern UItemStruct UniqueItemList[];
 
 #endif

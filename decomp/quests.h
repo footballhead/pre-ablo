@@ -1,6 +1,8 @@
 #ifndef __QUESTS_H__
 #define __QUESTS_H__
 
+#include <windows.h>
+
 //
 // defines
 //
@@ -55,5 +57,6 @@ struct QuestStruct
 
 extern QuestStruct quests[MAXQUESTS];
 extern int numquests;
+extern BOOL questlog;
 
 #endif

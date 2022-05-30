@@ -27,5 +27,6 @@ extern BOOL invflag;
 
 void RemoveScroll();
 void UseStaffCharge();
+void RemoveInvItem(int pnum, int iv);
 
 #endif

@@ -19,5 +19,6 @@ extern BYTE palette_buffer[256 * 4];
 
 void LoadPalette(char *pszFilename, BYTE *dest);
 void CopyPalette(PALETTEENTRY* palette, BYTE* buffer);
+void palette_update();
 
 #endif

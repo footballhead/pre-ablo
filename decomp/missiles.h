@@ -128,5 +128,7 @@ extern BYTE *pFlarexpCel;
 //
 
 int AddMissile(int sx, int sy, int dx, int dy, int midir, int mitype, int micaster, int id, int midam);
+void FreeMissileGFX();
+void InitMissileGFX();
 
 #endif

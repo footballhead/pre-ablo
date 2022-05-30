@@ -1,6 +1,5 @@
 #include "gendung.h"
 
-#include "defines.h"
 #include "engine.h"
 #include "enums.h"
 
@@ -18,9 +17,9 @@ BOOL nSolidTable[MAXTILES + 1];
 int dmaxx;
 int dmaxy;
 // There's enough room for 3 ints here so it's probably not alignment...
-int dword_4D21FC; // unused
-int dword_4D2200; // unused
-int dword_4D2204; // unused
+int dword_4D21FC; // unused 1
+int dword_4D2200; // unused 2
+int dword_4D2204; // unused 3
 WORD level_frame_types[MAXTILES];
 int level_frame_count[MAXTILES];
 char TransVal;
@@ -29,7 +28,7 @@ int dminx;
 BYTE *pSpeedCels;
 int dminy;
 ScrollStruct ScrollInfo;
-char dflags[DMAXX][DMAXY];
+char dFlags[MAXDUNX][MAXDUNY]; // NOTE: dflags (note case!) exists in retail, I can't find it in demo...
 int SpeedFrameTbl[128][16];
 char dPlrPath[MAXDUNX][MAXDUNY]; // not in Devilution? something path related
 char dPreLight[MAXDUNX][MAXDUNY];
@@ -150,7 +149,7 @@ void FillSolidBlockTbls()
         block_lvid[i] = (bv & 0x70) >> 4;
     }
 
-    UNLOCK_AND_FREE(pSBFile);
+    MemFreeDbg(pSBFile);
 }
 
 // .text:0040D1BE
@@ -213,6 +212,12 @@ void MakeSpeedCels()
 }
 
 // IsometricCoord	000000000040D804
+int IsometricCoord(int x, int y)
+{
+    // TODO
+    return 0;
+}
+
 // RotateMicros	000000000040D89C
 // SetDungeonMicros	000000000040D926
 // DRLG_InitTrans	000000000040DAAA

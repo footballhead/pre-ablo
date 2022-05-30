@@ -2,6 +2,7 @@
 
 #include "debug.h"
 #include "diablo.h"
+#include "effects.h"
 #include "enums.h"
 #include "engine.h"
 #include "gendung.h"
@@ -10,8 +11,6 @@
 #include "quests.h"
 
 #include <stdio.h>
-
-void PlaySFX();
 
 //
 // Initialized variables (.data:004A2040)
@@ -392,6 +391,11 @@ void M_CheckEFlag(int i)
 // M_ClearSquares	0000000000404B33
 // M_StartHit	0000000000404DCC
 // M_StartKill	0000000000404F8D
+void M_StartKill(int i, int pnum)
+{
+    // TODO
+}
+
 // M_StartFadein	0000000000405179
 // M_StartFadeout	000000000040528E
 // M_StartHeal	00000000004053D3
@@ -780,6 +784,11 @@ void ProcessMonsters()
 }
 
 // FreeMonsters	000000000040B67A
+void FreeMonsters()
+{
+    // TODO
+}
+
 // DirOK	000000000040B876
 // LineClear	000000000040BDB5
 // PosOkMissile	000000000040BDE9
@@ -794,4 +803,8 @@ void ProcessMonsters()
 // IsSkel	000000000040CB5F
 // M_SpawnSkel	000000000040CBBD
 // SpawnSkeleton	000000000040CCDD
+void SpawnSkeleton(int x, int y)
+{
+    // TODO
+}
 //

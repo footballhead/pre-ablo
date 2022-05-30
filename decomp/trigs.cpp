@@ -1,3 +1,9 @@
+#include "trigs.h"
+
+//
+// Code
+//
+
 // InitNoTriggers	00000000004725A0	
 // InitTownTriggers	00000000004725C4	
 // InitL1Triggers	0000000000472606	
@@ -5,7 +11,17 @@
 // InitL3Triggers	0000000000472867	
 // InitL4Triggers	000000000047298A	
 // InitSKingTriggers	0000000000472AAD	
+void InitSKingTriggers()
+{
+    // TODO
+}
+
 // InitSChambTriggers	0000000000472AEF	
+void InitSChambTriggers()
+{
+    // TODO
+}
+
 // ForceTownTrig	0000000000472B31	
 // ForceL1Trig	0000000000472BC7	
 // ForceL2Trig	0000000000472DD5	

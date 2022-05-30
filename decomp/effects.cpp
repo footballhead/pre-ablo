@@ -101,11 +101,31 @@ char MonstSndChar[] = {'a', 'h', 'd', 's'};
 // priv_sound_init	0000000000464460
 // sound_stop	00000000004644B3
 // InitMonsterSND	00000000004644FC
+void InitMonsterSND()
+{
+    // TODO
+}
+
 // FreeEffects	000000000046467F
+void FreeEffects()
+{
+    // TODO
+}
+
 // InitTownersSND	0000000000464785
 // FreeTownersEffects	00000000004647D8
+void FreeTownersEffects()
+{
+
+}
+
 // PlayEffect	0000000000464821
+
 // PlaySFX	00000000004648D5
+void PlaySFX()
+{
+    // TODO
+}
 
 // .text:0046491F
 void PlayRndSFX(int psfx)

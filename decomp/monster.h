@@ -168,12 +168,15 @@ struct MonsterStruct
 extern int nummtypes;
 extern int nummonsters;
 extern int monstactive[MAXMONSTERS];
+extern int monstkills[MAXMONSTERS];
 extern MonsterStruct monster[MAXMONSTERS];
 extern CMonster Monsters[MAX_LVLMTYPES];
 
 //
 // functions
 //
+
+void InitMonsterGFX();
 
 void M_StartKill(int i, int pnum);
 
@@ -194,5 +197,8 @@ void MAI_Cleaver(int i);
 void MAI_Succ(int i);
 void MAI_Sneak(int i);
 void MAI_Storm(int i);
+
+void SpawnSkeleton(int x, int y);
+void FreeMonsters();
 
 #endif

@@ -24,7 +24,13 @@ BOOL deathflag;
 // CreatePlayer	0000000000466C74	
 // __dc_FillHealthAndMana	0000000000467601	
 // NextPlrLevel	0000000000467683	
+
 // AddPlrExperience	0000000000467988	
+void AddPlrExperience(int pnum, int lvl, int exp)
+{
+    // TODO
+}
+
 // ClearPlrRVars	0000000000467B02	
 // InitPlayer	0000000000467C48	
 // InitMultiView	000000000046841D	
@@ -44,8 +50,19 @@ BOOL deathflag;
 // StartPlrBlock	000000000046A4A9	
 // StartSpell	000000000046A6CA	
 // RemovePlrFromMap	000000000046AAD5	
+
 // StartPlrHit	000000000046AC51	
+void StartPlrHit(int pnum)
+{
+    // TODO
+}
+
 // SyncPlrKill	000000000046AF2C	
+void SyncPlrKill(int pnum)
+{
+    // TODO
+}
+
 // StartNewLvl	000000000046B1F5	
 // StartWarpLvl	000000000046B451	
 // StartWarpLvl_2	000000000046B91D	
@@ -80,7 +97,27 @@ BOOL deathflag;
 // CheckPlrSpell	0000000000470CC8	
 // SyncPlrAnim	0000000000470F44	
 // SyncInitPlrPos	000000000047130D	
+
 // ModifyPlrStr	0000000000471414	
+void ModifyPlrStr(int p, int l)
+{
+    // TODO
+}
+
 // ModifyPlrMag	00000000004714CC	
+void ModifyPlrMag(int p, int l)
+{
+    // TODO
+}
+
 // ModifyPlrDex	00000000004715CD	
+void ModifyPlrDex(int p, int l)
+{
+    // TODO
+}
+
 // ModifyPlrVit	000000000047162A	
+void ModifyPlrVit(int p, int l)
+{
+    // TODO
+}

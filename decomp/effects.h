@@ -88,6 +88,10 @@ enum _sfx_id
 // functions
 //
 
+void PlaySFX();
 void PlayRndSFX(int psfx);
+void FreeEffects();
+void FreeTownersEffects();
+void InitMonsterSND();
 
 #endif

@@ -1,13 +1,9 @@
+#include "drlg_l1.h"
+#include "drlg_l2.h"
 #include "gendung.h"
 #include "objects.h"
 #include "palette.h"
-
-void LoadPreL1Dungeon(const char *sFileName, int vx, int vy);
-void LoadL1Dungeon(const char *sFileName, int vx, int vy);
-void LoadPreL2Dungeon(const char *sFileName, int vx, int vy);
-void LoadL2Dungeon(const char *sFileName, int vx, int vy);
-void InitSKingTriggers();
-void InitSChambTriggers();
+#include "trigs.h"
 
 //
 // Initialized variables (.data:004ACA58)

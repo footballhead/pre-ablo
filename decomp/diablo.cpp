@@ -8,41 +8,30 @@
 
 #include "control.h"
 #include "cursor.h"
+#include "effects.h"
 #include "engine.h"
 #include "enums.h"
 #include "error.h"
+#include "gendung.h"
 #include "gmenu.h"
+#include "interfac.h"
+#include "missiles.h"
+#include "monster.h"
 #include "multi.h"
+#include "objects.h"
 #include "palette.h"
 #include "player.h"
 #include "scrollrt.h"
+#include "spells.h"
+#include "town.h"
 
 //
-// extern
+// forward decl
 //
 
-extern int leveltype;
-extern BYTE *pDungeonCels;
-extern BYTE *pMegaTiles;
-extern BYTE *pLevelPieces;
-extern BYTE *pSpecialCels;
-extern BYTE *pSpeedCels;
-
-void FreeMonsters();
-void FreeObjectGFX();
-void FreeMissileGFX();
-void FreeSpells();
-void FreeEffects();
-void FreeTownerGFX();
-void FreeTownerEffects();
-
-void DPlayHandleMessage();
-void InitMonsterGFX();
-void InitMonsterSND();
-void InitObjectGFX();
-void InitMissileGFX();
-void InitSpellGFX();
-void IncProgress();
+BOOL init_create_window(HINSTANCE hInstance, int nShowCmd);
+void game_logic();
+void dx_cleanup();
 
 //
 // initialized vars (.data:004BC0A8)
@@ -465,21 +454,21 @@ BOOL dx_init(HWND hWnd)
 
     SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 
-    snd_init(hWnd);
-    SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
-    if (debugMusicOn)
-    {
-        SFileDdaInitialize(sglpDS);
-    }
-    if (musicFromDisk)
-    {
-        Mopaq_479075(20, 10, 0x8000);
-        if (SNDCPP_InitThread() == 0)
-        {
-            return FALSE;
-        }
-        music_start("Music\\Dintro.wav");
-    }
+    // snd_init(hWnd);
+    // SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
+    // if (debugMusicOn)
+    // {
+    //     SFileDdaInitialize(sglpDS);
+    // }
+    // if (musicFromDisk)
+    // {
+    //     Mopaq_479075(20, 10, 0x8000);
+    //     if (SNDCPP_InitThread() == 0)
+    //     {
+    //         return FALSE;
+    //     }
+    //     music_start("Music\\Dintro.wav");
+    // }
 
     // TODO
 
@@ -631,22 +620,14 @@ void dx_cleanup()
 // .text:004888E2
 void FreeGameMem()
 {
-    GlobalUnlock(GlobalHandle(pDungeonCels));
-    GlobalFree(GlobalHandle(pDungeonCels));
-
-    GlobalUnlock(GlobalHandle(pMegaTiles));
-    GlobalFree(GlobalHandle(pMegaTiles));
-
-    GlobalUnlock(GlobalHandle(pLevelPieces));
-    GlobalFree(GlobalHandle(pLevelPieces));
-
-    GlobalUnlock(GlobalHandle(pSpecialCels));
-    GlobalFree(GlobalHandle(pSpecialCels));
+    MemFreeDbg(pDungeonCels);
+    MemFreeDbg(pMegaTiles);
+    MemFreeDbg(pLevelPieces);
+    MemFreeDbg(pSpecialCels);
 
     if (leveltype != DTYPE_TOWN)
     {
-        GlobalUnlock(GlobalHandle(pSpecialCels));
-        GlobalFree(GlobalHandle(pSpecialCels));
+        MemFreeDbg(pSpeedCels);
 
         FreeMonsters();
         FreeObjectGFX();
@@ -658,7 +639,7 @@ void FreeGameMem()
     {
         FreeTownerGFX();
         FreeMissileGFX();
-        FreeTownerEffects();
+        FreeTownersEffects();
     }
 }
 
@@ -709,7 +690,7 @@ static void LoadLvlGFX()
 // .text:00488BC1
 static void LoadAllGFX(BOOL firstflag)
 {
-    pSpeedCels = (BYTE *)GlobalLock(GlobalAlloc(0, 0x100000));
+    pSpeedCels = (BYTE *)DiabloAllocPtr(0x100000);
     InitMonsterGFX();
     if (firstflag)
     {

@@ -5,21 +5,11 @@
 #include "engine.h"
 #include "enums.h"
 #include "gendung.h"
+#include "lighting.h"
 #include "monster.h"
 #include "player.h"
 
 #include <stdio.h>
-
-int AddLight(int x, int y, int r);
-// CrawlTable is weird because it is structured data being represented in a flat array.
-// See Devilution for one explanation.
-// I like to think of them as tree rings or a bullseye: concentric rings starting from inside and going outward.
-// Each ring is defined by a number of (x,y) offsets, followed by a list of (x,y) offsets
-// These offsets are relative to a location and together will form a ring around that location.
-// Since larger rings have more offsets, each ring is a different size in the array.
-// Typically this will be indexed by something like CrawlNum, which will specify the offset for each ring.
-// I'm guessing that this is a pre-computed alternative to euclidean distance up to a certain integer distance
-extern char CrawlTable[2749];
 
 //
 // Initialized variables (.text:004AE070)
@@ -966,7 +956,7 @@ void AddFlareMisexp(int mi, int sx, int sy, int dx, int dy, int midir, int micas
 }
 
 // .text:0043AB65
-int AddMissile(int sx, int sy, int dx, int dy, int midir, int mitype, char micaster, int id, int midam)
+int AddMissile(int sx, int sy, int dx, int dy, int midir, int mitype, int micaster, int id, int midam)
 {
     int mi;
     if (nummissiles < MAXMISSILES)

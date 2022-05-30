@@ -1,3 +1,23 @@
+#include "quests.h"
+
+//
+// Uninitialized variables (.data:00615F40)
+//
+
+QuestStruct quests[MAXQUESTS];
+int numqlines;
+int numquests;
+int ReturnLvlX;
+int ReturnLvlY;
+int qline;
+int qlist[MAXQUESTS];
+BOOL questlog;
+int questpentframe;
+
+//
+// Code
+//
+
 // InitQuests	0000000000471730	
 // CheckQuests	00000000004718AB	
 // CheckQuestKill	00000000004719CD	

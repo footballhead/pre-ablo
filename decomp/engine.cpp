@@ -2,6 +2,7 @@
 
 #include "diablo.h"
 
+#include "storm/storm.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -19,7 +20,32 @@ char byte_61B6FC;
 // code (.text:00482790)
 //
 
-// LoadFileInMem	0000000000482790
+// .text:00482790
+BYTE *LoadFileInMem(const char *pszName)
+{
+    int fileLen;
+    BYTE *buf;
+    HANDLE file;
+    char fullName[256];
+
+    sprintf(fullName, "%s%s", fileLoadPrefix, pszName);
+    while (!SFileOpenFile(fullName, &file))
+    {
+        // This space intentionally left blank
+    }
+
+    fileLen = SFileGetFileSize(file, NULL);
+    buf = (BYTE *)DiabloAllocPtr(fileLen);
+
+    while (!SFileReadFile(file, buf, fileLen, NULL, NULL))
+    {
+        // This space intentionally left blank
+    }
+
+    SFileCloseFile(file);
+    return buf;
+}
+
 // LoadFileWithMem	000000000048283B
 // get_alloc_file_4828D6	00000000004828D6
 // get_seek_file_48297B	000000000048297B
@@ -39,7 +65,13 @@ DWORD FileGetSize(const char *filename)
 
 // FileAddLoadPrefix	0000000000482A9D
 // DecodeFullCel	0000000000482AD3
+
 // CelDraw	0000000000482B53
+void CelDraw(int sx, int sy, BYTE *pCelBuff, int nCel, int nWidth)
+{
+    // TODO
+}
+
 // engine_cel_482BB2	0000000000482BB2
 // DrawSlabCel	0000000000482BFB
 // CelDecodeHdrOnly	0000000000482CBC
@@ -129,7 +161,13 @@ void CelApplyTrans(BYTE *p, BYTE *ttbl, int nCel)
 // ENG_set_pixel	000000000048407B
 // engine_draw_pixel	00000000004840F9
 // DrawLine	00000000004841F1
+
 // GetDirection	00000000004848A1
+int GetDirection(int x1, int y1, int x2, int y2)
+{
+    // TODO
+    return 0;
+}
 
 // .text:004849E2
 int random_(int v)

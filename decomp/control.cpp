@@ -76,11 +76,18 @@ char infostr[64];
 BYTE *pBtmBuff;
 BYTE *pSpelIcon_cel;
 BYTE *pManaBuff;
-// It may look like there's a missing DWORD here, but turns out arrays are
-// aligned on 8-byte boundaries. shrug.jpg
 char tempstr[64];
 BOOL left_mb_pressed;
 // TODO
+BOOL drawmanaflag;
+// TODO
+BOOL drawpotboxflag;
+// TODO
+BOOL pinfoflag;
+// TODO
+char infoclr;
+// TODO
+BOOL chrflag;
 
 //
 // code (.text:000000000040EF80)
@@ -95,7 +102,13 @@ BOOL left_mb_pressed;
 // ToggleSpell	000000000040FA49
 // CPrintString	000000000040FC09
 // control_draw_some_string	000000000040FDCE
+
 // AddPanelString	000000000040FF10
+void AddPanelString(const char *str, BOOL just)
+{
+    // TODO
+}
+
 // ClearPanel	000000000040FF70
 // CopyCtrlPan	000000000041001E
 // control_4100A7	00000000004100A7

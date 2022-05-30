@@ -85,6 +85,15 @@ extern int setpc_w;
 extern int setpc_h;
 extern int setlvlnum;
 extern BOOL setlevel;
+extern BYTE *pDungeonCels;
+extern BYTE *pMegaTiles;
+extern BYTE *pLevelPieces;
+extern BYTE *pSpecialCels;
+extern BYTE *pSpeedCels;
+extern int ViewX;
+extern int ViewY;
+extern int MouseOffX; // This value is used but never initalized :X
+extern int MouseOffY; // This value is used but never initalized :X
 
 //
 // functions

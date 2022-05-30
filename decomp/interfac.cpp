@@ -1,8 +1,8 @@
 #include "diablo.h"
 
-#include <windows.h>
+#include "palette.h"
 
-void palette_update();
+#include <windows.h>
 
 //
 // initialized variables (.data:004AA608)
@@ -42,7 +42,13 @@ char interfac_mfontkern[] = {
 // interface_pump_quotes_screens	0000000000419882
 // interface_pump_title_message	0000000000419982
 // interface_pump_progress	0000000000419ADD
-// IntCheck	0000000000419B93
+
+// IncProgress	0000000000419B93
+void IncProgress()
+{
+    // TODO
+}
+
 // WNDPROC_mode12_quotes_crow_video	0000000000419C60
 // WNDPROC_mode1_title_newloadquit	000000000041A06E
 // WNDPROC_mode2_selclass_entname	000000000041A5DD

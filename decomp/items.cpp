@@ -7,11 +7,6 @@
 
 #include <stdio.h>
 
-extern BOOL pinfoflag;
-void AddPanelString(const char *str, BOOL just);
-extern BOOL drawhpflag;
-extern BOOL drawmanaflag;
-
 //
 // initialized variables (.data:004AAB20)
 //
@@ -166,12 +161,24 @@ ItemStruct item[MAXITEMS];
 // ItemPlace	000000000041C2BE
 // AddInitItems	000000000041C3CE
 // InitItems	000000000041C581
+
 // CalcPlrItemVals	000000000041C736
+void CalcPlrItemVals(int pnum)
+{
+    // TODO
+}
+
 // CalcPlrScrolls	000000000041D71F
 // CalcPlrStaff	000000000041D868
 // ItemMinStats	000000000041D8FD
 // CalcPlrItemReqs	000000000041D9AC
+
 // CalcPlrInv	000000000041DEBD
+void CalcPlrInv(int p)
+{
+    // TODO
+}
+
 // CalcPlrItemDurs	000000000041DF08
 // SetPlrHandItem	000000000041E060
 // CreatePlrItems	000000000041E35D
@@ -214,9 +221,25 @@ void SetupItem(int i)
 // SpawnUnique	0000000000421CDC
 // SpawnItem	0000000000421DAC
 // CreateItem	0000000000422056
+
 // CreateRndItem	0000000000422142
+void CreateRndItem(int x, int y)
+{
+    // TODO
+}
+
 // CreateRndUseful	000000000042232B
+void CreateRndUseful(int x, int y)
+{
+    // TODO
+}
+
 // CreateTypeItem	000000000042249F
+void CreateTypeItem(int x, int y, BOOL onlygood, int itype, int imisc)
+{
+    // TODO
+}
+
 // SpawnRock	0000000000422688
 // RespawnItem	0000000000422841
 // DeleteItem	000000000042298C

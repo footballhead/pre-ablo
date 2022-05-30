@@ -11,6 +11,9 @@
     GlobalUnlock(GlobalHandle(x)); \
     GlobalFree(GlobalHandle(x));
 
+#define DiabloAllocPtr(x) \
+    GlobalLock(GlobalAlloc(0, x))
+
 //
 // functions
 //

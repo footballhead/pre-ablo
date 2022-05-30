@@ -2,6 +2,12 @@
 #define __SCROLLRT_H__
 
 //
+// variables
+//
+
+extern int PitchTbl[1024];
+
+//
 // functions
 //
 

@@ -3,20 +3,10 @@
 #include "defines.h"
 #include "diablo.h"
 #include "engine.h"
+#include "gendung.h"
 #include "missiles.h"
 
 #include <windows.h>
-
-//
-// imports
-//
-
-extern int ViewX;
-extern int ViewY;
-extern int MouseOffX; // This value is used but never initalized :X
-extern int MouseOffY; // This value is used but never initalized :X
-                      // bottom-right of cursor sprite in gpBuffer
-extern BYTE *gpBufCursPos;
 
 //
 // initialized vars (.data:004BBB08)
@@ -299,6 +289,9 @@ int cursmx;
 int cursmy;
 int pcursmonst;
 char pcursitem;
+// TODO: Do the following belong in scrollrt?
+// bottom-right of cursor sprite in gpBuffer
+BYTE *gpBufCursPos;
 
 //
 // code (.text:00479C90)
@@ -391,5 +384,19 @@ static void CheckTown()
 }
 
 // CheckCursMove	000000000047A069
+void CheckCursMove()
+{
+    // TODO
+}
+
 // savecrsr_hide	000000000047BAA1
+void savecrsr_hide()
+{
+    // TODO
+}
+
 // savecrsr_show	000000000047BB2F
+void savecrsr_show()
+{
+    // TODO
+}

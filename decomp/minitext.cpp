@@ -4,13 +4,8 @@
 
 #include "diablo.h"
 #include "engine.h"
-
-//
-// externs
-//
-
-extern BOOL questlog;
-extern int PitchTbl[1024];
+#include "quests.h"
+#include "scrollrt.h"
 
 //
 // initialized data, starting at .data:004A2479
@@ -274,8 +269,6 @@ void PrintQTextChr(int sx, int sy, BYTE *pCelBuff, int nCel)
 // .text:0040E569
 void FreeQuestText()
 {
-    GlobalUnlock(GlobalHandle(pMedTextCels));
-    GlobalFree(GlobalHandle(pMedTextCels));
-    GlobalUnlock(GlobalHandle(pTextBoxCels));
-    GlobalFree(GlobalHandle(pTextBoxCels));
+    MemFreeDbg(pMedTextCels);
+    MemFreeDbg(pTextBoxCels);
 }

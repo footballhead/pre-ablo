@@ -1,10 +1,6 @@
 #include <windows.h>
 
-//
-// extern
-//
-
-extern char tempstr[64]; // interfac.cpp ???
+#include "control.h"
 
 //
 // initialized data (.data:004B87C0)
@@ -26,7 +22,8 @@ void InitDiabloMsg(char e)
 {
     int i;
 
-    for (i = 0; i < msgcnt; i++) {
+    for (i = 0; i < msgcnt; i++)
+    {
         if (msgtable[i] == e)
             return;
     }
@@ -46,7 +43,8 @@ void DrawDiabloMsg()
 
     // TODO inlined assembly for transparent background
 
-    switch (msgflag) {
+    switch (msgflag)
+    {
     case 1:
         strcpy(tempstr, "No automap available in town");
         break;

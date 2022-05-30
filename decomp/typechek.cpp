@@ -4,6 +4,7 @@
 // This produces compiler output without redundant asserts
 #include <windows.h>
 
+#include "dead.h"
 #include "itemdat.h"
 #include "items.h"
 #include "missiles.h"
@@ -24,6 +25,9 @@ void typecheck()
 
     {
         _STATIC_ASSERT(sizeof(CMonster) == 0x2B8);
+    }
+    {
+        _STATIC_ASSERT(sizeof(DeadStruct) == 0x2D);
     }
     {
         _STATIC_ASSERT(sizeof(ItemDataStruct) == 0x48);

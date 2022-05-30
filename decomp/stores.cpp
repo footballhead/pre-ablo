@@ -1,3 +1,5 @@
+#include "stores.h"
+
 //
 // initialized variables (.data:00428750)
 //
@@ -6,6 +8,12 @@ int SStringY[] = {
     0,   12,  24,  36,  48,  60,  72,  84,  96,  108, 120, 132,
     144, 156, 168, 180, 192, 204, 216, 228, 240, 252, 264, 276,
 };
+
+//
+// uninitialized variables
+//
+
+ItemStruct golditem;
 
 //
 // code (.text:00428750)
@@ -53,8 +61,19 @@ int SStringY[] = {
 // STextESC	000000000042BD3F
 // STextDown	000000000042BE77
 // S_SmithEnter	000000000042C09F
+
 // SetGoldCurs	000000000042C131
+void SetGoldCurs(int i)
+{
+    // TODO
+}
+
 // TakePlrsMoney	000000000042C244
+void TakePlrsMoney(int i)
+{
+    // TODO
+}
+
 // SmithBuyItem	000000000042C535
 // S_SBuyEnter	000000000042C6E4
 // StoreGoldFit	000000000042C87E

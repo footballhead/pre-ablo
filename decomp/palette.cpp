@@ -67,4 +67,9 @@ void CopyPalette(PALETTEENTRY* palette, BYTE* buffer)
 // LoadRndLvlPal	00000000004825A6
 // palette_482623_cycle	0000000000482623
 // palette_482672_cycle_caves	0000000000482672
+
 // palette_update	00000000004826F0
+void palette_update()
+{
+    // TODO
+}
