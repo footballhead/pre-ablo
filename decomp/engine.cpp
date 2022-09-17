@@ -1,11 +1,11 @@
 #include "engine.h"
 
-#include "diablo.h"
-
 #include "storm/storm.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+
+#include "diablo.h"
 
 //
 // uninitialized vars (.data )
@@ -47,8 +47,57 @@ BYTE *LoadFileInMem(const char *pszName)
 }
 
 // LoadFileWithMem	000000000048283B
-// get_alloc_file_4828D6	00000000004828D6
-// get_seek_file_48297B	000000000048297B
+
+// .text:004828D6
+// Allocate and read the wave format. Also read the data size into pSnd->pcm_size
+int LoadWaveFileHeaderInMem(const char *filename, TSnd *pSnd, LPWAVEFORMATEX *pFormat)
+{
+    DWORD dwSize; // unused
+    DWORD unused;
+    HANDLE phFile;
+
+    SFileOpenFile(filename, &phFile);
+    dwSize = SFileGetFileSize(phFile, NULL);
+
+    // Surgically load parts of the RIFF https://docs.fileformat.com/audio/wav/
+    // 0x14 to 0x24 is WAVEFORMATEX... kinda. cbSize is not stored in the file,
+    // it goes straight to "data" chunk header. This means that cbSize is read
+    // as "da" or 0x6164
+    SFileSetFilePointer(phFile, 0x14, NULL, 0);
+    *pFormat = (LPWAVEFORMATEX)GlobalAlloc(GMEM_FIXED, sizeof(WAVEFORMATEX));
+    SFileReadFile(phFile, *pFormat, sizeof(WAVEFORMATEX), NULL, NULL);
+
+    // The programmers seemed to know that they were reading part of the data
+    // chunk header above and just skip over the rest ("ta")
+    SFileReadFile(phFile, &unused, 2, NULL, NULL);
+
+    // Read WAV file size (data) into the first element of pSnd (pSnd->pcm_size)
+    SFileReadFile(phFile, pSnd, 4, NULL, NULL);
+
+    SFileCloseFile(phFile);
+    return 0;
+}
+
+// .text:0048297B
+// See LoadWaveFileHeaderInMem
+int LoadWaveFileWithMem(const char *filename, TSnd *pSnd, LPWAVEFORMATEX *pFormat, void **pcm_data)
+{
+    DWORD dwSize; // unused
+    DWORD unused;
+    HANDLE phFile;
+
+    SFileOpenFile(filename, &phFile);
+    dwSize = SFileGetFileSize(phFile, NULL);
+
+    SFileSetFilePointer(phFile, 0x14, NULL, 0);
+    SFileReadFile(phFile, *pFormat, sizeof(WAVEFORMATEX), NULL, NULL);
+    SFileReadFile(phFile, &unused, 2, NULL, NULL);
+    SFileReadFile(phFile, pSnd, 4, NULL, NULL);
+    SFileReadFile(phFile, *pcm_data, pSnd->pcm_size, NULL, NULL);
+
+    SFileCloseFile(phFile);
+    return 0;
+}
 
 // FileGetSize	0000000000482A2A
 // Demo specific!
@@ -63,7 +112,13 @@ DWORD FileGetSize(const char *filename)
     return 0;
 }
 
-// FileAddLoadPrefix	0000000000482A9D
+// .text:00482A9D
+char *FileAddLoadPrefix(const char *filename)
+{
+    sprintf(file_to_load_with_base, "%s%s", fileLoadPrefix, filename);
+    return file_to_load_with_base;
+}
+
 // DecodeFullCel	0000000000482AD3
 
 // CelDraw	0000000000482B53

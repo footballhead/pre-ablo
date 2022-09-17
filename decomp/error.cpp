@@ -1,3 +1,5 @@
+#include "error.h"
+
 #include <windows.h>
 
 #include "control.h"
@@ -13,8 +15,16 @@ char msgcnt = 0; // index into msgtable
 //
 
 char msgflag;
-char msgtable[80]; // queue of messages waiting to be shown
+// Queue of messages waiting to be shown. I guess this is useful because:
+// 1. these can be set in the title screen but are only visible once in game
+// 2. the game can show multiple error messages by showing one at a time over time
+// (I don't think this is every initialized...)
+char msgtable[80];
 char msgdelay;
+
+//
+// code (.text:004578D0)
+//
 
 // .text:004578D0
 // Taken from Devilution and tweaked
@@ -45,61 +55,61 @@ void DrawDiabloMsg()
 
     switch (msgflag)
     {
-    case 1:
+    case EMSG_NO_AUTOMAP_IN_TOWN:
         strcpy(tempstr, "No automap available in town");
         break;
-    case 2:
+    case EMSG_NO_MULTIPLAYER_IN_DEMO:
         strcpy(tempstr, "No multiplayer functions in demo");
         break;
-    case 3:
+    case EMSG_DIRECT_SOUND_FAILED:
         strcpy(tempstr, "Direct Sound Creation Failed");
         break;
-    case 4:
+    case EMSG_NO_TMP_DIR:
         strcpy(tempstr, "Temp directory availability error");
         break;
-    case 5:
+    case EMSG_NO_SPACE_TO_SAVE:
         strcpy(tempstr, "Not enough space to save");
         break;
-    case 6:
+    case EMSG_NO_PAUSE_IN_TOWN:
         strcpy(tempstr, "No Pause in town");
         break;
-    case 7:
+    case EMSG_COPY_TO_HDD:
         strcpy(tempstr, "Copying to a hard disk is recommended");
         break;
-    case 8:
+    case EMSG_SHRINE_MYSTERIOUS:
         strcpy(tempstr, "Odd sensations...");
         break;
-    case 9:
+    case EMSG_SHRINE_IMPOSING:
         strcpy(tempstr, "A surge of blood interrupts your thoughts");
         break;
-    case 10:
+    case EMSG_SHRINE_HIDDEN:
         strcpy(tempstr, "Energy passes through your equipment...");
         break;
-    case 11:
+    case EMSG_SHRINE_MAGICAL:
         strcpy(tempstr, "Growling is heard throughout the dungeon");
         break;
-    case 12:
+    case EMSG_SHRINE_MYSTIC:
         strcpy(tempstr, "Your skills increase, but at a price...");
         break;
-    case 13:
+    case EMSG_SHRINE_ENCHANTED:
         strcpy(tempstr, "Did you forget something?");
         break;
-    case 14:
+    case EMSG_SHRINE_THAUMATURGIC:
         strcpy(tempstr, "You hear a series of creaks and thumps...");
         break;
-    case 15:
+    case EMSG_SHRINE_FASCINATING:
         strcpy(tempstr, "You are the powerless master of fire!");
         break;
-    case 16:
+    case EMSG_SHRINE_CRYPTIC:
         strcpy(tempstr, "Power comes from your disorientation...");
         break;
-    case 17:
+    case EMSG_SHRINE_SUPERNATURAL:
         strcpy(tempstr, "You hear a strange cry from the distance");
         break;
-    case 18:
+    case EMSG_SHRINE_EERIE:
         strcpy(tempstr, "You forget who you are!");
         break;
-    case 19:
+    case EMSG_SHRINE_SPIRITUAL:
         strcpy(tempstr, "Untold Wealth!");
         break;
     }

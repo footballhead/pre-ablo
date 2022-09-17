@@ -52,6 +52,8 @@ SDrawManualInitialize(
      LPDIRECTDRAWPALETTE ddPalette,
      HPALETTE hPalette);
 
+int __stdcall SFileSetFilePointer(HANDLE,int,HANDLE,int);
+
 #ifdef __cplusplus
 }
 #endif

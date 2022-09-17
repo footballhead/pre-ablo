@@ -1137,7 +1137,7 @@ void ObjSetMicro(int dx, int dy, int pn)
     dPiece[dx][dy] = pn;
     pn--;
     defs = &dpiece_defs_map_1[IsometricCoord(dx, dy)];
-    v = (WORD*)pLevelPieces + 10 * pn;
+    v = (WORD *)pLevelPieces + 10 * pn;
 
     for (i = 0; i < 10; i++)
     {
@@ -1537,7 +1537,7 @@ void OperateShrine(int pnum, int i)
         ModifyPlrMag(pnum, var2);
         ModifyPlrDex(pnum, var3);
         ModifyPlrVit(pnum, var4);
-        InitDiabloMsg(8); // "Odd sensations..."
+        InitDiabloMsg(EMSG_SHRINE_MYSTERIOUS);
         break;
     case SHRINE_IMPOSING:
         var1 = plr[pnum]._pLevel << 7; // This is effectively 2*clvl but adjusted for HP (which is fixed point with 6 binary decimals)
@@ -1559,7 +1559,7 @@ void OperateShrine(int pnum, int i)
         }
 
         force_redraw = 4;
-        InitDiabloMsg(9); // "A surge of blood interrupts your thoughts"
+        InitDiabloMsg(EMSG_SHRINE_IMPOSING);
         break;
     case SHRINE_HIDDEN:
         // Determine how many items are worn (excluding rings)
@@ -1620,7 +1620,7 @@ void OperateShrine(int pnum, int i)
             CalcPlrInv(pnum);
         }
 
-        InitDiabloMsg(10); // "Energy passes through your equipment..."
+        InitDiabloMsg(EMSG_SHRINE_HIDDEN);
         break;
     case SHRINE_MAGICAL:
         var2 = currlevel << 8; // Effectively 4*dlvl since HP is fixed point with 6 binary decimals
@@ -1632,7 +1632,7 @@ void OperateShrine(int pnum, int i)
             monster[var1].mArmorClass = 0;
         }
 
-        InitDiabloMsg(11); // "Growling is heard throughout the dungeon"
+        InitDiabloMsg(EMSG_SHRINE_MAGICAL);
         break;
     case SHRINE_MYSTIC:
         if (plr[pnum]._pGold > 1)
@@ -1642,7 +1642,7 @@ void OperateShrine(int pnum, int i)
             TakePlrsMoney(plr[pnum]._pGold - 1);
         }
 
-        InitDiabloMsg(12); // "Your skills increase, but at a price..."
+        InitDiabloMsg(EMSG_SHRINE_MYSTIC);
         break;
     case SHRINE_ENCHANTED:
         var1 = 0;
@@ -1704,7 +1704,7 @@ void OperateShrine(int pnum, int i)
             }
         }
 
-        InitDiabloMsg(13); // "Did you forget something?""
+        InitDiabloMsg(EMSG_SHRINE_ENCHANTED);
         break;
     case SHRINE_THAUMATURGIC:
         for (var0 = 0; var0 < nobjects; ++var0)
@@ -1717,7 +1717,7 @@ void OperateShrine(int pnum, int i)
             }
         }
 
-        InitDiabloMsg(14); // "You hear a series of creaks and thumps..."
+        InitDiabloMsg(EMSG_SHRINE_THAUMATURGIC);
         break;
     case SHRINE_FASCINATING:
         plr[pnum]._pMemSpells |= SPL_FIREBOLT;
@@ -1728,7 +1728,7 @@ void OperateShrine(int pnum, int i)
             monster[var1].mMagicRes |= IMMUNE_FIRE;
         }
 
-        InitDiabloMsg(15); // "You are the powerless master of fire!"
+        InitDiabloMsg(EMSG_SHRINE_FASCINATING);
         break;
     case SHRINE_CRYPTIC:
         var0 = random_(4) + 4;
@@ -1795,7 +1795,7 @@ void OperateShrine(int pnum, int i)
         plr[pnum]._pManaBase += var2;
 
         force_redraw = 4;
-        InitDiabloMsg(16); // "Power comes from your disorientation..."
+        InitDiabloMsg(EMSG_SHRINE_CRYPTIC);
         break;
     case SHRINE_SUPERNATURAL:
         for (var0 = 0; var0 < nummonsters; ++var0)
@@ -1809,7 +1809,7 @@ void OperateShrine(int pnum, int i)
             monster[var1].mMaxDamage2 /= 2;
         }
 
-        InitDiabloMsg(17); // "You hear a strange cry from the distance"
+        InitDiabloMsg(EMSG_SHRINE_SUPERNATURAL);
         break;
     case SHRINE_EERIE:
         var1 = strlen(plr[pnum]._pName);
@@ -1822,7 +1822,7 @@ void OperateShrine(int pnum, int i)
 
         ModifyPlrMag(pnum, 2);
 
-        InitDiabloMsg(18); // "You forget who you are!"
+        InitDiabloMsg(EMSG_SHRINE_EERIE);
         break;
     case SHRINE_HOLY:
         do
@@ -1850,7 +1850,7 @@ void OperateShrine(int pnum, int i)
             }
         }
 
-        InitDiabloMsg(19); // "Untold Wealth!"
+        InitDiabloMsg(EMSG_SHRINE_SPIRITUAL);
         break;
     }
 }

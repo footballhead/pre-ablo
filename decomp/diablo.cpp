@@ -39,14 +39,17 @@ void dx_cleanup();
 
 // wtf is this? nobody references it
 char registration_table[128] = "REGISTRATION_TABLE";
-// Mutex "held" duing PaintTimer (set to TRUE on enter, FALSE on return)
+// "Mutex" "held" duing PaintEventTimer (set to TRUE on enter, FALSE on return).
+// Seems to serve double duty:
+//   1. indicate that PaintEventTimer is working
+//   2. used to stop PaintEventTimer from painting in that tick interval
 BOOL paint_callback_mutex = FALSE;
 int force_redraw = 0;
 // Used by main loop to determine when to post a WM_DIABPAINT message
 BOOL need_to_repaint = FALSE;
 // Controlled by ShowProgress. Will be set to TRUE during certain ShowProgress
 // blocks, then set to FALSE when done. This will be used as the final check in
-// PaintTimer to actually post WM_DIABPAINT
+// PaintEventTimer to actually post WM_DIABPAINT
 BOOL paint_mutex = FALSE;
 BOOL svgamode = TRUE;
 int unused000 = 0;
@@ -214,7 +217,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     if (mkdir_error != 0 || driveType == DRIVE_UNKNOWN)
     {
-        InitDiabloMsg(4); // "Temp directory availability error"
+        InitDiabloMsg(EMSG_NO_TMP_DIR);
     }
 
     GetSystemInfo(&system_info);
@@ -454,7 +457,7 @@ BOOL dx_init(HWND hWnd)
 
     SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 
-    // snd_init(hWnd);
+    snd_init(hWnd);
     // SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
     // if (debugMusicOn)
     // {
@@ -469,6 +472,10 @@ BOOL dx_init(HWND hWnd)
     //     }
     //     music_start("Music\\Dintro.wav");
     // }
+
+    GdiSetBatchLimit(1);
+    ShowCursor(FALSE);
+    // init_multi_with_time_srand();
 
     // TODO
 
@@ -494,20 +501,26 @@ error1:
 error0:
     goto error;
 }
+
 // WNDPROC_mode0_blizzard_intro	00000000004853DA
 // diablo_48565F	000000000048565F
 // GM_Game	00000000004865C4
 // MainWndProc	00000000004881C9
-// diablo_store_with_mutex_spinlock	00000000004882F9
+
+// .text:004882F9
+void wait_for_paint()
+{
+    // TODO
+}
 
 // .text:0048833D
 // The sole purpose of this timer callback seems to be to send WM_DIABPAINT
 // messages every 50ms.
-void CALLBACK PaintTimer(UINT uTimerID,
-                         UINT uMsg,
-                         DWORD_PTR dwUser,
-                         DWORD_PTR dw1,
-                         DWORD_PTR dw2)
+void CALLBACK PaintEventTimer(UINT uTimerID,
+                              UINT uMsg,
+                              DWORD_PTR dwUser,
+                              DWORD_PTR dw1,
+                              DWORD_PTR dw2)
 {
     if (paint_callback_mutex)
     {
@@ -535,7 +548,7 @@ void CALLBACK PaintTimer(UINT uTimerID,
             can_fade = TRUE;
             if (paint_mutex == FALSE)
             {
-                PostMessage((HWND)dwUser, 0x400, 0, 0); // 0x400 = WM_DIABPAINT
+                PostMessage((HWND)dwUser, WM_DIABPAINT, 0, 0);
             }
 
             prev_timer_PostMessage_time = now;
@@ -633,7 +646,7 @@ void FreeGameMem()
         FreeObjectGFX();
         FreeMissileGFX();
         FreeSpells();
-        FreeEffects();
+        FreeMonsterSnd();
     }
     else
     {

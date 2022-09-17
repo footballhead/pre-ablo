@@ -59,7 +59,7 @@ EXPORTS
     SFileOpenFile@8 @58
     SFileReadFile@20 @59
     SFileSetBasePath @60
-    SFileSetFilePointer @61
+    SFileSetFilePointer@16 @61
     SFileSetLocale @62
     SGdiBitBlt @63
     SGdiCreateFont @64

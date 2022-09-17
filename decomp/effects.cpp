@@ -1,9 +1,12 @@
 #include "effects.h"
 
 #include "engine.h"
+#include "monster.h"
+
+#include <stdio.h>
 
 //
-// initialized vars
+// initialized vars (.data:004B8EE0)
 //
 
 const char *sgSFX_pszName[] = {
@@ -19,7 +22,7 @@ const char *sgSFX_pszName[] = {
     "Sfx\\Walk2.wav",
     "Sfx\\Walk3.wav",
     "Sfx\\Walk4.wav",
-    "Sfxitem\\Bhit.wav", // Unused?
+    "Sfxitem\\Bhit.wav",  // Unused?
     "Sfxitem\\Bhit1.wav", // Unused?
     "Sfxitem\\Chest.wav",
     "Sfxitem\\Doorclos.wav",
@@ -95,20 +98,79 @@ const char *townerSndPaths[] = {
 char MonstSndChar[] = {'a', 'h', 'd', 's'};
 
 //
+// uninitialized variables (.data:00604508)
+//
+
+int sfxdnum;
+TSnd butcher_taunt_sound; // Sfx\\Butcher.wav (Ah fresh meat)
+// ...
+TSnd sound_temp;
+// ...
+
+//
 // code (.text:00464460)
 //
 
 // priv_sound_init	0000000000464460
 // sound_stop	00000000004644B3
-// InitMonsterSND	00000000004644FC
+
+// .text:004644FC
 void InitMonsterSND()
 {
-    // TODO
+    int j;
+    char name[256];
+    int mtype;
+    int k;
+    int i;
+
+    for (i = 0; i < nummtypes; i++)
+    {
+        mtype = Monsters[i].mtype;
+        for (j = 0; j < 4; j++)
+        {
+            if (MonstSndChar[j] != 's' || monsterdata[mtype].snd_special)
+            {
+                for (k = 0; k < 2; k++)
+                {
+                    sprintf(name, monsterdata[mtype].sndfile, MonstSndChar[j], k + 1);
+                    sound_file_load(&sound_temp, name);
+                    Monsters[i].Snds[j][k] = sound_temp;
+                }
+            }
+        }
+        if (mtype == MT_CLEAVER)
+        {
+            sound_file_load(&butcher_taunt_sound, "Sfx\\Butcher.wav");
+        }
+    }
 }
 
-// FreeEffects	000000000046467F
-void FreeEffects()
+// .text:0046467F
+void FreeMonsterSnd()
 {
+    int j;
+    int mtype;
+    int k;
+    int i;
+
+    for (i = 0; i < nummtypes; i++)
+    {
+        mtype = Monsters[i].mtype;
+        for (j = 0; j < 4; j++)
+        {
+            if (MonstSndChar[j] != 's' || monsterdata[mtype].snd_special)
+            {
+                for (k = 0; k < 2; k++)
+                {
+                    sound_file_cleanup(&Monsters[i].Snds[j][k]);
+                }
+            }
+        }
+        if (mtype == MT_CLEAVER)
+        {
+            sound_file_cleanup(&butcher_taunt_sound);
+        }
+    }
     // TODO
 }
 
@@ -116,7 +178,6 @@ void FreeEffects()
 // FreeTownersEffects	00000000004647D8
 void FreeTownersEffects()
 {
-
 }
 
 // PlayEffect	0000000000464821

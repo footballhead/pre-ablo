@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #include "monstdat.h"
+#include "sound.h"
 
 //
 // defines
@@ -45,7 +46,7 @@ typedef enum monster_flag
     // If set then monster _mAnimFrame won't progress. This stops the animation
     // Used by gargoyles and hidden
     MFLAG_LOCK_ANIMATION = 0x02, // verified (see ProcessMonsters)
-    MFLAG_ALLOW_SPECIAL = 0x04, // TODO
+    MFLAG_ALLOW_SPECIAL = 0x04,  // TODO
     MFLAG_NOHEAL = 0x08,
     MFLAG_TARGETS_MONSTER = 0x10,
     MFLAG_GOLEM = 0x20,
@@ -78,8 +79,8 @@ struct CMonster
     DWORD field_10C;
     DWORD field_110;
     DWORD field_114;
-    char Snds;        // TODO: Define TSnd (size == 48?)
-    BYTE gap119[387]; // TODO: Define TSnd
+    TSnd Snds[4][2];
+    BYTE gap278[36]; // ???
     int width;
     int width2;
     unsigned char mMinHP;

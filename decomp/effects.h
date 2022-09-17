@@ -90,7 +90,7 @@ enum _sfx_id
 
 void PlaySFX();
 void PlayRndSFX(int psfx);
-void FreeEffects();
+void FreeMonsterSnd();
 void FreeTownersEffects();
 void InitMonsterSND();
 

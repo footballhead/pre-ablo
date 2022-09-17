@@ -13,6 +13,7 @@
 #include "objects.h"
 #include "player.h"
 #include "quests.h"
+#include "sound.h"
 
 // Scope to contain subscopes. Not actually called.
 void typecheck()
@@ -27,7 +28,7 @@ void typecheck()
         _STATIC_ASSERT(sizeof(CMonster) == 0x2B8);
     }
     {
-        _STATIC_ASSERT(sizeof(DeadStruct) == 0x2D);
+        _STATIC_ASSERT(sizeof(DeadStruct) == 0x30);
     }
     {
         _STATIC_ASSERT(sizeof(ItemDataStruct) == 0x48);
@@ -62,6 +63,9 @@ void typecheck()
     }
     {
         _STATIC_ASSERT(sizeof(SpellStruct) == 0x6C);
+    }
+    {
+        _STATIC_ASSERT(sizeof(TSnd) == 0x2C);
     }
     {
         _STATIC_ASSERT(sizeof(UItemStruct) == 0x58);
