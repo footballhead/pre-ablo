@@ -24,6 +24,12 @@ struct TSnd
 };
 
 //
+// variables
+//
+
+extern LPDIRECTSOUND sglpDS;
+
+//
 // functions
 //
 

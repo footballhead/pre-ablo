@@ -23,6 +23,7 @@ extern BYTE vCrawlTable[23][30];
 // functions
 //
 
+void MakeLightTable();
 int AddLight(int x, int y, int r);
 void AddUnLight(int i);
 void DoLighting(int nXPos, int nYPos, int nRadius, int Lnum);

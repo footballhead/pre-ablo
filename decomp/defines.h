@@ -46,4 +46,6 @@
 
 #define COL_RED 2
 
+#define NUMLEVELS 17
+
 #endif

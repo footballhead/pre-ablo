@@ -240,6 +240,18 @@ struct PlayerStruct
 extern int gbActivePlayers;
 extern PlayerStruct plr[MAX_PLRS];
 extern int myplr;
+extern DWORD dword_605474;
+extern DWORD dword_615F14;
+extern DWORD dword_615F18;
+extern DWORD dword_615F1C;
+extern DWORD dword_615F20;
+extern DWORD dword_615F24;
+extern DWORD dword_615F28;
+extern DWORD dword_615F2C;
+extern DWORD dword_615F30;
+extern DWORD dword_615F34;
+extern DWORD dword_615F38;
+extern DWORD dword_605390;
 
 //
 // functions

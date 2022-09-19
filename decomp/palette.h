@@ -10,8 +10,9 @@
 //
 
 extern PALETTEENTRY system_palette[256];
-extern PALETTEENTRY menu_palette[256];
 extern BYTE palette_buffer[256 * 4];
+extern PALETTEENTRY menu_palette[256];
+extern DWORD fade_state;
 
 //
 // functions

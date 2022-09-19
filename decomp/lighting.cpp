@@ -451,7 +451,13 @@ void DoLighting(int nXPos, int nYPos, int nRadius, int Lnum)
 // DoUnLight    000000000042EB01
 // DoUnVision    000000000042EBF3
 // DoVision    000000000042ECE8
-// MakeLightTable    000000000042F267
+
+// .text:0042F267
+void MakeLightTable()
+{
+    // TODO
+}
+
 // ResetLight    000000000042F8E5
 // ToggleLight    000000000042FA32
 // InitLightMax    000000000042FB92

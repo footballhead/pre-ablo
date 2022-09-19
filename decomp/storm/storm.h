@@ -54,6 +54,40 @@ SDrawManualInitialize(
 
 int __stdcall SFileSetFilePointer(HANDLE,int,HANDLE,int);
 
+/*  SDrawManualInitialize
+ *
+ *  Sets the DirectDraw variables to be referenced in Storm.
+ *
+ *  hWnd:           The handle of the DirectDraw window.
+ *  ddInterface:    The DirectDraw interface.
+ *  primarySurface: The first and primary surface.
+ *  surface2:       A second surface. Behaviour not completely known.
+ *  backSurface:    The fourth and final surface. The back surface.
+ *  ddPalette:      The DirectDraw palette if the application requires it.
+ *  hPalette:       The palette handle that belongs to the window.
+ *                  If this is NULL and ddPalette is specified, then it
+ *                  will be created automatically. A palette can be created
+ *                  using the CreatePalette WinAPI function.
+ *
+ *  Returns FALSE if no variables were specified.
+ */
+BOOL
+STORMAPI
+SDrawManualInitialize(
+     HWND hWnd,
+     LPDIRECTDRAW ddInterface,
+     LPDIRECTDRAWSURFACE primarySurface,
+     LPDIRECTDRAWSURFACE surface2,
+     LPDIRECTDRAWSURFACE backSurface,
+     LPDIRECTDRAWPALETTE ddPalette,
+     HPALETTE hPalette);
+
+BOOL STORMAPI SFileDdaInitialize(HANDLE directsound);
+BOOL STORMAPI SVidPlayEnd(HANDLE video);
+BOOL STORMAPI SVidPlayBegin(const char *filename, int a2, int a3, int a4, int flags, HANDLE *video);
+BOOL __cdecl SVidPlayContinue(void);
+BOOL STORMAPI SFileDdaBegin(HANDLE hFile, DWORD flags, DWORD mask);
+
 #ifdef __cplusplus
 }
 #endif

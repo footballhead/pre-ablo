@@ -103,6 +103,8 @@ char MonstSndChar[] = {'a', 'h', 'd', 's'};
 
 int sfxdnum;
 TSnd butcher_taunt_sound; // Sfx\\Butcher.wav (Ah fresh meat)
+TSnd snd_towners[7];
+TSnd sgSFX[75];
 // ...
 TSnd sound_temp;
 // ...
@@ -111,7 +113,16 @@ TSnd sound_temp;
 // code (.text:00464460)
 //
 
-// priv_sound_init	0000000000464460
+// .text:00464460
+void priv_sound_init()
+{
+    int i;
+
+    for (i = 0; i < 75; i++) {
+        sound_file_load(&sgSFX[i], sgSFX_pszName[i]);
+    }
+}
+
 // sound_stop	00000000004644B3
 
 // .text:004644FC
@@ -171,7 +182,6 @@ void FreeMonsterSnd()
             sound_file_cleanup(&butcher_taunt_sound);
         }
     }
-    // TODO
 }
 
 // InitTownersSND	0000000000464785

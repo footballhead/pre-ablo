@@ -12,5 +12,6 @@ extern int PitchTbl[1024];
 //
 
 void ScrollView();
+void ClearScreenBuffer();
 
 #endif

@@ -4,10 +4,12 @@
 #include "storm/storm.h"
 #include <direct.h>
 #include <stdio.h>
+#include <time.h>
 #include <windows.h>
 
 #include "control.h"
 #include "cursor.h"
+#include "defines.h"
 #include "effects.h"
 #include "engine.h"
 #include "enums.h"
@@ -15,6 +17,7 @@
 #include "gendung.h"
 #include "gmenu.h"
 #include "interfac.h"
+#include "lighting.h"
 #include "missiles.h"
 #include "monster.h"
 #include "multi.h"
@@ -22,6 +25,7 @@
 #include "palette.h"
 #include "player.h"
 #include "scrollrt.h"
+#include "sound.h"
 #include "spells.h"
 #include "town.h"
 
@@ -29,6 +33,7 @@
 // forward decl
 //
 
+void diablo_init_screen();
 BOOL init_create_window(HINSTANCE hInstance, int nShowCmd);
 void game_logic();
 void dx_cleanup();
@@ -92,7 +97,11 @@ DWORD frames;         // updated regularly
 DWORD frames_drawn;   // updated regulary
 DWORD draw_framerate; // 1sec snapshot
 int framerate;        // 1sec snapshot
-// ...
+DWORD dword_61B714;   // UNUSED
+DWORD dword_61B718;   // UNUSED; set to 0, never read
+DWORD dword_61B71C;   // UNUSED; set to 0, never read
+DWORD dword_61B720;   // UNUSED; set to 768, never read
+DWORD dword_61B724;   // UNUSED; set to 656, never used
 LPDIRECTDRAWSURFACE lpDDSBackBuf;
 HWND ghMainWnd;
 int MouseX;
@@ -101,14 +110,21 @@ DWORD dword_61B738; // UNUSED
 int screenshot_idx;
 DWORD dword_61B740; // TODO TODO TODO
 DWORD dword_61B744; // UNUSED
-BOOL can_fade;
+BOOL did_paint_PostMessage;
 LPDIRECTDRAWPALETTE lpDDPalette;
-int main_menu_screen;
+int gMode; // enum game_mode
 BOOL shouldStopPaintTimer;
 DWORD dword_61B758; // UNUSED; set to 0, never read
-// ...
+UINT paint_event_timer_id;
+DWORD dword_61B760; // UNUSED
+DWORD dword_61B764; // UNUSED
+UINT paint_event_timer_delay;
+DWORD dword_61B76C; // UNUSED
 char savedir_abspath[64];
+TIMECAPS timecaps;
 // ...
+int timer_expiry_per_second; // UNUSED; set, never read
+UINT paint_event_timer_resolution;
 BOOL fullscreen;        // only value is TRUE
 BOOL dd_use_backbuffer; // only value is FALSE
 DWORD dword_61BF50;     // UNUSED
@@ -123,7 +139,7 @@ DWORD prevTime;
 // Compiler-generated alignment to put array on 8-byte boundary
 char fileLoadPrefix[64];
 DWORD dword_61BFB8;
-HANDLE mpq_handle;
+HANDLE diabdat_mpq;
 DWORD dword_61BFC0; // UNUSED
 LPDIRECTDRAW lpDDInterface;
 BOOL some_DirectDraw_option;
@@ -160,9 +176,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
 
     allow_mp_action_send = TRUE;
-    can_fade = TRUE;
+    did_paint_PostMessage = TRUE;
     shouldStopPaintTimer = FALSE;
-    main_menu_screen = 0;
+    gMode = MODE_BLIZ_LOGO;
     some_DirectDraw_option = TRUE;
     frames = 0;
     frames_drawn = 0;
@@ -257,7 +273,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         // Menus, etc. are handled by their own WndProc. This loop only does
         // core gameplay
-        if (main_menu_screen != MODE_GAME)
+        if (gMode != MODE_GAME)
         {
             continue;
         }
@@ -330,13 +346,15 @@ BOOL dx_init(HWND hWnd)
         hDDVal = DirectDrawCreate(NULL, &lpDDInterface, NULL);
         if (hDDVal != DD_OK)
         {
-            goto error0;
+            goto dd_create_err;
+            goto cleanup;
         }
 
         hDDVal = lpDDInterface->SetCooperativeLevel(hWnd, DDSCL_NORMAL);
         if (hDDVal != DD_OK)
         {
-            goto error1;
+            goto set_coop_err;
+            goto cleanup;
         }
 
         dwStyle = GetWindowLongA(hWnd, GWL_STYLE);
@@ -413,19 +431,22 @@ BOOL dx_init(HWND hWnd)
         hDDVal = DirectDrawCreate(NULL, &lpDDInterface, NULL);
         if (hDDVal != DD_OK)
         {
-            goto error2;
+            goto dd_create_fs_err;
+            goto cleanup;
         }
 
         hDDVal = lpDDInterface->SetCooperativeLevel(hWnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE);
         if (hDDVal != DD_OK)
         {
-            goto error3;
+            goto set_coop_fs_err;
+            goto cleanup;
         }
 
         hDDVal = lpDDInterface->SetDisplayMode(640, 480, 8);
         if (hDDVal != DD_OK)
         {
-            goto error4;
+            goto set_mode_err;
+            goto cleanup;
         }
 
         memset(&ddsd, 0, sizeof(ddsd));
@@ -439,78 +460,186 @@ BOOL dx_init(HWND hWnd)
         lpDDSPrimary = lpDDSBackBuf;
         if (hDDVal != DD_OK)
         {
-            goto error5;
+            goto surface_err;
+            goto cleanup;
         }
     }
 
     lpDDInterface->CreatePalette(DDPCAPS_8BIT, system_palette, &lpDDPalette, NULL);
     if (lpDDPalette == NULL)
     {
-        goto error6;
+        goto palette_err;
+        goto cleanup;
     }
 
     hDDVal = lpDDSBackBuf->SetPalette(lpDDPalette);
     if (hDDVal != DD_OK)
     {
-        goto error7;
+        goto set_pal_err;
+        goto cleanup;
     }
 
     SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 
     snd_init(hWnd);
-    // SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
-    // if (debugMusicOn)
-    // {
-    //     SFileDdaInitialize(sglpDS);
-    // }
-    // if (musicFromDisk)
-    // {
-    //     Mopaq_479075(20, 10, 0x8000);
-    //     if (SNDCPP_InitThread() == 0)
-    //     {
-    //         return FALSE;
-    //     }
-    //     music_start("Music\\Dintro.wav");
-    // }
+    SDrawManualInitialize(hWnd, lpDDInterface, lpDDSBackBuf, NULL, NULL, lpDDPalette, NULL);
+    if (debugMusicOn)
+    {
+        SFileDdaInitialize(sglpDS);
+    }
+
+    if (musicFromDisk)
+    {
+        // TODO
+        //     Mopaq_479075(20, 10, 0x8000);
+        //     if (SNDCPP_InitThread() == 0)
+        //     {
+        //         return FALSE;
+        //     }
+        //     music_start_NoStorm("Music\\Dintro.wav");
+    }
 
     GdiSetBatchLimit(1);
     ShowCursor(FALSE);
-    // init_multi_with_time_srand();
+    diablo_init_screen();
+    gpBuffer = (BYTE *)DiabloAllocPtr(BUFFER_WIDTH * BUFFER_HEIGHT);
+    set_did_paint_PostMessage(TRUE);
 
-    // TODO
+    timeGetDevCaps(&timecaps, sizeof(TIMECAPS));
+    paint_event_timer_resolution = timecaps.wPeriodMin;
+    paint_event_timer_delay = timecaps.wPeriodMin <= 5 ? 5 : timecaps.wPeriodMin;
+    timer_expiry_per_second = 1000 / paint_event_timer_delay;
+    timeBeginPeriod(paint_event_timer_resolution);
+    prev_timer_PostMessage_time = timeGetTime();
+    prevTime = prev_timer_PostMessage_time;
+    paint_event_timer_id = timeSetEvent(paint_event_timer_delay,
+                                        paint_event_timer_resolution,
+                                        PaintEventTimer,
+                                        (DWORD_PTR)hWnd,
+                                        TIME_PERIODIC);
+    PostMessageA(hWnd, WM_DIABNEXTMODE, 0, 0);
+    return TRUE;
 
-error:
+cleanup:
     dx_cleanup();
     MessageBoxA(hWnd, "DirectDraw Init FAILED", "Diablo Demo", MB_OK);
     DestroyWindow(hWnd);
     return FALSE;
-error7:
-    goto error;
-error6:
-    goto error;
-error5:
-    goto error;
-error4:
-    goto error;
-error3:
-    goto error;
-error2:
-    goto error;
-error1:
-    goto error;
-error0:
-    goto error;
+set_pal_err:
+    goto cleanup;
+palette_err:
+    goto cleanup;
+surface_err:
+    goto cleanup;
+set_mode_err:
+    goto cleanup;
+set_coop_fs_err:
+    goto cleanup;
+dd_create_fs_err:
+    goto cleanup;
+set_coop_err:
+    goto cleanup;
+dd_create_err:
+    goto cleanup;
 }
 
-// WNDPROC_mode0_blizzard_intro	00000000004853DA
+// .text:004853DA
+LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+    BOOL bSuccess; // unused
+
+    switch (Msg)
+    {
+    case WM_ACTIVATEAPP:
+        if (gbActive)
+        {
+            palette_update();
+        }
+        break;
+        break; // there are 3 jumps total...
+        break;
+    case WM_LBUTTONDOWN:
+    case WM_KEYFIRST:
+    case WM_CHAR:
+    case WM_RBUTTONDOWN:
+        if (hCurrentVideo)
+        {
+            SVidPlayEnd(hCurrentVideo);
+        }
+        break;
+    case WM_DIABNEXTMODE:
+        bSuccess = SFileOpenArchive("diabdat.mpq", 0, 0, &diabdat_mpq);
+        priv_sound_init();
+        MakeLightTable();
+        InitCursor();
+        InitLevelCursor(hWnd);
+        if (!show_intros)
+        {
+            interfac_init_title_play_music();
+            LoadPalette("Gendata\\Quotes.pal", palette_buffer);
+        }
+        else
+        {
+            interfac_play_vid_draw_quotes();
+            LoadPalette("Gendata\\Quotes.pal", palette_buffer);
+        }
+
+        // TODO
+        break;
+    case WM_DIABPAINT:
+        // TODO
+        break;
+    case 0x3B9: // ???
+        return 0;
+    }
+
+    return DefWindowProcA(hWnd, Msg, wParam, lParam);
+}
+
 // diablo_48565F	000000000048565F
 // GM_Game	00000000004865C4
-// MainWndProc	00000000004881C9
+
+// .text:004881C9
+LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (gMode)
+    {
+    case MODE_BLIZ_LOGO:
+        return WndProc_BlizLogo(hWnd, Msg, wParam, lParam);
+    case MODE_MAINMENU:
+        // TODO
+        break;
+    case MODE_NEWGAME:
+        // TODO
+        break;
+    case MODE_GAME:
+        // TODO
+        break;
+    case MODE_INTRO_VID:
+        // TODO
+        break;
+    case MODE_DEMO_END:
+        // TODO
+        break;
+    case MODE_PROGRESS:
+        // TODO
+        break;
+    }
+
+    return DefWindowProcA(hWnd, MSG, wParam, lParam);
+}
 
 // .text:004882F9
-void wait_for_paint()
+void set_did_paint_PostMessage(BOOL b)
 {
-    // TODO
+    while (paint_callback_mutex)
+    {
+        // loop until set to 0
+    }
+
+    paint_callback_mutex = 1;
+    did_paint_PostMessage = b;
+    paint_callback_mutex = 0;
 }
 
 // .text:0048833D
@@ -543,9 +672,9 @@ void CALLBACK PaintEventTimer(UINT uTimerID,
 
     if (now - prev_timer_PostMessage_time >= 50)
     {
-        if (can_fade == FALSE)
+        if (did_paint_PostMessage == FALSE)
         {
-            can_fade = TRUE;
+            did_paint_PostMessage = TRUE;
             if (paint_mutex == FALSE)
             {
                 PostMessage((HWND)dwUser, WM_DIABPAINT, 0, 0);
@@ -564,8 +693,91 @@ void CALLBACK PaintEventTimer(UINT uTimerID,
     paint_callback_mutex = FALSE;
 }
 
-// InitLevelType	0000000000488442
-// init_multi_with_time_srand	00000000004884C8
+// .text:00488442
+int InitLevelType(int l)
+{
+    if (l == 0)
+        return DTYPE_TOWN;
+    if (l >= 1 && l <= 4)
+        return DTYPE_CATHEDRAL;
+    if (l >= 5 && l <= 8)
+        return DTYPE_CATACOMBS;
+    if (l >= 9 && l <= 12)
+        return DTYPE_CAVES;
+
+    return DTYPE_HELL;
+}
+
+// .text:004884C8
+void diablo_init_screen()
+{
+    int i;
+    time_t *seed_time; // never initialized :O
+    int j;
+
+    // Set, but never read again...
+    dword_61B718 = 0;
+    dword_61B71C = 0;
+    dword_61B720 = BUFFER_WIDTH;
+    dword_61B724 = BUFFER_HEIGHT;
+    dword_61BF58 = 0;
+    dword_61BF5C = 0;
+    dword_61BF60 = SCREEN_WIDTH;
+    dword_61BF64 = SCREEN_HEIGHT;
+
+    if (debug_mode)
+    {
+        for (i = 0; i < 4; i++)
+        {
+            for (j = 0; j < NUMLEVELS; j++)
+            {
+                plr[i]._pSeedTbl[j] = j;
+                plr[i]._pLevelTypeTbl[j] = InitLevelType(j);
+            }
+        }
+    }
+    else
+    {
+        srand(time(seed_time));
+        for (i = 0; i < 4; i++)
+        {
+            for (j = 0; j < NUMLEVELS; j++)
+            {
+                plr[i]._pSeedTbl[j] = random_(0x8000);
+                plr[i]._pLevelTypeTbl[j] = InitLevelType(j);
+            }
+        }
+    }
+
+    MouseX = SCREEN_WIDTH / 2;
+    MouseY = SCREEN_HEIGHT / 2;
+    fade_state = 0;
+    ScrollInfo._sdx = 0;
+    ScrollInfo._sdy = 0;
+    ScrollInfo._sxoff = 0;
+    ScrollInfo._syoff = 0;
+    ScrollInfo._sdir = 0;
+    screenshot_idx = 0;
+
+    for (j = 0; j < 1024; j++)
+    {
+        PitchTbl[i] = i * BUFFER_WIDTH;
+    }
+
+    // All of these are set but never used.
+    dword_615F18 = 0;
+    dword_605474 = 0;
+    dword_615F14 = 0;
+    dword_605390 = 0; // This might actually be used
+    dword_615F1C = 0;
+    dword_615F20 = 0;
+    dword_615F24 = 0;
+    dword_615F28 = 0;
+    dword_615F2C = 0;
+    dword_615F30 = 0;
+    dword_615F34 = 0;
+    dword_615F38 = 0;
+}
 
 // .text:00488769
 BOOL init_create_window(HINSTANCE hInstance, int nShowCmd)
@@ -574,7 +786,7 @@ BOOL init_create_window(HINSTANCE hInstance, int nShowCmd)
     WNDCLASSA wc;
 
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    // wc.lpfnWndProc = MainWndProc; // TODO!
+    wc.lpfnWndProc = &MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInstance;

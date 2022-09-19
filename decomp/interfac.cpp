@@ -1,8 +1,14 @@
-#include "diablo.h"
+#include "interfac.h"
 
-#include "palette.h"
-
+#include <stdio.h>
 #include <windows.h>
+#include "storm/storm.h"
+
+#include "scrollrt.h"
+#include "diablo.h"
+#include "engine.h"
+#include "gmenu.h"
+#include "palette.h"
 
 //
 // initialized variables (.data:004AA608)
@@ -27,18 +33,99 @@ char interfac_mfontkern[] = {
     12, 11, 21, 23};
 
 //
+// uninitiailzed variables (.data:005DE8D0)
+//
+
+int quote_timer;
+HANDLE hCurrentVideo;
+// ...
+char menu_to_draw;         // TODO is this an int?
+char menu_allow_key_input; // TODO is this an int?
+char fade_param;           // TODO is this an int?
+int menu_selection_index;
+int pentSpinFrame;
+int titleLogoFrame;
+BYTE *pMenuBackgroundCel;
+BYTE *pTitlTextCel;
+BYTE *pPenTitleCel;
+BYTE *pTitleQTxtCel;
+BYTE *pDiabFrCel;
+// ...
+char byte_5DE90C; // UNUSED; set to 0, never read
+// ...
+char game00_abspath[256];
+char did_find_game00;
+
+//
 // code (.text:00418F10)
 //
 
 // print_title_str_large	0000000000418F10
 // print_title_str_small	0000000000418FB2
 // DrawProgress	0000000000419044
-// Title_FindSaveGame	00000000004190AE
+
+// .text:004190AE
+char Title_FindSaveGame()
+{
+    char buffer[52];
+
+    did_find_game00 = 0;
+    sprintf(game00_abspath, "%s%s", savedir_abspath, "\\Game00.sav");
+    _searchenv(game00_abspath, NULL, buffer);
+    if (*buffer)
+    {
+        did_find_game00 = did_find_game00 | 0x80; // wtf
+    }
+}
+
 // mainmenu_draw	0000000000419111
+void mainmenu_draw()
+{
+    // TODO
+}
+
 // paint_select_class	00000000004192DE
+void paint_select_class()
+{
+    // TODO
+}
+
 // paint_title_cel	000000000041962C
+void paint_title_cel()
+{
+    // TODO
+}
+
 // DrawCutscene	0000000000419746
-// switch_title_option	00000000004197F7
+void DrawCutscene()
+{
+    // TODO
+}
+
+// .text:004197F7
+void draw_switch_title_option(int menu_to_draw_index)
+{
+    byte_5DE90C = 0;
+    switch (menu_to_draw_index)
+    {
+    case 1:
+        mainmenu_draw();
+        break;
+    case 2:
+        paint_select_class();
+        break;
+    case 3:
+        ClearScreenBuffer();
+        paint_title_cel();
+        break;
+    case 4:
+        DrawCutscene();
+        break;
+        break;
+    }
+    force_redraw = 4;
+}
+
 // interface_pump_quotes_screens	0000000000419882
 // interface_pump_title_message	0000000000419982
 // interface_pump_progress	0000000000419ADD
@@ -76,8 +163,66 @@ LRESULT ShowProgress(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
-// interfac_play_vid_draw_quotes	000000000041BC8B
-// interfac_init_title_play_music	000000000041BD5E
+// .text:0041BC8B
+void interfac_play_vid_draw_quotes()
+{
+    MSG Msg;
+
+    SVidPlayBegin("gendata\\logo.smk", 0, 0, 0, 0x10080200, &hCurrentVideo); // TODO what is 0x10080200
+    while (SVidPlayContinue())
+    {
+        while (PeekMessageA(&Msg, NULL, 0, 0, PM_REMOVE))
+        {
+            if (Msg.message == WM_QUIT)
+            {
+                ExitProcess(0);
+            }
+            else
+            {
+                TranslateMessage(&Msg);
+                DispatchMessageA(&Msg);
+            }
+        }
+    }
+    SVidPlayEnd(hCurrentVideo);
+
+    pMenuBackgroundCel = LoadFileInMem("Gendata\\Quotes.CEL");
+    menu_selection_index = 1;
+    CelDraw(64, 639, pMenuBackgroundCel, 1, 640);
+    quote_timer = 100;
+}
+
+// .text:0041BD5E
+void interfac_init_title_play_music()
+{
+    fade_param = 0;
+    menu_allow_key_input = 0;
+
+    if (!sghMusic && debugMusicOn)
+    {
+        SFileOpenFile("Music\\Dintro.WAV", &sghMusic);
+        SFileDdaBegin(sghMusic, 0x40000, 0x40000);
+    }
+
+    pMenuBackgroundCel = LoadFileInMem("Gendata\\Titlgray.CEL");
+    pTitlTextCel = LoadFileInMem("Gendata\\Titltext.CEL");
+    pPenTitleCel = LoadFileInMem("Gendata\\Pentitle.CEL");
+    pTitleQTxtCel = LoadFileInMem("Gendata\\Titlqtxt.CEL");
+    pDiabFrCel = LoadFileInMem("Gendata\\Diabfr.CEL");
+
+    menu_selection_index = 0;
+    pentSpinFrame = 1;
+    titleLogoFrame = 1;
+
+    Title_FindSaveGame();
+    if (did_find_game00)
+    {
+        title_allow_loadgame = TRUE;
+    }
+
+    menu_to_draw = 1;
+    // TODO
+}
 // interfac_set_player_some	000000000041BE60
 // interfac_init_exit_screens	000000000041BEC4
 // InitCutscene	000000000041BF78

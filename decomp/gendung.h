@@ -94,6 +94,7 @@ extern int ViewX;
 extern int ViewY;
 extern int MouseOffX; // This value is used but never initalized :X
 extern int MouseOffY; // This value is used but never initalized :X
+extern ScrollStruct ScrollInfo;
 
 //
 // functions

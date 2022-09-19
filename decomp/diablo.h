@@ -8,6 +8,7 @@
 //
 
 #define WM_DIABPAINT WM_USER
+#define WM_DIABNEXTMODE WM_USER+8
 
 //
 // variables
@@ -22,6 +23,8 @@ extern BOOL demo_mode;
 extern BOOL debug_mode;
 extern char savedir_abspath[64];
 extern int force_redraw;
+extern BOOL debugMusicOn;
+extern HANDLE sghMusic;
 
 //
 // functions

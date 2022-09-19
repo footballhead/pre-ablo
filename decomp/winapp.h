@@ -3,12 +3,13 @@
 
 #include <windows.h>
 
-// .text:004776F0
-// No side effects? does nothing?
+// Does nothing.
+// Uses TermMsg, which means this will crash if lpFormat + args are > 512 chars
+// Despite the name, this does not halt the program
 void winapp_print_fatal(LPCTSTR msg, int lineno);
 
-// .text:00477768
-// No side effects? does nothing?
+// Calls wvsprintf but does nothing with the result.
+// Will crash if lpFormat + args are > 512 chars
 void TermMsg(LPCTSTR lpFormat, ...);
 
 // .text:00477799

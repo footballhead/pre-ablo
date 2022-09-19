@@ -1,5 +1,7 @@
 #include "scrollrt.h"
 
+#include "defines.h"
+
 //
 // Uninitialized variables
 //
@@ -28,7 +30,26 @@ int PitchTbl[1024];
 // SVGADrawView	0000000000480BD6
 // VGADrawView	0000000000480EC1
 // DrawView	000000000048120E
-// ClearScreenBuffer	00000000004813C2
+
+// .text:004813C2
+// Fill the visible area with 0s
+void ClearScreenBuffer()
+{
+    __asm {
+        mov edi, gpBuffer
+        add edi, 122944 //; (BUFFER_WIDTH) * BORDER_TOP
+        // shouldn't edi have an additional BUFFER_LEFT?
+        mov edx, 480 //; SCREEN_HEIGHT
+        xor eax, eax
+
+    blank_row:
+        mov ecx, 160 //; SCREEN_WIDTH / 4
+        rep stosd
+        add edi, 128 //; BUFFER_LEFT + BUFFER_RIGHT
+        dec edx
+        jnz blank_row
+    }
+}
 
 // ScrollView	00000000004813F9
 void ScrollView()

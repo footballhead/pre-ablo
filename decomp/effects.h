@@ -88,6 +88,7 @@ enum _sfx_id
 // functions
 //
 
+void priv_sound_init();
 void PlaySFX();
 void PlayRndSFX(int psfx);
 void FreeMonsterSnd();
