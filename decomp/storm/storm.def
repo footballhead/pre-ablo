@@ -35,7 +35,7 @@ EXPORTS
     SDrawGetScreenSize @34
     SDrawGetServiceLevel @35
     SDrawLockSurface @36
-    SDrawManualInitialize @37
+    SDrawManualInitialize@28 @37
     SDrawMessageBox @38
     SDrawPostClose @39
     SDrawSelectGdiSurface @40
@@ -49,10 +49,10 @@ EXPORTS
     SEvtUnregisterType @48
     SFileCloseArchive@4 @49
     SFileCloseFile@4 @50
-    SFileDdaBegin @51
+    SFileDdaBegin@12 @51
     SFileDdaDestroy @52
-    SFileDdaEnd @53
-    SFileDdaInitialize @54
+    SFileDdaEnd@24 @53
+    SFileDdaInitialize@4 @54
     SFileDestroy @55
     SFileGetFileSize@8 @56
     SFileOpenArchive@16 @57
@@ -125,8 +125,8 @@ EXPORTS
     SVidGetPerformanceData @123
     SVidGetSize @124
     SVidInitialize @125
-    SVidPlayBegin @126
+    SVidPlayBegin@24 @126
     SVidPlayContinue @127
     SVidPlayContinueSingle @128
-    SVidPlayEnd @129
+    SVidPlayEnd@4 @129
     StormDestroy @130

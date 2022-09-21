@@ -1,6 +1,7 @@
 #include "scrollrt.h"
 
 #include "defines.h"
+#include "diablo.h"
 
 //
 // Uninitialized variables

@@ -60,6 +60,7 @@ void __dc_debug_print_number(int x, int y, char fmt, int to_print)
 
 // .text:0044ACCF
 // Encode gpBuffer as a PCX (RLE compress data, slap on PCX header) and save to disk
+// TODO is palette actually LPPALETTEENTRY?
 void CaptureScreen(int pic_idx, BYTE *palette)
 {
     char path[512];

@@ -9,7 +9,7 @@
 //
 
 // wtf is this? nobody references it
-char registration_block[128] = "REGISTRATION_BLOCK";
+static char registration_block[128] = "REGISTRATION_BLOCK";
 const BYTE fontframe[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

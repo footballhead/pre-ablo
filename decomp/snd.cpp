@@ -4,6 +4,10 @@
 #include "sound.h"
 #include "winapp.h"
 
+// TODO add to header
+unsigned __stdcall SNDCPP_ThreadProc(void *pArguments);
+void SNDCPP_LoadFile();
+
 //
 // uninitialized variables (.data:005F6ED8)
 //
@@ -63,6 +67,8 @@ unsigned __stdcall SNDCPP_ThreadProc(void *pArguments)
         EnterCriticalSection(&gSndCriticalSection);
     }
     LeaveCriticalSection(&gSndCriticalSection);
+
+    return 0;
 }
 
 // .text:00430B87

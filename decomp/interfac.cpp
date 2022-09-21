@@ -50,6 +50,7 @@ BYTE *pTitlTextCel;
 BYTE *pPenTitleCel;
 BYTE *pTitleQTxtCel;
 BYTE *pDiabFrCel;
+BYTE *pCelThatIsNeverLoadedSoIdk;
 // ...
 char byte_5DE90C; // UNUSED; set to 0, never read
 // ...
@@ -60,12 +61,14 @@ char did_find_game00;
 // code (.text:00418F10)
 //
 
+// TODO These functions really need to be renamed
+
 // print_title_str_large	0000000000418F10
 // print_title_str_small	0000000000418FB2
 // DrawProgress	0000000000419044
 
 // .text:004190AE
-char Title_FindSaveGame()
+void Title_FindSaveGame()
 {
     char buffer[52];
 
@@ -90,10 +93,32 @@ void paint_select_class()
     // TODO
 }
 
-// paint_title_cel	000000000041962C
+// .text:0041962C
+// This will crash if menu_selection_index is 6 (that cel is not loaded)
 void paint_title_cel()
 {
-    // TODO
+    switch (menu_selection_index)
+    {
+    case 1:
+        CelDraw(64, 639, pMenuBackgroundCel, 1, 640);
+        break;
+    case 2:
+        CelDraw(64, 639, pTitlTextCel, 1, 640);
+        break;
+    case 3:
+        CelDraw(64, 639, pPenTitleCel, 1, 640);
+        break;
+    case 4:
+        CelDraw(64, 639, pTitleQTxtCel, 1, 640);
+        break;
+    case 5:
+        CelDraw(64, 639, pDiabFrCel, 1, 640);
+        break;
+    case 6:
+        // mystery background cel :eyes:
+        CelDraw(64, 639, pCelThatIsNeverLoadedSoIdk, 1, 640);
+        break;
+    }
 }
 
 // DrawCutscene	0000000000419746
@@ -150,7 +175,7 @@ LRESULT ShowProgress(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         gbActive = wParam;
         if (gbActive)
         {
-            palette_update();
+            ResetPal();
         }
         return 0;
     case WM_DESTROY:
@@ -164,7 +189,12 @@ LRESULT ShowProgress(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 }
 
 // .text:0041BC8B
-void interfac_play_vid_draw_quotes()
+// Play the Blizzard Logo. This technically blocks until the end of the video,
+// but not completely since it runs the event loop. At the end of the video,
+// the quotes are drawn and a timer is started.
+//
+// Only called if show_intros == TRUE
+void interfac_PlayLogo_DrawQuotes()
 {
     MSG Msg;
 

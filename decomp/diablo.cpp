@@ -30,13 +30,19 @@
 #include "town.h"
 
 //
-// forward decl
+// forward decl (TODO declare in header?)
 //
 
 void diablo_init_screen();
 BOOL init_create_window(HINSTANCE hInstance, int nShowCmd);
 void game_logic();
 void dx_cleanup();
+void set_did_paint_PostMessage(BOOL b);
+void CALLBACK PaintEventTimer(UINT uTimerID,
+                              UINT uMsg,
+                              DWORD_PTR dwUser,
+                              DWORD_PTR dw1,
+                              DWORD_PTR dw2);
 
 //
 // initialized vars (.data:004BC0A8)
@@ -544,7 +550,9 @@ dd_create_err:
 }
 
 // .text:004853DA
-LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
+// The wndproc for the blizzard logo/quotes.cel screen. Skip if
+// show_intros == FALSE. Otherwise, next step is the intro video.
+static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
     BOOL bSuccess; // unused
 
@@ -553,7 +561,7 @@ LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     case WM_ACTIVATEAPP:
         if (gbActive)
         {
-            palette_update();
+            ResetPal();
         }
         break;
         break; // there are 3 jumps total...
@@ -565,9 +573,10 @@ LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         if (hCurrentVideo)
         {
             SVidPlayEnd(hCurrentVideo);
+            // Ending the video allows interfac_PlayLogo_DrawQuotes to finish
         }
         break;
-    case WM_DIABNEXTMODE:
+    case WM_DIABMODEINIT:
         bSuccess = SFileOpenArchive("diabdat.mpq", 0, 0, &diabdat_mpq);
         priv_sound_init();
         MakeLightTable();
@@ -576,15 +585,26 @@ LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         if (!show_intros)
         {
             interfac_init_title_play_music();
-            LoadPalette("Gendata\\Quotes.pal", palette_buffer);
+            LoadPalette("Gendata\\Quotes.pal", orig_palette);
         }
         else
         {
-            interfac_play_vid_draw_quotes();
-            LoadPalette("Gendata\\Quotes.pal", palette_buffer);
+            // This will block until the video is done playing
+            interfac_PlayLogo_DrawQuotes();
+            LoadPalette("Gendata\\Quotes.pal", orig_palette);
         }
 
-        // TODO
+        set_did_paint_PostMessage(FALSE);
+        if (!show_intros) {
+            gMode = MODE_MAINMENU;
+        } else {
+            gMode = MODE_INTRO_VID;
+        }
+
+        CopyPalette(logical_palette, orig_palette);
+        PaletteFadeIn(32);
+        force_redraw = 4;
+
         break;
     case WM_DIABPAINT:
         // TODO
@@ -600,6 +620,10 @@ LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 // GM_Game	00000000004865C4
 
 // .text:004881C9
+// This is THE wndproc used by the game window. It delegates to subroutines
+// depending on game mode (gMode) but the wndproc itself is never changes.
+//
+// This largely just handles event processing and other non-game state.
 LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
     switch (gMode)
@@ -614,6 +638,7 @@ LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         break;
     case MODE_GAME:
         // TODO
+        // GM_Game does input processing. game_logic uses that to progress game state.
         break;
     case MODE_INTRO_VID:
         // TODO
@@ -626,7 +651,7 @@ LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-    return DefWindowProcA(hWnd, MSG, wParam, lParam);
+    return DefWindowProcA(hWnd, Msg, wParam, lParam);
 }
 
 // .text:004882F9

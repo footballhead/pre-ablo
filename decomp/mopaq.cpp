@@ -2,6 +2,11 @@
 
 #include "winapp.h"
 
+// TODO add to header
+void sub_478FA5();
+void sub_478FCA();
+void sub_478FEF();
+
 //
 // initialized variables (.data:004BB88C)
 //
