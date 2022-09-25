@@ -6,7 +6,7 @@ mpqadd:
     - cd diabutil
     - mkdir build
     - cd build
-    - cmake ..
+    - cmake -G Ninja ..
     - ninja
   artifacts:
     paths:
