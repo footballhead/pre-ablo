@@ -3,7 +3,7 @@ mpqadd:
   image: "conanio/gcc11-ubuntu16.04"
   stage: build
   script:
-    - DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install --no-install-recommends -y g++ make cmake zlib1g-dev libbz2-dev
+    - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get install --no-install-recommends -y g++ make cmake zlib1g-dev libbz2-dev
     - cd diabutil
     - mkdir build
     - cd build
