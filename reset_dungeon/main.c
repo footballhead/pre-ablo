@@ -201,7 +201,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     int choice = MessageBox(NULL,
         TEXT("This tool will reset the dungeon and quests so you can "
-             "experience them gain. You will lose items in the dungeon that "
+             "experience them again. You will lose items in the dungeon that "
              "you have not picked up. Anything in town will be kept. Your "
              "character will be left alone. Reset your progress?"),
         TEXT("Reset your progress?"),
