@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.10)
+# 3.5 is the version in the conanio/gcc11-ubuntu16.04 docker image (used by CI)
+cmake_minimum_required(VERSION 3.5)
 project(diabutil CXX)
 
 option(WITH_STORMLIB "Compile StormLib and programs that use it" ON)
