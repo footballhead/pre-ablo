@@ -1,14 +1,13 @@
 mpqadd:
-  # This image must match `package` build so the resulting binaries are guaranteed to have matching glibc
-  image: "conanio/gcc11-ubuntu16.04"
+  # This image must match `package` build so the resulting binaries are guaranteed to have matching libs
+  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/host_build_and_package:latest"
   stage: build
   script:
-    - DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get install --no-install-recommends -y g++ make cmake zlib1g-dev libbz2-dev
     - cd diabutil
     - mkdir build
     - cd build
     - cmake ..
-    - make -j$(nproc)
+    - ninja
   artifacts:
     paths:
       - diabutil/build/mpqadd/mpqadd
@@ -51,13 +50,10 @@ reset_dungeon:
     - pages
 
 package:
-  # This is an official conan image. We only use it for conan (not GCC)
-  # TODO: We could probably create a custom alpine with just conan installed...
-  image: "conanio/gcc11-ubuntu16.04"
+  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/host_build_and_package:latest"
   stage: deploy
   script:
     # Get pre-release demo and ddraw.dll, put in ./PRE-ABLO via conan imports
-    - conan remote add gitlab https://gitlab.com/api/v4/projects/18183220/packages/conan 
     - conan install ./ci
     # Create pre-ablo.mpq (for load_mpq_customizations)
     - cd assets
