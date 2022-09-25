@@ -7,6 +7,10 @@
 // Uninitialized variables
 //
 
+// PitchTbl[row] is the the gpBuffer offset for that row.
+// Initialized in diablo_init_screen
+// Seems weird that they precompute basic multiplcation...
+// (Each element is i * BUFFER_WIDTH)
 int PitchTbl[1024];
 
 //
@@ -38,15 +42,14 @@ void ClearScreenBuffer()
 {
     __asm {
         mov edi, gpBuffer
-        add edi, 122944 //; (BUFFER_WIDTH) * BORDER_TOP
-        // shouldn't edi have an additional BUFFER_LEFT?
+        add edi, 122944 //; (BUFFER_WIDTH) * BORDER_TOP + BORDER_LEFT
         mov edx, 480 //; SCREEN_HEIGHT
         xor eax, eax
 
     blank_row:
-        mov ecx, 160 //; SCREEN_WIDTH / 4
+        mov ecx, 160 //; SCREEN_WIDTH / sizeof(DWORD)
         rep stosd
-        add edi, 128 //; BUFFER_LEFT + BUFFER_RIGHT
+        add edi, 128    //; BUFFER_LEFT + BUFFER_RIGHT
         dec edx
         jnz blank_row
     }
@@ -58,6 +61,39 @@ void ScrollView()
     // TODO
 }
 
-// DrawMain	0000000000481653
-// scrollrt_draw_game_screen	0000000000481AFC
+// .text:00481653
+static void DrawMain(int bufferpos, int dwHgt, BOOL draw_cursor, BOOL draw_desc, BOOL draw_hp, BOOL draw_mana, BOOL draw_sbar, BOOL draw_btn)
+{
+    HRESULT hDDVal;
+    DDSURFACEDESC ddsd;
+
+    if (!gbActive)
+    {
+        return;
+    }
+
+    if (lpDDSBackBuf->IsLost() == DDERR_SURFACELOST)
+    {
+        lpDDSBackBuf->Restore();
+    }
+
+    hDDVal = lpDDSPrimary->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+
+    // TODO
+}
+
+// .text:00481AFC
+void scrollrt_draw_game_screen(BOOL draw_cursor)
+{
+    if (force_redraw == 4)
+    {
+        DrawMain(BORDER_TOP * BUFFER_WIDTH + BORDER_LEFT, SCREEN_HEIGHT, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE);
+    }
+    else
+    {
+        DrawMain(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE);
+    }
+    force_redraw = 0;
+}
+
 // DrawAndBlit	0000000000481B60

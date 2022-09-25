@@ -16,6 +16,10 @@ extern HANDLE hCurrentVideo;
 void IncProgress();
 LRESULT ShowProgress(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 void interfac_PlayLogo_DrawQuotes();
-void interfac_init_title_play_music();
+void interfac_InitMainMenu();
+LRESULT WndProc_IntroVid(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+LRESULT WndProc_MainMenu(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+void InitCutscene();
+void interfac_InitDemoEnd();
 
 #endif

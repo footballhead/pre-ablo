@@ -51,9 +51,13 @@ void CALLBACK PaintEventTimer(UINT uTimerID,
 // wtf is this? nobody references it
 char registration_table[128] = "REGISTRATION_TABLE";
 // "Mutex" "held" duing PaintEventTimer (set to TRUE on enter, FALSE on return).
+// Kind of a crude signal between main thread and PaintEventThread to coorindate
+// when painting is occurring.
+//
 // Seems to serve double duty:
 //   1. indicate that PaintEventTimer is working
-//   2. used to stop PaintEventTimer from painting in that tick interval
+//   2. used to stop PaintEventTimer from painting in that tick interval (e.g.
+//      I've just issued a draw call)
 BOOL paint_callback_mutex = FALSE;
 int force_redraw = 0;
 // Used by main loop to determine when to post a WM_DIABPAINT message
@@ -73,6 +77,7 @@ BOOL debug_mode = FALSE;
 // If TRUE then restrict to dlvl 1 and warrior
 BOOL demo_mode = TRUE;
 BOOL show_intros = TRUE;
+// Enable/disable all music. Kinda intended as a compile-time toggle
 BOOL debugMusicOn = TRUE;
 BOOL cheat_mode = FALSE;
 BOOL frameflag = FALSE;
@@ -83,6 +88,8 @@ BOOL light4flag = FALSE;
 BOOL musicFromDisk = FALSE;
 HANDLE sghMusic = 0;
 DWORD PauseMode = 0;
+// Menu option set by player. Compared to debugMusicOn, this is run-time
+// settable by the player in the menu.
 BOOL gbMusicOn = TRUE;
 const char *sgszMusicTracks[] = {
     // indexed by leveltype
@@ -277,8 +284,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             DPlayHandleMessage();
         }
 
-        // Menus, etc. are handled by their own WndProc. This loop only does
-        // core gameplay
+        // The rest of this loop handles updating game state. Input processing
+        // and painting for menus is handled by their respective WndProc
         if (gMode != MODE_GAME)
         {
             continue;
@@ -523,7 +530,7 @@ BOOL dx_init(HWND hWnd)
                                         PaintEventTimer,
                                         (DWORD_PTR)hWnd,
                                         TIME_PERIODIC);
-    PostMessageA(hWnd, WM_DIABNEXTMODE, 0, 0);
+    PostMessageA(hWnd, WM_DIABMODEINIT, 0, 0);
     return TRUE;
 
 cleanup:
@@ -550,8 +557,8 @@ dd_create_err:
 }
 
 // .text:004853DA
-// The wndproc for the blizzard logo/quotes.cel screen. Skip if
-// show_intros == FALSE. Otherwise, next step is the intro video.
+// The message processor for the blizzard logo/quotes.cel screen. Skip if
+// show_intros == FALSE. Otherwise, next screen is the intro video.
 static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
     BOOL bSuccess; // unused
@@ -567,7 +574,7 @@ static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPara
         break; // there are 3 jumps total...
         break;
     case WM_LBUTTONDOWN:
-    case WM_KEYFIRST:
+    case WM_KEYDOWN:
     case WM_CHAR:
     case WM_RBUTTONDOWN:
         if (hCurrentVideo)
@@ -584,7 +591,9 @@ static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPara
         InitLevelCursor(hWnd);
         if (!show_intros)
         {
-            interfac_init_title_play_music();
+            interfac_InitMainMenu();
+            // Bug? WndProc_IntroVid loads Title.pal before transitioning to
+            // main menu
             LoadPalette("Gendata\\Quotes.pal", orig_palette);
         }
         else
@@ -595,9 +604,12 @@ static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPara
         }
 
         set_did_paint_PostMessage(FALSE);
-        if (!show_intros) {
+        if (!show_intros)
+        {
             gMode = MODE_MAINMENU;
-        } else {
+        }
+        else
+        {
             gMode = MODE_INTRO_VID;
         }
 
@@ -607,8 +619,29 @@ static LRESULT WndProc_BlizLogo(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lPara
 
         break;
     case WM_DIABPAINT:
-        // TODO
-        break;
+        while (paint_callback_mutex)
+        {
+            // do nothing, wait for mutex
+        }
+
+        // This doesn't call DoFadeIn/DoFadeOut so fade will never progress.
+        // Probably fine since only a video is being played and when its over
+        // we transition to a new screen
+        paint_callback_mutex = TRUE;
+        if (fade_state == PALETTE_FADE_IN) {
+            PostMessageA(hWnd, WM_DIABMODEINIT, 0, 0);
+            fade_state = PALETTE_NO_FADE;
+        }
+        if (fade_state == PALETTE_FADE_OUT) {
+            PostMessageA(hWnd, delayed_Msg, 0, 0);
+            fade_state = PALETTE_NO_FADE;
+        }
+        lpDDPalette->SetEntries(0, 0, 256, system_palette);
+        frames_drawn++;
+        did_paint_PostMessage = FALSE;
+        paint_callback_mutex = FALSE;
+
+        return 0;
     case 0x3B9: // ???
         return 0;
     }
@@ -631,8 +664,7 @@ LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     case MODE_BLIZ_LOGO:
         return WndProc_BlizLogo(hWnd, Msg, wParam, lParam);
     case MODE_MAINMENU:
-        // TODO
-        break;
+        return WndProc_MainMenu(hWnd, Msg, wParam, lParam);
     case MODE_NEWGAME:
         // TODO
         break;
@@ -641,8 +673,7 @@ LRESULT __stdcall MainWndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
         // GM_Game does input processing. game_logic uses that to progress game state.
         break;
     case MODE_INTRO_VID:
-        // TODO
-        break;
+        return WndProc_IntroVid(hWnd, Msg, wParam, lParam);
     case MODE_DEMO_END:
         // TODO
         break;
@@ -662,9 +693,9 @@ void set_did_paint_PostMessage(BOOL b)
         // loop until set to 0
     }
 
-    paint_callback_mutex = 1;
+    paint_callback_mutex = TRUE;
     did_paint_PostMessage = b;
-    paint_callback_mutex = 0;
+    paint_callback_mutex = FALSE;
 }
 
 // .text:0048833D
@@ -737,7 +768,7 @@ int InitLevelType(int l)
 void diablo_init_screen()
 {
     int i;
-    time_t *seed_time; // never initialized :O
+    time_t seed_time;
     int j;
 
     // Set, but never read again...
@@ -763,7 +794,7 @@ void diablo_init_screen()
     }
     else
     {
-        srand(time(seed_time));
+        srand(time(&seed_time));
         for (i = 0; i < 4; i++)
         {
             for (j = 0; j < NUMLEVELS; j++)

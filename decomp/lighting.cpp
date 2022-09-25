@@ -440,6 +440,20 @@ BYTE byte_4AD9C8[18][18] = {
 // TODO: From Devilution, verify!
 BYTE RadiusAdj[23] = {0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 4, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0};
 
+//
+// Uninitialized variables (.data:005F1AB0)
+//
+
+int numlights;
+// ...
+// LightList
+char lightmax;
+BYTE *pLightTbl;
+
+//
+// code (.text:0042E530)
+//
+
 // SetLightFX    000000000042E530
 
 // DoLighting    000000000042E5EF

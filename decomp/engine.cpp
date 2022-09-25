@@ -5,10 +5,12 @@
 #include <stdlib.h>
 #include <windows.h>
 
+#include "defines.h"
 #include "diablo.h"
+#include "scrollrt.h"
 
 //
-// uninitialized vars (.data )
+// uninitialized vars (.data:???)
 //
 
 char file_to_load_with_base[MAX_PATH];
@@ -46,7 +48,7 @@ BYTE *LoadFileInMem(const char *pszName)
     return buf;
 }
 
-// LoadFileWithMem	000000000048283B
+// LoadFileWithMem    000000000048283B
 
 // .text:004828D6
 // Allocate and read the wave format. Also read the data size into pSnd->pcm_size
@@ -99,7 +101,7 @@ int LoadWaveFileWithMem(const char *filename, TSnd *pSnd, LPWAVEFORMATEX *pForma
     return 0;
 }
 
-// FileGetSize	0000000000482A2A
+// FileGetSize    0000000000482A2A
 // Demo specific!
 DWORD FileGetSize(const char *filename)
 {
@@ -119,38 +121,117 @@ char *FileAddLoadPrefix(const char *filename)
     return file_to_load_with_base;
 }
 
-// DecodeFullCel	0000000000482AD3
-
-// CelDraw	0000000000482B53
-void CelDraw(int sx, int sy, BYTE *pCelBuff, int nCel, int nWidth)
+// .text:00482AD3
+// Minus the asserts, this is exactly the same as Devilution
+void CelBlit(BYTE *pDecodeTo, BYTE *pRLEBytes, int nDataSize, int nWidth)
 {
-    // TODO
+    int w;
+
+    // TODO annotate
+    __asm {
+        mov        esi, pRLEBytes
+        mov        edi, pDecodeTo
+        mov        eax, BUFFER_WIDTH
+        add        eax, nWidth
+        mov        w, eax
+        mov        ebx, nDataSize
+        add        ebx, esi
+    label1:
+        mov        edx, nWidth
+    label2:
+        xor        eax, eax
+        lodsb
+        or        al, al
+        js        label6
+        sub        edx, eax
+        mov        ecx, eax
+        shr        ecx, 1
+        jnb        label3
+        movsb
+        jecxz    label5
+    label3:
+        shr        ecx, 1
+        jnb        label4
+        movsw
+        jecxz    label5
+    label4:
+        rep movsd
+    label5:
+        or        edx, edx
+        jz        label7
+        jmp        label2
+    label6:
+        neg        al
+        add        edi, eax
+        sub        edx, eax
+        jnz        label2
+    label7:
+        sub        edi, w
+        cmp        ebx, esi
+        jnz        label1
+    }
 }
 
-// engine_cel_482BB2	0000000000482BB2
-// DrawSlabCel	0000000000482BFB
-// CelDecodeHdrOnly	0000000000482CBC
-// DecodeFullCelL	0000000000482D5F
-// DrawFullCelL_xbytes	0000000000482DDC
-// CelDecDatLightTrans	0000000000482E56
-// engine_cel_482F54	0000000000482F54
-// CelDrawLight	0000000000483046
-// engine_cel_48312C	000000000048312C
-// CelDecodeHdrLightTrans	00000000004831F4
-// CelDrawLightTbl	00000000004832E1
-// CDecodeFullCel	0000000000483477
-// CDrawSlabCel	000000000048350C
-// CDrawSlabCelP	00000000004835CD
-// Cel2DecDatLightOnly	0000000000483670
-// Cel2DecDatLightEntry	0000000000483702
-// Cel2DecDatLightTrans	000000000048377C
-// CDrawSlabCelL	000000000048388F
-// engine_cel_483975	0000000000483975
-// Cel2DecodeLightTrans	0000000000483A3D
-// CDrawSlabCelI	0000000000483B2A
-// CelDecodeRect	0000000000483CD5
-// OutlineSlabCel	0000000000483D7E
-// CelDrawHdrClrHL	0000000000483E99
+// .text:00482B53
+// sx and sy are locations into the pixel buffer gpBuffer. Beware that there are
+// invisible portions on top/left/bottom/right! See defines.h
+//
+// nCel is 1-based (don't give 0!)
+void CelDraw(int sx, int sy, BYTE *pCelBuff, int nCel, int nWidth)
+{
+    BYTE *pRLEBytes;
+    BYTE *pDest;
+    int nDataSize;
+
+    // This kinda looks like asm based on the optimizations of array access.
+    // This just sets up the locals used in the next function call.
+    __asm {
+        mov     ebx, pCelBuff ; // Treat pCelBuff like frame table
+        mov     eax, nCel
+        shl     eax, 2
+        add     ebx, eax ; // ebx now points to current frame offset
+        mov     eax, [ebx+4] ; // ebx+4 is next frame offset
+        sub     eax, [ebx] ; // length is next frame offset - current frame offset
+        mov     nDataSize, eax
+
+        mov     eax, pCelBuff
+        add     eax, [ebx]
+        mov     pRLEBytes, eax ; // Use frame offset to find start of frame data
+
+        mov     eax, sy
+        mov     eax, PitchTbl[eax*4] ; // idk why they use PitchTbl when it's basically sy * 768
+        add     eax, sx
+        add     eax, gpBuffer
+        mov     pDest, eax
+    }
+
+    CelBlit(pDest, pRLEBytes, nDataSize, nWidth);
+}
+
+// engine_cel_482BB2    0000000000482BB2
+// DrawSlabCel    0000000000482BFB
+// CelDecodeHdrOnly    0000000000482CBC
+// DecodeFullCelL    0000000000482D5F
+// DrawFullCelL_xbytes    0000000000482DDC
+// CelDecDatLightTrans    0000000000482E56
+// engine_cel_482F54    0000000000482F54
+// CelDrawLight    0000000000483046
+// engine_cel_48312C    000000000048312C
+// CelDecodeHdrLightTrans    00000000004831F4
+// CelDrawLightTbl    00000000004832E1
+// CDecodeFullCel    0000000000483477
+// CDrawSlabCel    000000000048350C
+// CDrawSlabCelP    00000000004835CD
+// Cel2DecDatLightOnly    0000000000483670
+// Cel2DecDatLightEntry    0000000000483702
+// Cel2DecDatLightTrans    000000000048377C
+// CDrawSlabCelL    000000000048388F
+// engine_cel_483975    0000000000483975
+// Cel2DecodeLightTrans    0000000000483A3D
+// CDrawSlabCelI    0000000000483B2A
+// CelDecodeRect    0000000000483CD5
+// OutlineSlabCel    0000000000483D7E
+// CelDrawHdrClrHL    0000000000483E99
 
 // .text:00483FFB
 void CelApplyTrans(BYTE *p, BYTE *ttbl, int nCel)
@@ -213,11 +294,11 @@ void CelApplyTrans(BYTE *p, BYTE *ttbl, int nCel)
     }
 }
 
-// ENG_set_pixel	000000000048407B
-// engine_draw_pixel	00000000004840F9
-// DrawLine	00000000004841F1
+// ENG_set_pixel    000000000048407B
+// engine_draw_pixel    00000000004840F9
+// DrawLine    00000000004841F1
 
-// GetDirection	00000000004848A1
+// GetDirection    00000000004848A1
 int GetDirection(int x1, int y1, int x2, int y2)
 {
     // TODO

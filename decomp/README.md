@@ -69,4 +69,5 @@ headers are correct, the symbols are visible, and the structs are the right size
 
 * ddraw
 * dplay
+* dsound
 * storm

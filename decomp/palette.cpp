@@ -23,9 +23,11 @@ double gamma_backup = 1.0;
 
 // Only used by ShowProgress
 PALETTEENTRY progress_palette[256];
-DWORD unused_61A948; // can't tell if padding or unused
+// can't tell if padding or unused
+DWORD unused_61A948;
 // Which caves_pal_red to treat as the "first" red, wraps at 32
 DWORD caves_pal_offset;
+// While unused here, this looks like a message that is posted after fade out
 UINT delayed_Msg;
 // How much to fade each redraw
 DWORD fade_delta;
@@ -39,7 +41,7 @@ DWORD caves_pal_red[32];
 DWORD fade_val;
 // Palette that always seems to be involved in fade operations
 PALETTEENTRY logical_palette[256];
-// 0 is no fade, 1 is fade in, 2 is fade out
+// 0 is no fade, 1 is fade in, 2 is fade out (use PALLETE_FADE defines)
 DWORD fade_state;
 
 //
@@ -77,6 +79,8 @@ void LoadPalette(char *pszFilename, PALETTEENTRY *dest)
 }
 
 // .text:0048209F
+// Perform one step of fade in. Uses fade_val for progress, fade_delta for how
+// fast to fade. Resets fade_state at the end.
 void DoFadeIn()
 {
     int i;
@@ -103,11 +107,13 @@ void DoFadeIn()
             system_palette[i].peGreen = logical_palette[i].peGreen;
             system_palette[i].peBlue = logical_palette[i].peBlue;
         }
-        fade_state = 0;
+        fade_state = PALETTE_NO_FADE;
     }
 }
 
 // .text:004821E1
+// Perform one step of fade out. Uses fade_val for progress, fade_delta for how
+// fast to fade. Resets fade_state at the end.
 void DoFadeOut()
 {
     DWORD temp; // this might be compiler generated idk
@@ -140,25 +146,27 @@ void DoFadeOut()
     }
     else
     {
-        fade_state = 0;
+        fade_state = PALETTE_NO_FADE;
     }
 }
 
 // .text:0048233A
+// Start fade from black. Progress by calling DoFadeIn
 void PaletteFadeIn(int delta)
 {
     fade_delta = delta;
-    fade_state = 1;
+    fade_state = PALETTE_FADE_IN;
     fade_val = 0;
     DoFadeIn();
     fade_val = 0;
 }
 
 // .text:0048237B
+// Start fade to black. Progress by calling DoFadeOut
 void PaletteFadeOut(int delta)
 {
     fade_delta = delta;
-    fade_state = 2;
+    fade_state = PALETTE_FADE_OUT;
     fade_val = 256;
     DoFadeOut();
     fade_val = 256;
@@ -181,6 +189,7 @@ void CopyPalette(PALETTEENTRY *dest, PALETTEENTRY *src)
 }
 
 // .text:00482430
+// Apply gamma correction of elements between start and end to the given palette.
 void ApplyGamma(PALETTEENTRY *pal, int start, int end)
 {
     int i;
@@ -194,16 +203,20 @@ void ApplyGamma(PALETTEENTRY *pal, int start, int end)
 }
 
 // .text:004825A6
+// Pick a random level palette and load it.
 void LoadRndLvlPal(int l)
 {
-	int rv;
-	char szFileName[256];
+    int rv;
+    char szFileName[256];
 
-	if (l == DTYPE_TOWN) {
-		strcpy(szFileName, "Levels\\TownData\\Town.pal");
-	} else {
-		rv = random_(4) + 1;
-		sprintf(szFileName, "Levels\\L%iData\\L%i_%i.PAL", l, l, rv);
+    if (l == DTYPE_TOWN)
+    {
+        strcpy(szFileName, "Levels\\TownData\\Town.pal");
+    }
+    else
+    {
+        rv = random_(4) + 1;
+        sprintf(szFileName, "Levels\\L%iData\\L%i_%i.PAL", l, l, rv);
     }
     LoadPalette(szFileName, orig_palette);
     CopyPalette(logical_palette, orig_palette);
@@ -211,11 +224,13 @@ void LoadRndLvlPal(int l)
 
 // .text:00482623
 // Backup the red channel and reset offset index
-void palette_init_caves() {
+void palette_init_caves()
+{
     int i;
 
     caves_pal_offset = 1;
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < 32; i++)
+    {
         caves_pal_red[i] = orig_palette[i].peRed;
     }
 }
@@ -227,17 +242,20 @@ void palette_update_caves()
     int src_i, dest_i;
 
     src_i = caves_pal_offset;
-    for (dest_i = 1; dest_i < 32; dest_i++) {
+    for (dest_i = 1; dest_i < 32; dest_i++)
+    {
         system_palette[dest_i].peRed = caves_pal_red[src_i];
 
         src_i++;
-        if (src_i == 32) {
+        if (src_i == 32)
+        {
             src_i = 1;
         }
     }
 
     caves_pal_offset++;
-    if (caves_pal_offset == 32) {
+    if (caves_pal_offset == 32)
+    {
         caves_pal_offset = 1;
     }
 }

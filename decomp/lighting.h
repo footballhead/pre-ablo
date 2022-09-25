@@ -18,6 +18,7 @@ extern BOOL lightflag;
 // I'm guessing that this is a pre-computed alternative to euclidean distance up to a certain integer distance
 extern char CrawlTable[];
 extern BYTE vCrawlTable[23][30];
+extern BYTE *pLightTbl;
 
 //
 // functions
