@@ -1,2 +1,4 @@
 *.obj
 diablo.exe
+diablo.pdb
+diablo.ilk

@@ -1,5 +1,8 @@
 #include "monster.h"
 
+#include <stdio.h>
+#include <limits.h>
+
 #include "debug.h"
 #include "diablo.h"
 #include "effects.h"
@@ -9,8 +12,6 @@
 #include "missiles.h"
 #include "player.h"
 #include "quests.h"
-
-#include <stdio.h>
 
 //
 // Initialized variables (.data:004A2040)
@@ -638,7 +639,7 @@ void ProcessMonsters()
     int my;
     int mi;
 
-    for (int i = 0; i < nummonsters; i++)
+    for (i = 0; i < nummonsters; i++)
     {
         mi = monstactive[i];
         raflag = 0;

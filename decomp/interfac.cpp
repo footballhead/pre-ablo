@@ -306,7 +306,7 @@ static void interfac_PaintProgress(HWND hWnd)
 // Progress the fade until done
 void IncProgress()
 {
-    while (true)
+    while (TRUE)
     {
         if (fade_state)
         {

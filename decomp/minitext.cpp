@@ -1,6 +1,6 @@
 #include "minitext.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "diablo.h"
 #include "engine.h"

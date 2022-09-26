@@ -3,6 +3,7 @@
 #include "directx/DDRAW.H"
 #include "storm/storm.h"
 #include <direct.h>
+#include <errno.h>
 #include <stdio.h>
 #include <time.h>
 #include <windows.h>
@@ -38,11 +39,7 @@ BOOL init_create_window(HINSTANCE hInstance, int nShowCmd);
 void game_logic();
 void dx_cleanup();
 void set_did_paint_PostMessage(BOOL b);
-void CALLBACK PaintEventTimer(UINT uTimerID,
-                              UINT uMsg,
-                              DWORD_PTR dwUser,
-                              DWORD_PTR dw1,
-                              DWORD_PTR dw2);
+void CALLBACK PaintEventTimer(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2);
 
 //
 // initialized vars (.data:004BC0A8)
@@ -183,7 +180,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         myplr = 0;
     }
 
-    for (int i = 0; i < MAX_PLRS; i++)
+    for (i = 0; i < MAX_PLRS; i++)
     {
         plr[i].to_send_message_id = 42; // TODO what is 42? (is it just a meme?)
     }
@@ -239,7 +236,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
 
     mkdir_error = _mkdir(savedir_abspath);
-    if (mkdir_error && *_errno() == EEXIST)
+    if (mkdir_error && errno == EEXIST)
     {
         mkdir_error = 0;
     }
@@ -265,7 +262,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     // MAIN LOOP
     //
 
-    while (true)
+    while (TRUE)
     {
         // Process messages
         if (PeekMessageA(&message, NULL, 0, 0, 0))
@@ -528,7 +525,7 @@ BOOL dx_init(HWND hWnd)
     paint_event_timer_id = timeSetEvent(paint_event_timer_delay,
                                         paint_event_timer_resolution,
                                         PaintEventTimer,
-                                        (DWORD_PTR)hWnd,
+                                        (DWORD)hWnd,
                                         TIME_PERIODIC);
     PostMessageA(hWnd, WM_DIABMODEINIT, 0, 0);
     return TRUE;
@@ -703,9 +700,9 @@ void set_did_paint_PostMessage(BOOL b)
 // messages every 50ms.
 void CALLBACK PaintEventTimer(UINT uTimerID,
                               UINT uMsg,
-                              DWORD_PTR dwUser,
-                              DWORD_PTR dw1,
-                              DWORD_PTR dw2)
+                              DWORD dwUser,
+                              DWORD dw1,
+                              DWORD dw2)
 {
     if (paint_callback_mutex)
     {
