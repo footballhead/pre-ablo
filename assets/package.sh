@@ -14,7 +14,4 @@ out_mpq=$1
 
 mpqadd=../diabutil/build/mpqadd/mpqadd
 
-for dir in levels monsters plrgfx
-do
-	find "${dir}/" -type f | ${mpqadd} "${out_mpq}"
-done
+find levels/ monsters/ plrgfx/ -type f | ${mpqadd} "${out_mpq}"

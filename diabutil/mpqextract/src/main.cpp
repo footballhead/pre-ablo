@@ -5,13 +5,6 @@
 #include <string>
 
 namespace {
-std::string replace_all(std::string str, char to_replace, char replace_with) {
-  for (auto place = str.find(to_replace); place != std::string::npos;
-       place = str.find(to_replace)) {
-    str = str.replace(place, 1, std::string{replace_with});
-  }
-  return str;
-}
 
 std::string remove_all(std::string str, std::string const &to_remove) {
   for (auto place = str.find(to_remove); place != std::string::npos;
@@ -53,9 +46,6 @@ int main(int argc, char **argv) {
     // This is more for my sanity (especially on Docker with Windows files
     // mounted)
     line = remove_all(line, "\r");
-    // listfiles typically have Windows paths, but unix-style paths are more
-    // widely accepted
-    line = replace_all(line, '\\', '/');
 
     // StormLib expects parent paths to already exist
     auto const localdir = std::filesystem::path{line}.parent_path();

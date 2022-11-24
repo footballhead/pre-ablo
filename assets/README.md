@@ -1,10 +1,11 @@
 # Assets
 
-## Contents
-
 The directory contains:
 
-### Missing Files
+- missing files
+- scripts for file conversions and fixes
+
+## Missing Files
 
 These files are required past dlvl 1 but are missing from the MPQ
 
@@ -21,7 +22,7 @@ These files are required past dlvl 1 but are missing from the MPQ
 * `monsters`: missing monster graphics, from retail/beta/hellfire/alpha4
     * `firema` required fixing (see fix_fireman.py)
 
-### Known Issues
+## Known Issues
 
 * `wludt` has wrong number of frames (see #115)
 * `firemh` levitates (see #119)
@@ -59,5 +60,5 @@ We provide `package.sh` to generate our own `pre-ablo.mpq`. This works with the 
 
 You can modify `package.sh` to include your files alongside the other Pre-ablo assets.
 
-If you are modifying the MPQ manually, **The latest Ladik's MPQ Editor will not work.**
+If you are modifying the MPQ manually, **the latest Ladik's MPQ Editor will not work.**
 Prefer the known working version I've included in [../tools/mpqediten32_3.5.1.795](../tools/mpqediten32_3.5.1.795)

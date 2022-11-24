@@ -5,17 +5,11 @@
 #include <vector>
 
 namespace {
-std::string unix_to_windows(std::string path) {
-  constexpr auto tofind = "/";
-  for (auto place = path.find(tofind); place != std::string::npos;
-       place = path.find(tofind)) {
-    path = path.replace(place, 1, "\\");
-  }
-  return path;
-}
+// Arbitrary; StormLib wants a number and I don't want to constantly update this
+constexpr DWORD kMpqMaxFiles = 1024;
 }  // namespace
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " file.mpq\n"
               << "Reads listfile from stdin then, for each line in stdin, try "
@@ -52,8 +46,7 @@ int main(int argc, char **argv) {
     }
 
     std::cout << mpq_filename << " doesn't exist, creating...\n";
-    constexpr auto max_files = 1024;  // Arbitrary...
-    if (!SFileCreateArchive(mpq_filename, MPQ_CREATE_ARCHIVE_V1, max_files,
+    if (!SFileCreateArchive(mpq_filename, MPQ_CREATE_ARCHIVE_V1, kMpqMaxFiles,
                             &mpq)) {
       std::cerr << "Failed to create MPQ: err=" << GetLastError()
                 << " file=" << mpq_filename << '\n';
@@ -65,23 +58,22 @@ int main(int argc, char **argv) {
   // add files specified on stdin
   //
 
-  for (auto listfile_line : listfile) {
-    auto const winpath = unix_to_windows(listfile_line);
-
+  for (const auto& listfile_line : listfile) {
     // remove the file if it already exists (we will replace)
-    if (SFileHasFile(mpq, winpath.c_str())) {
-      if (!SFileRemoveFile(mpq, winpath.c_str(), 0)) {
+    if (SFileHasFile(mpq, listfile_line.c_str())) {
+      if (!SFileRemoveFile(mpq, listfile_line.c_str(), 0)) {
         std::cerr << "Failed to remove already existant file: " << listfile_line
-                  << " (" << winpath << ")\n";
+                  << " (" << listfile_line << ")\n";
         continue;
       }
     }
 
     // Add file. Don't bother compressing, the game loads fine and the ZIP is
     // actually smaller
-    if (!SFileAddFileEx(mpq, listfile_line.c_str(), winpath.c_str(), 0, 0, 0)) {
-      std::cerr << "Failed to add file: " << listfile_line << " (" << winpath
-                << ")\n";
+    if (!SFileAddFileEx(mpq, listfile_line.c_str(), listfile_line.c_str(), 0, 0,
+                        0)) {
+      std::cerr << "Failed to add file: " << listfile_line << " ("
+                << listfile_line << ")\n";
     }
   }
 
