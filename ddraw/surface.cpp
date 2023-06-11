@@ -1,6 +1,6 @@
 #include "surface.h"
 
-#include <gl/gl.h>
+#include <GL/gl.h>
 
 #include <cstdio>
 

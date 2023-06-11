@@ -49,6 +49,23 @@ reset_dungeon:
   except:
     - pages
 
+# TODO: Rename dplay_build since it's used by reset_dungeon and ddraw
+# TODO: Include this ddraw.dll in `paackage` when it's prime time
+ddraw:
+  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
+  stage: build
+  script:
+    - cd ddraw
+    - mkdir build
+    - cd build
+    - cmake .. -DCMAKE_TOOLCHAIN_FILE=../dplay/mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+    - make -j $(nproc)
+  artifacts:
+    paths:
+      - ddraw/build/ddraw.exe
+  except:
+    - pages
+
 package:
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/host_build_and_package:latest"
   stage: deploy

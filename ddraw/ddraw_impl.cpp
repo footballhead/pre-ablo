@@ -1,6 +1,6 @@
 #include "ddraw_impl.h"
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 #include "palette.h"
 #include "stub.h"

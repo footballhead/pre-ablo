@@ -14,5 +14,18 @@ add_library(ddraw SHARED
     palette.cpp
     surface.cpp
     )
-target_link_libraries(ddraw PRIVATE OpenGL::GL)
+target_link_libraries(ddraw OpenGL::GL)
 
+# TODO should be "anyone that supports -s for stripping (gcc, clang (maybe))"
+if (MINGW)
+    set_target_properties(ddraw
+        PROPERTIES
+            PREFIX "" # produce ddraw.dll (not ddraw.dll)
+            LINK_FLAGS_RELEASE "-s" # strip Release binaries to reduce size
+            LINK_FLAGS_MINSIZEREL "-s" # ditto for MinSizeRel
+        )
+    target_link_libraries(ddraw
+        "-static-libstdc++"
+        "-static-libgcc"
+        )
+endif()

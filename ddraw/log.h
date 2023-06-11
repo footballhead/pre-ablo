@@ -4,7 +4,7 @@
 
 #ifndef NDEBUG
 #include <cstdio>
-#define TRACE(msg, ...) printf((msg), __VA_ARGS__)
+#define TRACE(msg, ...) printf((msg), ##__VA_ARGS__)
 #else
 #define TRACE(msg, ...)
 #endif

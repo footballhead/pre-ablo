@@ -1,7 +1,7 @@
 #define INITGUID
 #include "DDRAW.H"
 
-#include <gl/gl.h>
+#include <GL/gl.h>
 
 #include <optional>
 
