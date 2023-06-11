@@ -62,7 +62,7 @@ ddraw:
     - make -j $(nproc)
   artifacts:
     paths:
-      - ddraw/build/ddraw.exe
+      - ddraw/build/ddraw.dll
   except:
     - pages
 
