@@ -1,68 +1,38 @@
-mpqadd:
+host:
   # This image must match `package` build so the resulting binaries are guaranteed to have matching libs
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/host_build_and_package:latest"
   stage: build
   script:
-    - cd diabutil
-    - mkdir build
-    - cd build
+    - mkdir build-host
+    - cd build-host
     - cmake -G Ninja ..
     - ninja
   artifacts:
     paths:
-      - diabutil/build/mpqadd/mpqadd
-      - diabutil/build/mpqextract/mpqextract
+      - build-host/diabutil/mpqadd/mpqadd
+      - build-host/diabutil/mpqextract/mpqextract
   except:
     - pages
   variables:
+    # Recursive to clone StormLib
     GIT_SUBMODULE_STRATEGY: recursive
 
-dplay:
+win32:
+  # TODO: Rename image to win32_build
   image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
   stage: build
   script:
-    - cd dplay
-    - mkdir build
-    - cd build
+    - mkdir build-win32
+    - cd build-win32
     - "PRDE_VERSION=\"v${CI_COMMIT_TAG}\""
     - "[ \"${PRDE_VERSION}\" = \"v\" ] && PRDE_VERSION=\"${CI_COMMIT_SHORT_SHA}\""
-    - "cmake .. -DCMAKE_TOOLCHAIN_FILE=../mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DPRDE_VERSION=\"${PRDE_VERSION}\""
+    - "cmake .. -DCMAKE_TOOLCHAIN_FILE=../mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DPRDE_VERSION=\"${PRDE_VERSION}\" -DPREABLO_TARGET=win32"
     - make -j $(nproc)
   artifacts:
     paths:
-      - dplay/build/dplay.dll
-  except:
-    - pages
-
-reset_dungeon:
-  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
-  stage: build
-  script:
-    - cd reset_dungeon
-    - mkdir build
-    - cd build
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=../dplay/mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-    - make -j $(nproc)
-  artifacts:
-    paths:
-      - reset_dungeon/build/reset_dungeon.exe
-  except:
-    - pages
-
-# TODO: Rename dplay_build since it's used by reset_dungeon and ddraw
-# TODO: Include this ddraw.dll in `paackage` when it's prime time
-ddraw:
-  image: "registry.gitlab.com/moralbacteria/diablo-prdemo-patches/dplay_build:latest"
-  stage: build
-  script:
-    - cd ddraw
-    - mkdir build
-    - cd build
-    - cmake .. -DCMAKE_TOOLCHAIN_FILE=../dplay/mingw.toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-    - make -j $(nproc)
-  artifacts:
-    paths:
-      - ddraw/build/ddraw.dll
+      - build-win32/ddraw/ddraw.dll
+      - build-win32/dplay/dplay.dll
+      - build-win32/reset_dungeon/reset_dungeon.exe
   except:
     - pages
 
@@ -74,13 +44,15 @@ package:
     - conan install ./ci
     # Create pre-ablo.mpq (for load_mpq_customizations)
     - cd assets
-    - ./package.sh pre-ablo.mpq
+    - PATH=$PWD/../build-host/diabutil/mpqadd:$PATH ./package.sh pre-ablo.mpq
     - cd ..
     # Put everything in destination folder (./PRE-ABLO)
     - cp assets/pre-ablo.mpq PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
-    - cp dplay/build/dplay.dll PRE-ABLO/
-    - cp reset_dungeon/build/reset_dungeon.exe PRE-ABLO/
+    - cp build-win32/dplay/dplay.dll PRE-ABLO/
+    - cp build-win32/reset_dungeon/reset_dungeon.exe PRE-ABLO/
+    # - cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll PRE-ABLO/
+    # - cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libstdc++-6.dll PRE-ABLO/
   artifacts:
     name: "pre-ablo_${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
     paths:

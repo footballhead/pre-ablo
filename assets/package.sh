@@ -12,6 +12,4 @@ fi
 
 out_mpq=$1
 
-mpqadd=../diabutil/build/mpqadd/mpqadd
-
-find levels/ monsters/ plrgfx/ -type f | ${mpqadd} "${out_mpq}"
+find levels/ monsters/ plrgfx/ -type f | mpqadd "${out_mpq}"

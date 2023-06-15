@@ -67,16 +67,5 @@ target_include_directories(dplay
         src
     )
 
-# TODO should be "anyone that supports -s for stripping (gcc, clang (maybe))"
-if (MINGW)
-    set_target_properties(dplay
-        PROPERTIES
-            PREFIX "" # produce dplay.dll (not libdplay.dll)
-            LINK_FLAGS_RELEASE "-s" # strip Release binaries to reduce size
-            LINK_FLAGS_MINSIZEREL "-s" # ditto for MinSizeRel
-        )
-    target_link_libraries(dplay
-        "-static-libstdc++"
-        "-static-libgcc"
-        )
-endif()
+# produce dplay.dll (not libdplay.dll)
+set_target_properties(dplay PROPERTIES PREFIX "")
