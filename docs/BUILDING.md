@@ -37,3 +37,7 @@ cd build-win32
 cmake .. -DPREABLO_TARGET=win32 -DCMAKE_TOOLCHAIN_FILE=../mingw.toolchain.cmake
 cmake --build .
 ```
+
+## With Docker
+
+TODO

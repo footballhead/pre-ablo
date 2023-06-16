@@ -1,9 +1,6 @@
 [submodule "diabutil/StormLib"]
-	path = diabutil/StormLib
+	path = third_party/StormLib
 	url = https://github.com/ladislav-zezula/StormLib.git
-[submodule "diabutil/googletest"]
-	path = diabutil/googletest
-	url = https://github.com/google/googletest.git
 [submodule "diablo-prdemo-decomp"]
 	path = diablo-prdemo-decomp
 	url = https://gitlab.com/moralbacteria/diablo-prdemo-decomp.git

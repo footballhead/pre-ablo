@@ -9,8 +9,8 @@ host:
     - ninja
   artifacts:
     paths:
-      - build-host/diabutil/mpqadd/mpqadd
-      - build-host/diabutil/mpqextract/mpqextract
+      - build-host/src/mpqadd/mpqadd
+      - build-host/src/mpqextract/mpqextract
   except:
     - pages
   variables:
@@ -30,9 +30,9 @@ win32:
     - make -j $(nproc)
   artifacts:
     paths:
-      - build-win32/ddraw/ddraw.dll
-      - build-win32/dplay/dplay.dll
-      - build-win32/reset_dungeon/reset_dungeon.exe
+      - build-win32/src/ddraw/ddraw.dll
+      - build-win32/src/dplay/dplay.dll
+      - build-win32/src/reset_dungeon/reset_dungeon.exe
   except:
     - pages
 
@@ -44,13 +44,13 @@ package:
     - conan install ./ci
     # Create pre-ablo.mpq (for load_mpq_customizations)
     - cd assets
-    - PATH=$PWD/../build-host/diabutil/mpqadd:$PATH ./package.sh pre-ablo.mpq
+    - PATH=$PWD/../build-host/src/mpqadd:$PATH ./package.sh pre-ablo.mpq
     - cd ..
     # Put everything in destination folder (./PRE-ABLO)
     - cp assets/pre-ablo.mpq PRE-ABLO/
     - cp docs/README.txt PRE-ABLO/
-    - cp build-win32/dplay/dplay.dll PRE-ABLO/
-    - cp build-win32/reset_dungeon/reset_dungeon.exe PRE-ABLO/
+    - cp build-win32/src/dplay/dplay.dll PRE-ABLO/
+    - cp build-win32/src/reset_dungeon/reset_dungeon.exe PRE-ABLO/
     # - cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll PRE-ABLO/
     # - cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libstdc++-6.dll PRE-ABLO/
   artifacts:
