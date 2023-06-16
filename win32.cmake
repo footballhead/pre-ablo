@@ -3,4 +3,5 @@
 
 add_subdirectory(src/ddraw)
 add_subdirectory(src/dplay)
+add_subdirectory(src/patches)
 add_subdirectory(src/reset_dungeon)

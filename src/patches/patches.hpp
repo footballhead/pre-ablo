@@ -28,5 +28,8 @@ struct Patch {
     const char* mpq_filename;
 };
 
+// Lazy load all patch definitions. Uses last_patch.txt if it exists
 std::vector<Patch>& get_patches();
+
+// Save all patches with `checked=true` to last_patch.txt
 bool save_checked_patches();
