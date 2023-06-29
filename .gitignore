@@ -18,6 +18,7 @@ conaninfo.txt
 
 # Build artifacts
 build*/
+!third_party/glew-2.2.0/build/
 
 # Misc stuff
 ignore/

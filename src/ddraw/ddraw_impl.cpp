@@ -1,6 +1,7 @@
 #include "ddraw_impl.h"
 
 #include <GL/gl.h>
+#include <GL/glew.h>
 
 #include "palette.h"
 #include "stub.h"
@@ -48,7 +49,7 @@ void ScaleOpenGlViewport(const DirectDraw::DisplayModeParams &display_mode,
   glViewport(centered_x, centered_y, adjusted_width, adjusted_height);
 }
 
-// After this, you can make OpenGL calls
+// After this, you can make OpenGL calls.
 std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
   const HDC hdc = ::GetDC(hwnd);
   if (hdc == nullptr) {
@@ -58,7 +59,8 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
 
   // TODO: ReleaseDC(hdc) on error
 
-  // TODO: wtf. How do I choose the best or most compatible params here????
+  // These are essentially the settings from the OpenGL Wiki:
+  // https://www.khronos.org/opengl/wiki/Creating_an_OpenGL_Context_(WGL)
   // TODO: Support single and double buffering
   static PIXELFORMATDESCRIPTOR pfd = {
       .nSize =
@@ -69,7 +71,7 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
                  PFD_DEPTH_DONTCARE,  // TODO: double buffer?
       .iPixelType = PFD_TYPE_RGBA,
       .cColorBits = 32,  // TODO ask GetDC(nullptr)
-      // My guess: RGBA these must be set to 0; COLORINDEX may use them though
+      // The wiki suggests to set all these to 0 so here we are
       .cRedBits = 0,
       .cRedShift = 0,
       .cGreenBits = 0,
@@ -78,7 +80,6 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
       .cBlueShift = 0,
       .cAlphaBits = 0,
       .cAlphaShift = 0,
-      // No Accumulation Buffer
       .cAccumBits = 0,
       .cAccumRedBits = 0,
       .cAccumGreenBits = 0,
@@ -113,6 +114,9 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
   }
 
   wglMakeCurrent(hdc, hglrc);
+
+  // TODO: For OpenGL 3.3 consult the wiki:
+  // https://www.khronos.org/opengl/wiki/Creating_an_OpenGL_Context_(WGL)
 
   return DirectDraw::OpenGlState{
       .hdc = hdc,
