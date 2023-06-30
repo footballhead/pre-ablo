@@ -14,7 +14,7 @@ add_library(ddraw SHARED
     palette.cpp
     surface.cpp
     )
-target_link_libraries(ddraw OpenGL::GL)
+target_link_libraries(ddraw OpenGL::GL glew_s)
 
 # produce ddraw.dll (not libddraw.dll)
 set_target_properties(ddraw PROPERTIES PREFIX "")
