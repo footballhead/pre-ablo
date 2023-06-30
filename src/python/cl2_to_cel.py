@@ -2,10 +2,7 @@ import sys
 import argparse
 from pathlib import Path
 from typing import List
-
-THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import CelBuilder, decompose_with_groups, FRAME_HEADER_SIZE, serialize_with_groups
+from cel_utils import CelBuilder, decompose_with_groups, FRAME_HEADER_SIZE, serialize_with_groups
 
 UINT8_SIZE: int = 1
 

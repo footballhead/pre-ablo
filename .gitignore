@@ -1,11 +1,12 @@
 # Workspace settings
 .vscode
 
-# Pre-built Python
+# Python
 __pycache__
+.mypy_cache
 
 # Packaging artifacts
-pre-ablo.mpq
+*.mpq
 PRE-ABLO/
 
 # Conan install stuff

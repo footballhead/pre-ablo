@@ -2,11 +2,9 @@ import sys
 from collections import namedtuple
 from pathlib import Path
 from typing import List
+from cel_utils import decompose_no_groups, UINT16_SIZE, serialize_no_groups
 
-THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_no_groups, UINT16_SIZE, serialize_no_groups
-
+# TODO: prefer dataclass
 MiniTile = namedtuple('MiniTile', ['number', 'type'])
 
 

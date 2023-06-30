@@ -5,24 +5,25 @@ import sys
 import shutil
 from typing import List
 
-# Scripts local to current directory (assets/)
+# scripts from //src/python
+THIS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(THIS_DIR.parent / 'src' / 'python'))
 from cl2_to_cel import cl2_to_cel
 from fix_dungeon_cels import fix_dungeon_cels
 from fix_firema import fix_firema
 from fix_l3_amp import fix_l3_amp
 from fix_wlnlm import fix_wlnlm
 from fix_wludt import fix_wludt
-
-THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_with_groups, serialize_with_groups
+from cel_utils import decompose_with_groups, serialize_with_groups
 
 
 def mpq_extract(mpq: Path, listfile: Path) -> None:
     """Run mpqextract using a listfile on disk. Stores extracted files into the
     current working directory. mpqextract must be in PATH!
     """
-    subprocess.run(['mpqextract', str(mpq)],
+    cmd = ['mpqextract', str(mpq)]
+    print(f'Running: f{cmd} < {listfile}')
+    subprocess.run(cmd,
                    input=listfile.read_bytes(),
                    check=True)
 
@@ -67,21 +68,25 @@ def main() -> int:
     mpq_extract(Path(sys.argv[4]), THIS_DIR / 'listfile_hellfire.txt')
 
     # l2.cel
+    print('fixing l2.cel')
     fix_dungeon_cels(THIS_DIR / 'levels' / 'l2data' / 'l2.cel',
                      THIS_DIR / 'levels' / 'l2data' / 'l2.min',
                      THIS_DIR / 'levels' / 'l2data' / 'l2.cel')
 
     # l3.cel
+    print('fixing l3.cel')
     fix_dungeon_cels(THIS_DIR / 'levels' / 'l3data' / 'l3.cel',
                      THIS_DIR / 'levels' / 'l3data' / 'l3.min',
                      THIS_DIR / 'levels' / 'l3data' / 'l3.cel')
 
     # l3.amp
+    print('fixing l3.amp')
     fix_l3_amp(THIS_DIR / 'levels' / 'l3data' / 'l3.amp',
                THIS_DIR / 'levels' / 'l3data' / 'l3.amp')
 
     # Copy neutral death animations to cover for missing files.
     # We use the plrgfx_frame_fix patch to ensure frames in the code binary match the assets (to avoid crashing)
+    print('copying death animations')
     for i in {'a', 'b', 'd', 'h', 'm', 's', 't', 'u'}:
         shutil.copy2(
             THIS_DIR / 'plrgfx' / 'warrior' / 'wmn' / 'wmndt.cel',
@@ -93,18 +98,22 @@ def main() -> int:
                      THIS_DIR / 'plrgfx' / 'rogue' / f'rl{i}' / f'rl{i}dt.cel')
 
     # firema.cel
+    print('fixing firema.cel')
     fix_firema(THIS_DIR / 'monsters' / 'fireman' / 'firema.cel',
                THIS_DIR / 'monsters' / 'fireman' / 'firema.cel')
 
     # wlnlm.cel
+    print('fixing wlnlm.cel')
     fix_wlnlm(THIS_DIR / 'plrgfx' / 'warrior' / 'wln' / 'wlnlm.cel',
               THIS_DIR / 'plrgfx' / 'warrior' / 'wln' / 'wlnlm.cel')
 
     # wludt.cel
+    print('fixing wludt.cel')
     fix_wludt(THIS_DIR / 'plrgfx' / 'warrior' / 'wlu' / 'wludt.cel',
               THIS_DIR / 'plrgfx' / 'warrior' / 'wlu' / 'wludt.cel')
 
     # Use mages instead of magew because we need a 20 frame animation
+    print("Converting monster graphics")
     shutil.copy2(THIS_DIR / 'monsters' / 'mage' / 'mages.cl2',
                  THIS_DIR / 'monsters' / 'mage' / 'magew.cl2')
 
@@ -149,6 +158,7 @@ def main() -> int:
                 groups=8)
 
     # Modify graphics to match demo frame table
+    print("Fixing monster animations")
     # snake attack: turn 13 frames into 14 frames
     _reanimate(THIS_DIR / 'monsters' / 'snake' / f'snakea.cel',
                groups=8,
@@ -171,6 +181,7 @@ def main() -> int:
                frames=[0, 1, 2, 2, 3, 4, 4, 5, 6])
 
     # Cleanup (remove all .CL2 files)
+    print("Cleaning up CL2")
     for root, _, files in os.walk(THIS_DIR / 'monsters'):
         for file in files:
             if file.endswith('.cl2'):

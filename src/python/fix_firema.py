@@ -1,10 +1,7 @@
 import sys
 from pathlib import Path
 from typing import List
-
-THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_with_groups, serialize_with_groups, UINT16_SIZE, UINT8_SIZE
+from cel_utils import decompose_with_groups, serialize_with_groups, UINT16_SIZE, UINT8_SIZE
 
 FIREMA_NUM_GROUPS: int = 8
 

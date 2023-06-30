@@ -2,10 +2,7 @@ import sys
 import itertools
 from pathlib import Path
 from typing import List
-
-THIS_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(THIS_DIR.parent))
-from diabutil_python import decompose_with_groups, serialize_with_groups
+from cel_utils import decompose_with_groups, serialize_with_groups
 
 WLUDT_NUM_GROUPS: int = 8
 
