@@ -58,6 +58,7 @@ _ANIM_TYPE_STR = [
 # Constraints
 #
 
+_ALLOC_ALIGNMENT=1024
 # These are taken from InitPlrGFXMem decomp (.text:00465DC2)
 _N_DATA_MAX_SIZE = 0x45800
 _W_DATA_MAX_SIZE = 0x1D000
@@ -123,36 +124,36 @@ _DEFAULT_ANIM_LENS = {
 }
 # TODO: Account for our patch that fixes death anims
 _OVERRIDE_ANIM_LENS = {
-    # 'WLDDT': 21, # From game code
-    # 'WLNDT': 20, # From game code
-    # 'WMNDT': 15, # From game code
-    # 'WHNDT': 20, # From game code
-    # 'WLUDT': 20, # From game code
-    # 'WMUDT': 20, # From game code
-    # 'WHUDT': 15, # From game code
-    # 'WLSDT': 21, # From game code
-    # 'WMSDT': 21, # From game code
-    # 'WHSDT': 15, # From game code
+    # 'WLDDT': 21, # Fixed in plrgfx_frame_fix
+    # 'WLNDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WMNDT': 15, # Fixed in plrgfx_frame_fix
+    # 'WHNDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WLUDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WMUDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WHUDT': 15, # Fixed in plrgfx_frame_fix
+    # 'WLSDT': 21, # Fixed in plrgfx_frame_fix
+    # 'WMSDT': 21, # Fixed in plrgfx_frame_fix
+    # 'WHSDT': 15, # Fixed in plrgfx_frame_fix
     'WLBAS': 8,
     'WMBAS': 8,
     'WHBAS': 8,
     'WLAAT': 20,
     'WMAAT': 20,
     'WHAAT': 20,
-    # 'WLMDT': 16, # From game code
-    # 'WMMDT': 16, # From game code
-    # 'WHMDT': 16, # From game code
-    # 'WLHDT': 16, # From game code
-    # 'WMHDT': 16, # From game code
+    # 'WLMDT': 16, # Fixed in plrgfx_frame_fix
+    # 'WMMDT': 16, # Fixed in plrgfx_frame_fix
+    # 'WHMDT': 16, # Fixed in plrgfx_frame_fix
+    # 'WLHDT': 16, # Fixed in plrgfx_frame_fix
+    # 'WMHDT': 16, # Fixed in plrgfx_frame_fix
     'WLTAT': 16,
     'WMTAT': 16,
     'WHTAT': 16,
-    # 'WLTDT': 20, # From game code
-    # 'WMTDT': 20, # From game code
-    # 'WHTDT': 20, # From game code
+    # 'WLTDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WMTDT': 20, # Fixed in plrgfx_frame_fix
+    # 'WHTDT': 20, # Fixed in plrgfx_frame_fix
     'RLAAT': 22,
     'RLBAT': 12,
-    'RLBDT': 21, # UH OH!!!!!!
+    # 'RLBDT': 21, # Fixed in plrgfx_frame_fix
     'RLTAT': 16,
     # THESE ARE FROM plrgfx_frame_fix.cpp
     'WLNDT': 20,
@@ -240,7 +241,10 @@ def main():
         size = path.stat().st_size
         max_size = constraint.max_file_size
         if size > max_size:
-            print(f'{path}: {size} bytes > {max_size} bytes!')
+            # Allocs are 1024-aligned for some reason so keep it that way?
+
+            suggested_alloc = (int(size / _ALLOC_ALIGNMENT) + 1) * _ALLOC_ALIGNMENT
+            print(f'{path}: {size} bytes > {max_size} bytes! Suggested alloc={hex(suggested_alloc)}')
 
 
 if __name__ == '__main__':

@@ -103,5 +103,19 @@ PATCH_MAIN
     uint8_t rogue_death_frames = 20;
     ok &= patch_bytes(0x00466C18 + 6, &rogue_death_frames, 1);
 
+    // Increase the amount of memory allocated for know overflows. The amount is
+    // an immediate that is PUSH'd onto the stack for GlobalAlloc. We can swap
+    // that out with our desired value. The new values were suggsted by our
+    // verify.py script
+    // Old: .text:00465E8A 68 00 A0 05 00                                push    5A000h
+    constexpr static uint32_t kLDataAlloc = 0x5cc00;
+    ok &= patch(0x00465E8A + 1, kLDataAlloc);
+    // Old: .text:00465EB9 68 00 88 07 00                                push    78800h
+    constexpr static uint32_t kFDataAlloc = 0x82c00;
+    ok &= patch(0x00465EB9 + 1, kFDataAlloc);
+    // Old: .text:00465EE8 68 00 18 09 00                                push    91800h
+    constexpr static uint32_t kTDataAlloc = 0xa8c00;
+    ok &= patch(0x00465EE8 + 1, kTDataAlloc);
+
     return ok;
 }

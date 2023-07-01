@@ -137,7 +137,6 @@ plrgfx/warrior/whh/whhst.cel
 plrgfx/warrior/whh/whhwl.cel
 plrgfx/warrior/whm/whmas.cel
 plrgfx/warrior/whm/whmat.cel
-plrgfx/warrior/whm/whmaw.cel
 plrgfx/warrior/whm/whmfm.cel
 plrgfx/warrior/whm/whmht.cel
 plrgfx/warrior/whm/whmlm.cel
@@ -164,11 +163,9 @@ plrgfx/warrior/whs/whsqm.cel
 plrgfx/warrior/whs/whsst.cel
 plrgfx/warrior/whs/whswl.cel
 plrgfx/warrior/wht/whtas.cel
-plrgfx/warrior/wht/whtat.cel
 plrgfx/warrior/wht/whtaw.cel
 plrgfx/warrior/wht/whtfm.cel
 plrgfx/warrior/wht/whtht.cel
-plrgfx/warrior/wht/whtlm.cel
 plrgfx/warrior/wht/whtqm.cel
 plrgfx/warrior/wht/whtst.cel
 plrgfx/warrior/wht/whtwl.cel
@@ -249,7 +246,6 @@ plrgfx/warrior/wms/wmsqm.cel
 plrgfx/warrior/wms/wmsst.cel
 plrgfx/warrior/wms/wmswl.cel
 plrgfx/warrior/wmt/wmtas.cel
-plrgfx/warrior/wmt/wmtat.cel
 plrgfx/warrior/wmt/wmtaw.cel
 plrgfx/warrior/wmt/wmtfm.cel
 plrgfx/warrior/wmt/wmtht.cel

@@ -14,7 +14,7 @@ bool patch(void* addr_to_patch, T new_val)
     // If we don't turn the .text address to be PAGE_EXECUTE_READWRITE then the game crashes
     DWORD oldProtect = 0;
     if (!VirtualProtect(addr_to_patch, sizeof(T), PAGE_EXECUTE_READWRITE, &oldProtect)) {
-        printf("%s: failed to mark address +xrw: 0x%X\n", __func__, addr_to_patch);
+        printf("%s: failed to mark address +xrw: 0x%p\n", __func__, addr_to_patch);
         return false;
     }
     // Do the actual patch

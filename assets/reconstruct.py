@@ -150,11 +150,26 @@ def main() -> int:
                     width=96,
                     groups=8)
         # TODO antworm?
-    cl2_convert(THIS_DIR / 'monsters' / 'snake' / f'snakes.cl2',
+    cl2_convert(THIS_DIR / 'monsters' / 'snake' / 'snakes.cl2',
                 width=160,
                 groups=8)
-    cl2_convert(THIS_DIR / 'monsters' / 'thin' / f'thins.cl2',
+    cl2_convert(THIS_DIR / 'monsters' / 'thin' / 'thins.cl2',
                 width=160,
+                groups=8)
+
+    # Some of the beta plrgfx are bad or missing frames so convert retail
+    print("Converting plrgfx")
+    cl2_convert(THIS_DIR / 'plrgfx' / 'warrior' / 'wmt' / 'wmtat.cl2',
+                width=128,
+                groups=8)
+    cl2_convert(THIS_DIR / 'plrgfx' / 'warrior' / 'wht' / 'whtat.cl2',
+                width=128,
+                groups=8)
+    cl2_convert(THIS_DIR / 'plrgfx' / 'warrior' / 'whm' / 'whmaw.cl2',
+                width=96,
+                groups=8)
+    cl2_convert(THIS_DIR / 'plrgfx' / 'warrior' / 'wht' / 'whtlm.cl2',
+                width=96,
                 groups=8)
 
     # Modify graphics to match demo frame table
@@ -182,7 +197,7 @@ def main() -> int:
 
     # Cleanup (remove all .CL2 files)
     print("Cleaning up CL2")
-    for root, _, files in os.walk(THIS_DIR / 'monsters'):
+    for root, _, files in os.walk(THIS_DIR):
         for file in files:
             if file.endswith('.cl2'):
                 (Path(root) / file).unlink()

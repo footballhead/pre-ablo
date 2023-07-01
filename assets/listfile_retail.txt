@@ -92,3 +92,7 @@ monsters/unrav/unravd.cl2
 monsters/unrav/unravh.cl2
 monsters/unrav/unravn.cl2
 monsters/unrav/unravw.cel
+plrgfx/warrior/wmt/wmtat.cl2
+plrgfx/warrior/whm/whmaw.cl2
+plrgfx/warrior/wht/whtat.cl2
+plrgfx/warrior/wht/whtlm.cl2
