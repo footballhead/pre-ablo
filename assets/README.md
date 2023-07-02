@@ -24,9 +24,7 @@ These files are required past dlvl 1 but are missing from the MPQ
 
 ## Known Issues
 
-* `wludt` has wrong number of frames (see #115)
 * `firemh` levitates (see #119)
-* warrior fire cast no weapon is weird (see #79)
 * `magew` is actually retail `mages`. We need 20 frames for pre-release demo but in retail magew.cl2 is only 1 frame.
 * Some retail graphics don't match Pre-Release Demo required frames (see #91)
     * Notably `mega` (see #56) and `snake` (see #25)

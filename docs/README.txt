@@ -64,6 +64,17 @@ It is also recommended to turn off Virtual Desktop in winecfg.
 
 If you encounter any issues, please reach out via Discord (link at the top).
 
+Graphics Options
+--------------------------------------------------------------------------------
+
+After starting a new game, press the ~ key to open the graphics options. This
+allows you to toggle fullscreen or change window resolution.
+
+You must use the Cursor Keys and Enter to navigate this menu; the mouse will not
+work.
+
+(This functionality is thanks to a fork of Strange Bytes's Diablo 1 Patch.)
+
 Known Bugs
 --------------------------------------------------------------------------------
 
@@ -77,11 +88,31 @@ Here are some bugs worth mentioning:
       * WORKAROUND: Walk through stairs trigger, cast a spell when on same tile
   * Hell dungeons look different on first load (monsters in walls, etc) (#39)
       * WORKAROUND: Start a new game, then load
-  * Crash casting fire spells as Warrior/Sorcerer without a weapon (#79)
-  * Crash when dying as warrior wearing medium or heavy armor (#117)
 
 Changelog
 --------------------------------------------------------------------------------
+
+vNEXT
+
+  * Introduce reset_dungeon.exe so you can enjoy Pre-ablo a second time
+  * Fixed a bunch of graphics:
+      * wludt.cel: Alter to add missing frames
+      * whmaw.cel: Convert from retail to include missing frames
+      * whtat.cel: Convert from retail to include missing frames
+      * wmtat.cel: Convert from retail to include missing frames
+      * whtlm.cel: Convert from retail to fix bad animation
+      * snakea.cel: Alter to add missing frames
+      * snakew.cel: Alter to add missing frames
+      * megah.cel: Alter to add missing frames
+      * megan.cel: Alter to add missing frames
+      * megaw.cel: Alter to add missing frames
+  * plrgfx_frame_fix: Fix crashes from death animations and large graphics
+  * Remove snake_frame_fix since it's no longer needed
+  * mega_fix: Remove frame table alterations; still required to spawn Mega Demon
+  * Pre-ablo assets are now packaged in a separate MPQ called pre-ablo.mpq
+      * load_mpq_customizations: This (required) patch loads pre-ablo.mpq
+  * Established provenance of all assets, traceable to official MPQs
+      * All missing monster graphics now come from beta, retail, or Hellfire
 
 v0.4.6
 
@@ -190,8 +221,17 @@ v0.1.0
   * Fix town portals in Skeleton King Lair and Bone Chamber (#2)
   * Fix Thunder Demon Lightning missile-related crash (#9)
 
-Thanks
+Acknowledgements
 --------------------------------------------------------------------------------
+
+Pre-ablo includes a fork of Strange Bytes's Diablo 1 Patch. Strange Bytes has
+generously published the source at
+https://github.com/strangebytes/diablo-ddrawwrapper
+
+My fork can be found at https://github.com/footballhead/diablo-ddrawwrapper
+
+Pre-ablo borrows heavily from Devilution, which is made available under the
+Sustainable Use License: https://github.com/diasurgical/devilution
 
 This project could not happen without the help and efforts of many people:
 
@@ -200,9 +240,10 @@ This project could not happen without the help and efforts of many people:
   * mewmew
   * nitekat
   * xavier_sb
+  * catalyst1995
   * All contributors to diablo-evolution.net:
     https://diablo-evolution.net
   * All contributors to Alpha4:
     https://diablo-evolution.net/index.php?pageid=alpha4
-  * Strange Bytes for their ddraw wrapper:
+  * Strange Bytes for their patch:
     https://github.com/strangebytes/diablo-ddrawwrapper
