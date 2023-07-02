@@ -187,9 +187,13 @@ def main() -> int:
                groups=8,
                frames=[0] * 9)
     # mega neutral: turn 6 frames into 14 frames
+    # In retail, monsterdata[MT_MEGA].Rate[MA_STAND] == 3, which means each
+    # frame is held for 3 in-game ticks. This effectively slows down the
+    # animation. We can do something similar here by duplicating subsequent
+    # # frames
     _reanimate(THIS_DIR / 'monsters' / 'mega' / f'megan.cel',
                groups=8,
-               frames=[0, 1, 2, 3, 4, 5, 5, 0, 1, 2, 3, 4, 5, 5])
+               frames=[0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 5])
     # mega walk: turn 7 frames into 9 frames
     _reanimate(THIS_DIR / 'monsters' / 'mega' / f'megaw.cel',
                groups=8,
