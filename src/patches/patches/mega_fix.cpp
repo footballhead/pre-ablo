@@ -4,7 +4,9 @@
 #include "variables.hpp"
 
 #define PATCH_NAME mega_fix
-DESCRIBE_PATCH(R"txt(Modify Mega Demon monster data; decrease mImgSize so Mega Demons appear in the caves and beyond)txt")
+DESCRIBE_PATCH(R"txt(Modify Mega Demon monster data; decrease mImgSize so Mega Demons appear in the caves and beyond
+
+Toggling will ruin old saves, so it's recommended to start a new character.)txt")
 
 namespace {
 
