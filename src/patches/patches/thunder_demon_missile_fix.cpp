@@ -12,6 +12,8 @@ namespace {
 // Imports
 //
 
+int* const myplr = reinterpret_cast<int* const>(0x00615E38);
+
 constexpr auto GetSpellLevel_addr = 0x00453CDB;
 auto const GetSpellLevel = reinterpret_cast<int (__fastcall *)(int id, int sn)>(GetSpellLevel_addr);
 
