@@ -13,27 +13,26 @@
 _STATIC_ASSERT(sizeof(void*) == 4);
 
 typedef enum quest_state {
-    QUEST_NOTAVAIL = 0,
-    QUEST_INIT     = 1,
-    QUEST_ACTIVE   = 2,
-    QUEST_DONE     = 3
+  QUEST_NOTAVAIL = 0,
+  QUEST_INIT = 1,
+  QUEST_ACTIVE = 2,
+  QUEST_DONE = 3
 } quest_state;
 
 typedef enum dungeon_type {
-    DTYPE_TOWN          = 0x0,
-    DTYPE_OLD_CATHEDRAL = 0x1,
-    DTYPE_CATACOMBS     = 0x2,
-    DTYPE_CAVES         = 0x3,
-    DTYPE_HELL          = 0x4,
-    DTYPE_CATHEDRAL       = 0x5
+  DTYPE_TOWN = 0x0,
+  DTYPE_OLD_CATHEDRAL = 0x1,
+  DTYPE_CATACOMBS = 0x2,
+  DTYPE_CAVES = 0x3,
+  DTYPE_HELL = 0x4,
+  DTYPE_CATHEDRAL = 0x5
 } dungeon_type;
 
 // IDA export quirk: gaps of undefined data use this type, which is 8-bits
 typedef char _BYTE;
 
 #pragma pack(push, 8)
-typedef struct _ItemStruct
-{
+typedef struct _ItemStruct {
   int _itype;
   int _ix;
   int _iy;
@@ -76,8 +75,7 @@ typedef struct _ItemStruct
 // export from IDA
 // Some ints should be void*
 #pragma pack(push, 8)
-typedef struct _PlayerStruct
-{
+typedef struct _PlayerStruct {
   int plr_pmode;
   BOOL plractive;
   char plr_to_send_message_id;
@@ -189,7 +187,7 @@ typedef struct _PlayerStruct
   int plr_pVar6;
   int plr_pVar7;
   int plr_pVar8;
-  int _pSeedTbl[17]; 
+  int _pSeedTbl[17];
   int _pLevelTypeTbl[17];
   int _pLvlVisited[17];
   int _pSLvlVisited[17];
@@ -279,8 +277,7 @@ typedef struct _PlayerStruct
 _STATIC_ASSERT(sizeof(PlayerStruct) == 0x4270);
 
 #pragma pack(push, 8)
-typedef struct _QuestStruct
-{
+typedef struct _QuestStruct {
   char _qlevel;
   char _qtype;
   char _qactive;
