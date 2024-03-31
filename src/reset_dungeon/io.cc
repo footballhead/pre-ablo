@@ -6,10 +6,8 @@
 #include <fstream>
 #include <ios>
 #include <optional>
-#include <span>
 #include <string_view>
 #include <vector>
-
 
 std::optional<std::vector<std::byte>> ReadFromFile(std::string_view filename) {
   std::ifstream in{std::string(filename), std::ios_base::binary};
@@ -34,7 +32,8 @@ std::optional<std::vector<std::byte>> ReadFromFile(std::string_view filename) {
   return contents;
 }
 
-bool WriteToFile(std::string_view filename, std::span<std::byte> buffer) {
+bool WriteToFile(std::string_view filename,
+                 const std::vector<std::byte>& buffer) {
   std::ofstream out{std::string(filename), std::ios_base::binary};
   if (!out.good()) {
     MessageBox(NULL, TEXT("Could not open the save file for writing."),
@@ -42,7 +41,7 @@ bool WriteToFile(std::string_view filename, std::span<std::byte> buffer) {
     return false;
   }
 
-  out.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
+  out.write(reinterpret_cast<const char*>(buffer.data()), buffer.size());
   if (!out.good()) {
     MessageBox(NULL, TEXT("Could not write to the save file."), TEXT("Error"),
                MB_OK | MB_ICONERROR);
