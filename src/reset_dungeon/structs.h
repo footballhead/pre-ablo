@@ -1,16 +1,13 @@
-// This file is for pre-release demo DIABLO.EXE structs. Currently this is
-// bootstrapped from IDA exports.
+// Things from the Pre-Release Demo decomp. They were exported from IDA. They
+// are by no means perfect but they get the job done for now.
 
-#ifndef __STRUCTS_H__
-#define __STRUCTS_H__
+#pragma once
 
 #include <windows.h>
 
 #define MAXQUESTS 10
 #define MAX_PLRS 4
 #define NUMLEVELS 17
-
-_STATIC_ASSERT(sizeof(void*) == 4);
 
 typedef enum quest_state {
   QUEST_NOTAVAIL = 0,
@@ -28,7 +25,8 @@ typedef enum dungeon_type {
   DTYPE_CATHEDRAL = 0x5
 } dungeon_type;
 
-// IDA export quirk: gaps of undefined data use this type, which is 8-bits
+// This is a workaround to an IDA export quirk: gaps of undefined data use this
+// type, which is 8-bits
 typedef char _BYTE;
 
 #pragma pack(push, 8)
@@ -70,10 +68,9 @@ typedef struct _ItemStruct {
   int IDidx;
   int field_134;
 } ItemStruct;
+// TODO static_assert(sizeof(ItemStruct) == ???)
 #pragma pack(pop)
 
-// export from IDA
-// Some ints should be void*
 #pragma pack(push, 8)
 typedef struct _PlayerStruct {
   int plr_pmode;
@@ -274,7 +271,8 @@ typedef struct _PlayerStruct {
   int plr_pBData;
 } PlayerStruct;
 #pragma pack(pop)
-_STATIC_ASSERT(sizeof(PlayerStruct) == 0x4270);
+static_assert(sizeof(PlayerStruct) == 0x4270,
+              "PlayerStruct must be 0x4270 bytes");
 
 #pragma pack(push, 8)
 typedef struct _QuestStruct {
@@ -290,6 +288,4 @@ typedef struct _QuestStruct {
   char field_F;
 } QuestStruct;
 #pragma pack(pop)
-_STATIC_ASSERT(sizeof(QuestStruct) == 0x10);
-
-#endif
+static_assert(sizeof(QuestStruct) == 0x10, "QuestStruct must be 0x10 bytes");

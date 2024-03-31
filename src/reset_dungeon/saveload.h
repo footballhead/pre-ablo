@@ -1,22 +1,38 @@
-#ifndef __SAVELOAD_H__
-#define __SAVELOAD_H__
+// These functions are modified versions from decomp. I chose to reuse them
+// because they work.
+//
+// Expected usage:
+//
+// 1. Set `tbuff`
+// 2. Call `LoadGame()`
+// 3. Modify `plr`, `quests`, etc
+// 4. Reset `tbuff`
+// 5. Call `SaveGame()`
 
-#include "structs.h"
+#pragma once
+
 #include <windows.h>
 
-// This must be set in order to use LoadGame/SaveGame
+#include "structs.h"
+
+// This must be set in order to use `LoadGame()` or `SaveGame()`.
 extern BYTE *tbuff;
 
-// These variables will be set by LoadGame and used by SaveGame
+// These variables will be set by `LoadGame()` and read by `SaveGame()`
 extern PlayerStruct plr[MAX_PLRS];
 extern QuestStruct quests[MAXQUESTS];
+// These variables will be set by `LoadGame()`. Any changes will be ignored by
+// `SaveGame()`.
 extern int numquests;
 extern int leveltype;
 extern int gbActivePlayers;
 
-// Pre-condition: tbuff is set to a valid pointer
+// Deserealize from `tbuff` into the static variables like `plr`, `quests`, etc.
+//
+// `tbuff` must be a valid pointer
 void LoadGame();
-// Pre-condition: tbuff is set to a valid pointer
-void SaveGame();
 
-#endif
+// Serialize `plr` and `quests` to `tbuff`.
+//
+// `tbuff` must be a valid pointer
+void SaveGame();

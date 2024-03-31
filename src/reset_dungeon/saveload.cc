@@ -1,18 +1,23 @@
 #include "saveload.h"
 
-#define MAGIC_SIZE 3
-#define PLR_START_OFFSET 0x20
-#define WLOAD_SIZE 2
+BYTE *tbuff = nullptr;
+PlayerStruct plr[MAX_PLRS]{};
+QuestStruct quests[MAXQUESTS]{};
+int numquests = 0;
+int leveltype = 0;
+int gbActivePlayers = 0;
 
-BYTE *tbuff;
-PlayerStruct plr[MAX_PLRS];
-QuestStruct quests[MAXQUESTS];
-int numquests;
-int leveltype;
-int gbActivePlayers;
+namespace {
 
-// .text:00460977
-static int WLoad() {
+// Save files start with 3 magic bytes.
+constexpr int kFileMagicSize = 3;
+// `plr` offset inside the save file.
+constexpr int kPlrOffset = 0x20;
+// Size of the word loaded by `WLoad()`
+constexpr int kWordSize = 2;
+
+// Loads a 2-byte value into a 4-byte value with sign extension.
+int WLoad() {
   int rv;
   if (*tbuff & 0x80) {
     rv = 0xFFFF0000;
@@ -25,26 +30,39 @@ static int WLoad() {
   return rv;
 }
 
-static BOOL OLoad() {
+BOOL OLoad() {
   if (*tbuff++ == TRUE)
     return TRUE;
   else
     return FALSE;
 }
 
-static void LoadPlayer(int i) {
+void LoadPlayer(int i) {
   // Demo difference! Omit the final 9 (not 10) pointers
   memcpy(&plr[i], tbuff, sizeof(*plr) - (9 * sizeof(void *)));
   tbuff += sizeof(*plr) - (9 * sizeof(void *));
 }
 
-static void LoadQuest(int i) {
+void LoadQuest(int i) {
   memcpy(&quests[i], tbuff, sizeof(*quests));
   tbuff += sizeof(*quests);
 }
 
+void SavePlayer(int i) {
+  // Demo difference! Omit the final 9 (not 10) pointers
+  memcpy(tbuff, &plr[i], sizeof(*plr) - (9 * sizeof(void *)));
+  tbuff += sizeof(*plr) - (9 * sizeof(void *));
+}
+
+void SaveQuest(int i) {
+  memcpy(tbuff, &quests[i], sizeof(*quests));
+  tbuff += sizeof(*quests);
+}
+
+}  // namespace
+
 void LoadGame() {
-  tbuff += MAGIC_SIZE;  // skip magic number
+  tbuff += kFileMagicSize;
   BOOL setlevel = OLoad();
   int setlvlnum = WLoad();
   int currlevel = WLoad();
@@ -76,22 +94,12 @@ void LoadGame() {
   // Don't need to load the rest
 }
 
-static void SavePlayer(int i) {
-  // Demo difference! Omit the final 9 (not 10) pointers
-  memcpy(tbuff, &plr[i], sizeof(*plr) - (9 * sizeof(void *)));
-  tbuff += sizeof(*plr) - (9 * sizeof(void *));
-}
-
-static void SaveQuest(int i) {
-  memcpy(tbuff, &quests[i], sizeof(*quests));
-  tbuff += sizeof(*quests);
-}
-
 void SaveGame() {
-  tbuff += PLR_START_OFFSET;  // plr[0] starts at 0x20
+  // main.cc only modifies `plr` and `quests` so that's all we repack.
+  tbuff += kPlrOffset;
   SavePlayer(0);
 
-  tbuff += WLOAD_SIZE;  // skip numquests (2 bytes)
+  tbuff += kWordSize;  // skip numquests
   for (int i = 0; i < numquests; ++i) {
     SaveQuest(i);
   }

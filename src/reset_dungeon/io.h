@@ -1,13 +1,17 @@
-#ifndef __IO_H__
-#define __IO_H__
+#pragma once
 
-#include <windows.h>
+#include <cstddef>
+#include <vector>
+#include <optional>
+#include <string_view>
+#include <span>
 
-// Read contents of SAVE\Game00.sav
-// Caller must GlobalFree the returned pointer
-LPVOID ReadSaveFile(DWORD* dwBytes);
+// Returns the entire contents of `filename` on succes, `std::nullopt` on error.
+//
+// On error, the program pauses and a message box is show to the user.
+std::optional<std::vector<std::byte>> ReadFromFile(std::string_view filename);
 
-// Write buffer to SAVE\Game00.sav
-BOOL WriteSaveFile(LPVOID lpBuffer, DWORD dwBytes);
-
-#endif
+// Writes `buffer` to `filename. Returns `true` on success, `false` on error.
+//
+// On error, the program pauses and a message box is show to the user.
+bool WriteToFile(std::string_view filename, std::span<std::byte> buffer);
