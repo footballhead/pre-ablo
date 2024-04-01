@@ -67,7 +67,7 @@ typedef struct _ItemStruct {
   int IDidx;
   int field_134;
 } ItemStruct;
-// TODO static_assert(sizeof(ItemStruct) == ???)
+static_assert(sizeof(ItemStruct) == 0x138, "ItemStruct must be 0x138 bytes");
 #pragma pack(pop)
 
 #pragma pack(push, 8)
