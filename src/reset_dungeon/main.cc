@@ -106,6 +106,7 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
   if (buffer->size() < kMinimalSaveSize) {
     MessageBox(nullptr, TEXT("Unexpected save file size, cannot continue."),
                TEXT("Error"), MB_OK | MB_ICONERROR);
+    return 1;
   }
 
   tbuff = reinterpret_cast<BYTE*>(buffer->data());
