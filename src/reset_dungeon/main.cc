@@ -97,21 +97,6 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
     return 1;
   }
 
-  // While `time()` returns seconds, it is unlikely that this will try to create
-  // a folder that already exists.
-  std::error_code copy_error;
-  std::filesystem::copy("Save", "Save_" + std::to_string(time(nullptr)),
-                        copy_error);
-  if (copy_error) {
-    if (MessageBox(nullptr,
-                   TEXT("We couldn't make a backup of your save. You can make "
-                        "one by copying the SAVE folder. Continue?"),
-                   TEXT("Continue without backup?"),
-                   MB_YESNO | MB_ICONWARNING) != IDYES) {
-      return 1;
-    }
-  }
-
   // `buffer` is the only copy of the save data. `tbuff` is set as mutable
   // iterator to `buffer` so saveload.h functions work.
   std::optional<std::vector<std::byte>> buffer = ReadFromFile(kSaveFile);
@@ -129,6 +114,25 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
     return 1;
   }
   ResetDungeon();
+
+  // Backup at the last possible moment to keep the filesystem clean. If we
+  // reach here then we can reasonably be sure that we'll succeed and that the
+  // backup will be warranted.
+  //
+  // While `time()` returns seconds, it is unlikely that this will try to create
+  // a folder that already exists.
+  std::error_code copy_error;
+  std::filesystem::copy("Save", "Save_" + std::to_string(time(nullptr)),
+                        copy_error);
+  if (copy_error) {
+    if (MessageBox(nullptr,
+                   TEXT("We couldn't make a backup of your save. You can make "
+                        "one by copying the SAVE folder. Continue?"),
+                   TEXT("Continue without backup?"),
+                   MB_YESNO | MB_ICONWARNING) != IDYES) {
+      return 1;
+    }
+  }
 
   tbuff = reinterpret_cast<BYTE*>(buffer->data());
   SaveGame();
