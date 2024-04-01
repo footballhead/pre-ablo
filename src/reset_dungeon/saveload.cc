@@ -91,6 +91,10 @@ void LoadGame() {
 }
 
 void SaveGame() {
+  //
+  // ATTENTION: If you touch this function then fix kMinimalSaveSize kthxbai
+  //
+
   // main.cc only modifies `plr` and `quests` so that's all we repack.
   tbuff += kPlrOffset;
   SavePlayer(0);
