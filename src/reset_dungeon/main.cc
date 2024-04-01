@@ -87,7 +87,13 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
     return 1;
   }
 
-  // TODO: #143 - Detect if DIABLO.EXE is running.
+  // Pre-Release Demo uses a different class and window name compared to
+  // Devilution. Found via decomp (look for RegisterClass and CreateWindow).
+  if (FindWindow(TEXT("Diablo"), TEXT("Diablo Game")) != nullptr) {
+    MessageBox(nullptr, TEXT("Quit Pre-ablo first!"), TEXT("Error"),
+               MB_OK | MB_ICONERROR);
+    return 1;
+  }
 
   // `buffer` is the only copy of the save data. `tbuff` is set as mutable
   // iterator to `buffer` so saveload.h functions work.
@@ -104,6 +110,7 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
   }
   ResetDungeon();
 
+  // TODO Make a backup for the user.
   MessageBox(nullptr, TEXT("Make a backup of your save file, then click OK."),
              TEXT("Make a Backup"), MB_OK | MB_ICONINFORMATION);
 
