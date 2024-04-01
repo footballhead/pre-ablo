@@ -1,13 +1,13 @@
-// Resets the dungeon to a state that can be replayed. This:
+// Resets the save to a state that can be replayed. This:
 //
-// - resets all quest progress
-// - regenerates dungeons with new seeds
+// - Resets all quest progress.
+// - Regenerates dungeons with new seeds.
 //
-// Most of the important logic is in `ResetDungeon()`. The rest of the functions
-// support reading and writing the save file.
+// The core logic is in `ResetDungeon()`. Everything else exists to read/write
+// the save file.
 //
-// This was written to be familiar to anyone who has worked on Devilution
-// before; the idiom is to load into static members like `plr` and `quests`.
+// This was written to be familiar to anyone who's worked on Devilution before.
+// The idiom is to load into static members like `plr` and `quests`.
 #include <windows.h>
 
 #include <cstddef>
@@ -20,15 +20,15 @@
 #include "saveload.h"
 #include "structs.h"
 
-// Need 32 bits since we use decompiled source. CI takes care of this for us.
+// Need 32 bits since we use decompiled source and require the structs to pack
+// correctly. CI takes care of this for us.
 static_assert(sizeof(void*) == 4, "Need a 32-bit toolchain");
 
 namespace {
 
 constexpr std::string_view kSaveFile = "SAVE\\Game00.sav";
 
-// Returns true if the save file is safe to be reset.
-//
+// Returns `true` if the save file is safe to be reset, `false` otherwise.
 // Pauses and shows a message to the user if something is wrong.
 //
 // `LoadGame()` must be called first!
@@ -50,9 +50,7 @@ bool IsSaveInValidState() {
   return true;
 }
 
-// Modifies the player save in memory to allow for new dungeons and quests. This
-// is the meat and potatos of the program; the rest serve to support this
-// function.
+// Modifies the in-memory save to allow for new dungeons and quests.
 //
 // `LoadGame()` must be called first!
 void ResetDungeon() {
@@ -78,18 +76,15 @@ void ResetDungeon() {
 
 INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
                    PSTR /*cmdline*/, INT /*cmd_show*/) {
-  {
-    // This scope isolates `choice`, which doesn't need to live very long.
-    const int choice = MessageBox(
-        nullptr,
-        TEXT("This tool will reset the dungeon and quests so you can "
-             "experience them again. You will lose items in the dungeon that "
-             "you have not picked up. Anything in town will be kept. Your "
-             "character will be left alone. Reset your progress?"),
-        TEXT("Reset your progress?"), MB_YESNO | MB_ICONWARNING);
-    if (choice != IDYES) {
-      return 1;
-    }
+  const int choice = MessageBox(
+      nullptr,
+      TEXT("This tool will reset the dungeon and quests so you can experience "
+           "them again. You will lose items in the dungeon that you have not "
+           "picked up. Anything in town will be kept. Your character will be "
+           "left alone. Reset your progress?"),
+      TEXT("Reset your progress?"), MB_YESNO | MB_ICONWARNING);
+  if (choice != IDYES) {
+    return 1;
   }
 
   // TODO: #143 - Detect if DIABLO.EXE is running.

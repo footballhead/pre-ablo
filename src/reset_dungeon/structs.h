@@ -1,5 +1,5 @@
-// Things from the Pre-Release Demo decomp. They were exported from IDA. They
-// are by no means perfect but they get the job done for now.
+// Things from the Pre-Release Demo decomp. Exported from IDA. They're not
+// perfect but they get the job done.
 
 #pragma once
 
@@ -25,8 +25,7 @@ typedef enum dungeon_type {
   DTYPE_CATHEDRAL = 0x5
 } dungeon_type;
 
-// This is a workaround to an IDA export quirk: gaps of undefined data use this
-// type, which is 8-bits
+// This is a workaround for an IDA export quirk
 typedef char _BYTE;
 
 #pragma pack(push, 8)
