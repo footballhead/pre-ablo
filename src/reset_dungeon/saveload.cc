@@ -11,10 +11,6 @@ namespace {
 
 // Save files start with 3 magic bytes: 'MSD' for demo, '   ' otherwise
 constexpr int kFileMagicSize = 3;
-// `plr` offset inside the save file.
-constexpr int kPlrOffset = 0x20;
-// Size of the word loaded by `WLoad()`
-constexpr int kWordSize = 2;
 
 // Loads a 2-byte value into a 4-byte value with sign extension.
 int WLoad() {

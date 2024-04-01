@@ -15,6 +15,14 @@
 
 #include "structs.h"
 
+// `plr` offset inside the save file.
+constexpr int kPlrOffset = 0x20;
+// Size of the word loaded by `WLoad()`
+constexpr int kWordSize = 2;
+// Smallest save file size we can accept before accessing out of bounds memory.
+constexpr int kMinimalSaveSize = kPlrOffset + sizeof(PlayerStruct) * MAX_PLRS +
+                                 kWordSize + sizeof(QuestStruct) * MAXQUESTS;
+
 // This must be set in order to use `LoadGame()` or `SaveGame()`.
 extern BYTE *tbuff;
 

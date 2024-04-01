@@ -22,7 +22,6 @@
 #include "saveload.h"
 #include "structs.h"
 
-
 // Need 32 bits since we use decompiled source and require the structs to pack
 // correctly. CI takes care of this for us.
 static_assert(sizeof(void*) == 4, "Need a 32-bit toolchain");
@@ -119,7 +118,10 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
   if (!buffer.has_value()) {
     return 1;
   }
-  // TODO Assert that `buffer` is the right size.
+  if (buffer->size() < kMinimalSaveSize) {
+    MessageBox(nullptr, TEXT("Unexpected save file size, cannot continue."),
+               TEXT("Error"), MB_OK | MB_ICONERROR);
+  }
 
   tbuff = reinterpret_cast<BYTE*>(buffer->data());
   LoadGame();
