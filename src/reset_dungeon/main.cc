@@ -109,6 +109,9 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
   }
   ResetDungeon();
 
+  MessageBox(nullptr, TEXT("Make a backup of your save file, then click OK."),
+             TEXT("Make a Backup"), MB_OK | MB_ICONINFORMATION);
+
   tbuff = reinterpret_cast<BYTE*>(buffer->data());
   SaveGame();
   if (!WriteToFile(kSaveFile, buffer.value())) {
