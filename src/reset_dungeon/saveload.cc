@@ -9,7 +9,7 @@ int gbActivePlayers = 0;
 
 namespace {
 
-// Save files start with 3 magic bytes.
+// Save files start with 3 magic bytes: 'MSD' for demo, '   ' otherwise
 constexpr int kFileMagicSize = 3;
 // `plr` offset inside the save file.
 constexpr int kPlrOffset = 0x20;
