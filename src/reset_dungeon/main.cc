@@ -12,7 +12,9 @@
 
 #include <cstddef>
 #include <ctime>
+#include <filesystem>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -20,13 +22,14 @@
 #include "saveload.h"
 #include "structs.h"
 
+
 // Need 32 bits since we use decompiled source and require the structs to pack
 // correctly. CI takes care of this for us.
 static_assert(sizeof(void*) == 4, "Need a 32-bit toolchain");
 
 namespace {
 
-constexpr std::string_view kSaveFile = "SAVE\\Game00.sav";
+constexpr std::string_view kSaveFile = "Save\\Game00.sav";
 
 // Returns `true` if the save file is safe to be reset, `false` otherwise.
 // Pauses and shows a message to the user if something is wrong.
@@ -95,6 +98,21 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
     return 1;
   }
 
+  // While `time()` returns seconds, it is unlikely that this will try to create
+  // a folder that already exists.
+  std::error_code copy_error;
+  std::filesystem::copy("Save", "Save_" + std::to_string(time(nullptr)),
+                        copy_error);
+  if (copy_error) {
+    if (MessageBox(nullptr,
+                   TEXT("We couldn't make a backup of your save. You can make "
+                        "one by copying the SAVE folder. Continue?"),
+                   TEXT("Continue without backup?"),
+                   MB_YESNO | MB_ICONWARNING) != IDYES) {
+      return 1;
+    }
+  }
+
   // `buffer` is the only copy of the save data. `tbuff` is set as mutable
   // iterator to `buffer` so saveload.h functions work.
   std::optional<std::vector<std::byte>> buffer = ReadFromFile(kSaveFile);
@@ -109,10 +127,6 @@ INT WINAPI WinMain(HINSTANCE /*instance*/, HINSTANCE /*prev_instance*/,
     return 1;
   }
   ResetDungeon();
-
-  // TODO Make a backup for the user.
-  MessageBox(nullptr, TEXT("Make a backup of your save file, then click OK."),
-             TEXT("Make a Backup"), MB_OK | MB_ICONINFORMATION);
 
   tbuff = reinterpret_cast<BYTE*>(buffer->data());
   SaveGame();
