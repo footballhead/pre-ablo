@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.4.6
+PRE-ABLO v0.5.0
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -75,6 +75,19 @@ work.
 
 (This functionality is thanks to a fork of Strange Bytes's Diablo 1 Patch.)
 
+New Game with Same Character
+--------------------------------------------------------------------------------
+
+reset_dungeon.exe will regenerate all dungeon levels so that they can be
+explored again with the same character. To use:
+
+1. Go to town
+2. Save and exit
+3. Run reset_dungeon.exe
+4. Load game
+5. Use the stairs to the cathedral
+6. Enjoy!
+
 Known Bugs
 --------------------------------------------------------------------------------
 
@@ -88,11 +101,15 @@ Here are some bugs worth mentioning:
       * WORKAROUND: Walk through stairs trigger, cast a spell when on same tile
   * Hell dungeons look different on first load (monsters in walls, etc) (#39)
       * WORKAROUND: Start a new game, then load
+  * reset_dungeon.exe launches Program Compatibility Assistant (#150)
+      * WORKAROUND: This program ran correctly
+
+If you encounter other issues, please reach out via Discord.
 
 Changelog
 --------------------------------------------------------------------------------
 
-vNEXT
+v0.5.0
 
   * Introduce reset_dungeon.exe so you can enjoy Pre-ablo a second time
   * Fixed a bunch of graphics:
