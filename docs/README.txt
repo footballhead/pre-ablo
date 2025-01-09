@@ -109,6 +109,10 @@ If you encounter other issues, please reach out via Discord.
 Changelog
 --------------------------------------------------------------------------------
 
+v0.5.1
+
+  * Introduce stone_curse_load_fix: prevents crash on load involving Stone Curse
+
 v0.5.0
 
   * Introduce reset_dungeon.exe so you can enjoy Pre-ablo a second time
@@ -258,6 +262,7 @@ This project could not happen without the help and efforts of many people:
   * nitekat
   * xavier_sb
   * catalyst1995
+  * chris24xd
   * All contributors to diablo-evolution.net:
     https://diablo-evolution.net
   * All contributors to Alpha4:
