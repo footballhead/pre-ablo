@@ -56,13 +56,13 @@ PATCH_MAIN {
   // LoadLevel: Intercept the call to SyncMonsterAnim so that we can augment it
   // with the missing cases like MM_STONE
   ok &= patch_call(0x00460B1C, (void*)SyncMonsterAnim_wrapper);
-  // TODO: There are other callers of SyncMonsterAnim but I think tjat they're
+  // TODO: There are other callers of SyncMonsterAnim but I think that they're
   // all dead code
 
   // SetMissileGfx: Keep the code that moves the missile index into ECX for
   // later use, but remove the conversion to a byte offset from missiles
-  // .text:00443356     mov     eax, pNewexpCel               ; Don't need but
-  // whatever .text:0044335B     mov     ecx, [ebp+mi]                 ; Keep
+  // .text:00443356     mov     eax, pNewexpCel               ; No harm to keep
+  // .text:0044335B     mov     ecx, [ebp+mi]                 ; Keep
   // .text:0044335E     lea     ecx, [ecx+ecx*4]              : NOP
   // .text:00443361     shl     ecx, 5                        ; NOP
   // .text:00443364     mov     missile._miAnimData[ecx], eax ; NOP then patch
