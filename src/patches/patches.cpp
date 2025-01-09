@@ -29,6 +29,7 @@ DECLARE_PATCH(plrgfx_frame_fix);
 DECLARE_PATCH(retail_music);
 DECLARE_PATCH(savegame_patch_fix);
 DECLARE_PATCH(skip_intros);
+DECLARE_PATCH(stone_curse_load_fix);
 DECLARE_PATCH(stone_curse_missile_fix);
 DECLARE_PATCH(thunder_demon_missile_fix);
 DECLARE_PATCH(too_much_hp_crash);
@@ -72,6 +73,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(retail_music)
     REGISTER_PATCH_DEBUG(savegame_patch_fix)
     REGISTER_PATCH_RECOMMENDED(skip_intros)
+    REGISTER_PATCH_RECOMMENDED(stone_curse_load_fix)
     REGISTER_PATCH_RECOMMENDED(stone_curse_missile_fix)
     REGISTER_PATCH_RECOMMENDED(thunder_demon_missile_fix)
     REGISTER_PATCH_RECOMMENDED(too_much_hp_crash)

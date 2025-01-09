@@ -44,6 +44,66 @@ struct MonsterData {
 // This will probably only work on 32 bit machines that use 4 byte alignment
 static_assert(sizeof(MonsterData) == 0x70, "MonsterData compiled to wrong size");
 
+struct AnimStruct
+{
+    BYTE *CMem;    // Pointer to beginning of CEL data
+    BYTE *Data[8]; // CEL animation data for each direction
+    int Frames;    // # of frames for each direction
+    int Rate;      // Delay between each frame in game ticks. The game runs at 20 FPS so the delay is 50ms * Rate between each frame.
+};
+static_assert(sizeof(AnimStruct) == 0x2C, "AnimStruct compiled to wrong size");
+
+struct TSnd
+{
+    DWORD pcm_size;
+    void* pFormat; // LPWAVEFORMATEX
+    int dword_8;
+    int dword_c;
+    int dword_10;
+    int dword_14;
+    int dword_18;
+    BOOL uses_hardware_mixing;
+    void* DSB; // LPDIRECTSOUNDBUFFER
+    int dword_24;
+    const char *sound_path;
+};
+static_assert(sizeof(AnimStruct) == 0x2C, "TSnd compiled to wrong size");
+
+struct CMonster
+{
+    // `enum _monster_id`. Index into `monsterdata`
+    char mtype;
+    // Loaded CEL animation data.
+    // There are 6 distinct animations: idle, walk, attack, hit, death, and (optional) special.
+    AnimStruct Anims[6];
+    DWORD field_10C; // padding?
+    DWORD field_110; // padding?
+    DWORD field_114; // padding?
+    // Monster sounds. There's 4 sound types with 2 variants for each sound.
+    TSnd Snds[4][2];
+    BYTE gap278[36]; // padding???
+    // Width in pixels for all CELs in `Anims`.
+    int width;
+    // `(width - 64) / 2`. Used to center the monster inside a tile (see scrollrt.cpp)
+    int width2;
+    // Lower bound on randomly generated HP
+    unsigned char mMinHP;
+    // Upper bound on randomly generated HP
+    unsigned char mMaxHP;
+    // If true then need to load the special attack graphics
+    BOOL has_special;
+    // "Attack Frame Number". Damage is not done until this attack animation frame.
+    char mAFNum;
+    // Index into `dead`. Used for creating corpses.
+    char mdeadval;
+    // Pointer to an entry in `monsterdata`
+    MonsterData *MData;
+    // Pointer to TRN file loaded into memory. Must be 256 bytes.
+    BYTE *trans_file;
+    // Difference from Devilution: no mFlags
+};
+static_assert(sizeof(CMonster) == 0x2B8, "CMonster compiled to wrong size");
+
 struct MonsterStruct {
     int _mMTidx;
     int _mmode;
@@ -62,7 +122,7 @@ struct MonsterStruct {
     int _myvel;
     int _mdir;
     int _menemy;
-    int _mAnimData;
+    BYTE* _mAnimData;
     int monster_mAnimDelay;
     int _mAnimCnt;
     int _mAnimLen;
@@ -108,8 +168,8 @@ struct MonsterStruct {
     char anonymous_32;
     char anonymous_33;
     int anonymous_34;
-    void *_mtype;
-    int _MData;
+    CMonster *MType;
+    MonsterData *MData;
 };
 static_assert(sizeof(MonsterStruct) == 0xC4, "MonsterStruct compiled to wrong size");
 
@@ -213,3 +273,49 @@ struct ItemDataStruct
   int iValue;
 };
 static_assert(sizeof(ItemDataStruct) == 0x48, "ItemDataStruct compiled to wrong size");
+
+struct MissileStruct
+{
+    int _mitype; // enum missile_id
+    int _mix;
+    int _miy;
+    int _mixoff;
+    int _miyoff;
+    int _mixvel;
+    int _miyvel;
+    int _misx;
+    int _misy;
+    int _mitxoff;
+    int _mityoff;
+    int _mimfnum;
+    int _miDelFlag;
+    int _miAnimFlags;
+    BYTE *_miAnimData;
+    int _miAnimDelay;
+    int _miAnimCnt;
+    int _miAnimLen;
+    int _miAnimAdd;
+    int _miAnimFrame;
+    int _miAnimWidth;
+    int _miAnimWidth2;
+    int _miLightFlag;
+    BOOL _miPreFlag; // TRUE if the missile should be drawn behind everything else on the tile (e.g. players, monsters, etc). Used by Flash and acid puddles
+    int _miUniqTrans;
+    int _mirange; // Can either mean "how far the missile can travel" or "how long the effect lasts"; depends on the spell specifically
+    int _misource;
+    int _micaster;
+    int _midam;
+    int _midist;
+    int _mirnd;
+    int _mlid;
+    int _miVar1;
+    int _miVar2;
+    int _miVar3;
+    int _miVar4;
+    int _miVar5;
+    int _miVar6;
+    int _miVar7;
+    int _miVar8;
+    // NOTE: _miDrawFlag is missing!
+};
+static_assert(sizeof(MissileStruct) == 0xA0, "MissileStruct compiled to wrong size");

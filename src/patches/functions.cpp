@@ -7,3 +7,4 @@ void (__fastcall * AddMazeBook)(int, int, int, int, int, int, int, int, int) = r
 void (__fastcall * SpawnUnique)(int, int, int) = reinterpret_cast<void (__fastcall *)(int, int, int)>(0x00421CDC);
 void (__fastcall * NetSendCmd)(int, BYTE, BYTE, int, int) = reinterpret_cast<void (__fastcall *)(int, BYTE, BYTE, int, int)>(0x0046ED1E);
 void (__fastcall * SetPlrAnims)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0046652F);
+void (__fastcall * SyncMonsterAnim)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0040BFA3);

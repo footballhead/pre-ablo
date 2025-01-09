@@ -105,7 +105,7 @@ enum _monster_id
   NUM_MTYPES,
 };
 
-typedef enum item_type {
+enum item_type {
 	ITYPE_MISC   = 0x0,
 	ITYPE_SWORD  = 0x1,
 	ITYPE_AXE    = 0x2,
@@ -121,4 +121,41 @@ typedef enum item_type {
 	ITYPE_RING   = 0xC,
 	ITYPE_FOOD   = 0xD,
 	ITYPE_NONE   = -1,
-} item_type;
+};
+
+// Monster animations. Each monster has 5 required animations and an optional
+// 6th monster-dependent animation. `animletter` can be indexed by MON_ANIM to
+// load from disk.
+enum MON_ANIM
+{
+    MA_STAND = 0,
+    MA_WALK = 1,
+    MA_ATTACK = 2,
+    MA_GOTHIT = 3,
+    MA_DEATH = 4,
+    // Optional special animation. E.g. skeleton rising from the ground, sneak disappearing, etc
+    MA_SPECIAL = 5,
+};
+
+// Behaviors as part of the monster state machine. See ProcessMonsters
+enum MON_MODE
+{
+    MM_STAND = 0,
+    MM_WALK = 1,
+    MM_WALK2 = 2,
+    MM_WALK3 = 3,
+    MM_ATTACK = 4,
+    MM_GOTHIT = 5,
+    MM_DEATH = 6,
+    MM_SATTACK = 7,
+    MM_FADEIN = 8,
+    MM_FADEOUT = 9,
+    MM_RATTACK = 10,
+    MM_SPSTAND = 11,
+    MM_RSPATTACK = 12,
+    MM_DELAY = 13,
+    MM_CHARGE = 14,
+    MM_STONE = 15, // Monster will act like it was turned to stone
+    MM_HEAL = 16,
+};
+

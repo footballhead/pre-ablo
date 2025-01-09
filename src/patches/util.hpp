@@ -28,7 +28,7 @@ bool patch(uint32_t address, T new_val)
     return patch((void*)address, new_val);
 }
 
-// [start, end)
+// Replaces bytes between [start, end) with x86 NOP instructions.
 bool nop(uint32_t address_start, uint32_t address_end);
 
 // Overwrites the contents starting at the given address with `call fn`

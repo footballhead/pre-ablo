@@ -35,6 +35,7 @@ add_library(patches STATIC
     patches/retail_music.cpp
     patches/savegame_path_fix.cpp
     patches/skip_intros.cpp
+    patches/stone_curse_load_fix.cpp
     patches/stone_curse_missile_fix.cpp
     patches/thunder_demon_missile_fix.cpp
     patches/too_much_hp_crash.cpp
