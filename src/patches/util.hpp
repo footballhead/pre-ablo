@@ -33,6 +33,13 @@ bool nop(uint32_t address_start, uint32_t address_end);
 
 // Overwrites the contents starting at the given address with `call fn`
 bool patch_call(uint32_t address, void* fn);
+
+// Overwrites the contents starting at the given address with `call fn`
+template <typename T>
+bool patch_call(uint32_t address, T fn) {
+  return patch_call(address, reinterpret_cast<void*>(fn));
+}
+
 // Overwrites the contents starting at the given address with `jmp to`
 bool patch_jmp(uint32_t address, void* to);
 // Overwrites the contents starting at the given address with `push global_var`

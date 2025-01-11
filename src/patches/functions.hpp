@@ -12,3 +12,7 @@ extern void (__fastcall * SpawnUnique)(int, int, int);
 extern void (__fastcall * NetSendCmd)(int, BYTE, BYTE, int, int);
 extern void (__fastcall * SetPlrAnims)(int);
 extern void (__fastcall * SyncMonsterAnim)(int);
+
+using cast_bloodboil_ = void(__fastcall*)(int id, int si, int sx, int sy,
+                                          int dx, int dy);
+extern cast_bloodboil_ cast_bloodboil;

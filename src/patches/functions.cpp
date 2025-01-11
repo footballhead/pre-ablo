@@ -8,3 +8,4 @@ void (__fastcall * SpawnUnique)(int, int, int) = reinterpret_cast<void (__fastca
 void (__fastcall * NetSendCmd)(int, BYTE, BYTE, int, int) = reinterpret_cast<void (__fastcall *)(int, BYTE, BYTE, int, int)>(0x0046ED1E);
 void (__fastcall * SetPlrAnims)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0046652F);
 void (__fastcall * SyncMonsterAnim)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0040BFA3);
+cast_bloodboil_ cast_bloodboil = reinterpret_cast<cast_bloodboil_>(0x004554C3);

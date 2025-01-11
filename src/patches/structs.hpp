@@ -319,3 +319,35 @@ struct MissileStruct
     // NOTE: _miDrawFlag is missing!
 };
 static_assert(sizeof(MissileStruct) == 0xA0, "MissileStruct compiled to wrong size");
+
+struct SpellStruct {
+  int type;  // enum spell_id
+  int x;
+  int y;
+  BOOL animFlag;
+  int field_10;    // Basically unused
+  BYTE *animdata;  // Basically unused
+  int animDelay;   // How many ticks between frames
+  int animCnt;     // Current progress towards a new frame
+  int animLen;     // How many frames in animdata
+  int animFrame;   // Current animation frame
+  int animWidth;   // Width of animdata
+  int animWidth2;  // animWidth / 8
+  int field_30;    // Basically unused
+  int field_34;    // Basically unused
+  int field_38;    // Basically unused
+  int range;
+  int dam;
+  BOOL delFlag;
+  int source;
+  int var1;
+  int var2;
+  int var3;
+  int var4;
+  int var5;
+  int var6;
+  int var7;
+  int var8;
+};
+static_assert(sizeof(SpellStruct) == 0x6C,
+              "SSpellStructpellstruct compiled to wrong size");

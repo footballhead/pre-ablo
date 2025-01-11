@@ -12,6 +12,7 @@
 // Order alphabetically!
 DECLARE_PATCH(always_load_flare);
 DECLARE_PATCH(automap_fix);
+DECLARE_PATCH(blood_boil_fix);
 DECLARE_PATCH(cheat);
 DECLARE_PATCH(devmode);
 DECLARE_PATCH(enable_cut_monsters);
@@ -56,6 +57,7 @@ namespace {
 const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(always_load_flare)
     REGISTER_PATCH_RECOMMENDED(automap_fix)
+    REGISTER_PATCH_RECOMMENDED(blood_boil_fix)
     REGISTER_PATCH(cheat)
     REGISTER_PATCH(devmode)
     REGISTER_PATCH_RECOMMENDED(enable_cut_monsters)

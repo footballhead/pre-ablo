@@ -20,3 +20,6 @@ extern int* const setpc_w;
 extern int* const setpc_h;
 
 extern BYTE** const pShatter1Cel;
+using dMonster_ = int[112][112];
+extern dMonster_& dMonster;
+extern SpellStruct* const spells;
