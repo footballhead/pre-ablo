@@ -23,3 +23,5 @@ extern BYTE** const pShatter1Cel;
 using dMonster_ = int[112][112];
 extern dMonster_& dMonster;
 extern SpellStruct* const spells;
+extern char* const CrawlTable;
+extern PlayerStruct* const plr;

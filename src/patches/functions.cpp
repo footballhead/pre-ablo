@@ -9,3 +9,5 @@ void (__fastcall * NetSendCmd)(int, BYTE, BYTE, int, int) = reinterpret_cast<voi
 void (__fastcall * SetPlrAnims)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0046652F);
 void (__fastcall * SyncMonsterAnim)(int) = reinterpret_cast<void (__fastcall *)(int)>(0x0040BFA3);
 cast_bloodboil_ cast_bloodboil = reinterpret_cast<cast_bloodboil_>(0x004554C3);
+DeleteMissile_ DeleteMissile = reinterpret_cast<DeleteMissile_>(0x004365CB);
+GetSpellLevel_ GetSpellLevel = reinterpret_cast<GetSpellLevel_>(0x00453CDB);

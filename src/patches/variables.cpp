@@ -20,3 +20,5 @@ int* const setpc_h = reinterpret_cast<int* const>(0x005030E0);
 BYTE** const pShatter1Cel = reinterpret_cast<BYTE** const>(0x005F71D8);
 dMonster_& dMonster = *reinterpret_cast<dMonster_*>(0x005670F8);
 SpellStruct* const spells = reinterpret_cast<SpellStruct* const>(0x005FF2E8);
+char* const CrawlTable = reinterpret_cast<char* const>(0x004ACC00);
+PlayerStruct* const plr = reinterpret_cast<PlayerStruct* const>(0x00605478);
