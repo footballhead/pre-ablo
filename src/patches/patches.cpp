@@ -37,6 +37,7 @@ DECLARE_PATCH(thunder_demon_missile_fix);
 DECLARE_PATCH(too_much_hp_crash);
 DECLARE_PATCH(tp_setlevel_fix);
 DECLARE_PATCH(undead_crown);
+DECLARE_PATCH(unimplemented_spells_fix);
 DECLARE_PATCH(version_override);
 DECLARE_PATCH(window);
 DECLARE_PATCH(z_hook);
@@ -83,6 +84,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(too_much_hp_crash)
     REGISTER_PATCH_RECOMMENDED(tp_setlevel_fix)
     REGISTER_PATCH_RECOMMENDED(undead_crown)
+    REGISTER_PATCH_RECOMMENDED(unimplemented_spells_fix)
     REGISTER_PATCH_RECOMMENDED(version_override)
     REGISTER_PATCH_DEBUG(window)
     REGISTER_PATCH_DEBUG(z_hook)

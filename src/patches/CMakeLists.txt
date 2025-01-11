@@ -43,6 +43,7 @@ add_library(patches STATIC
     patches/too_much_hp_crash.cpp
     patches/tp_setlevel_fix.cpp
     patches/undead_crown.cpp
+    patches/unimplemented_spells_fix.cpp
     patches/version_override.cpp
     patches/window.cpp
     patches/z_hook.cpp
