@@ -4,7 +4,9 @@
 #include "variables.hpp"
 
 #define PATCH_NAME unimplemented_spells_fix
-DESCRIBE_PATCH("Causes unimplemented spells to fully act like Stone Curse.")
+DESCRIBE_PATCH(
+    "Unimplemented spells like Invisibility, Etherealize, and Golem will fully "
+    "act like Stone Curse.")
 
 PATCH_MAIN {
   // ProcessMissiles: Treat missiles 32-35 as stone curse. Otherwise, the
