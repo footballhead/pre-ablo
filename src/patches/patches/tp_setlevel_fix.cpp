@@ -23,14 +23,14 @@ void GetPortalLevel_companion_fix()
         *setlvlnum = *portal_currlevel_or_setlvlnum;
         switch (*portal_currlevel_or_setlvlnum) {
         case 1: // sking lair
-            *currlevel = 3;
+            currlevel = 3;
             break;
         case 2: // bone chamber
-            *currlevel = 7;
+            currlevel = 7;
             break;
         }
     } else {
-        *currlevel = *portal_currlevel_or_setlvlnum;
+        currlevel = *portal_currlevel_or_setlvlnum;
     }
 }
 

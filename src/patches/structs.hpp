@@ -603,3 +603,10 @@ struct PlayerStruct
 };
 #pragma pack(pop)
 static_assert(sizeof(PlayerStruct) == 0x4270, "PlayerStruct compiled to the wrong size");
+
+struct TriggerStruct {
+    int _tx;
+    int _ty;
+    int _tmsg;
+};
+static_assert(sizeof(TriggerStruct) == 0xC, "TriggerStruct compiled to the wrong size");

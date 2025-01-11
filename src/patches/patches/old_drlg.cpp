@@ -20,7 +20,7 @@ void __fastcall InitObjects_patch()
     AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
 
     // Here's the fix
-    if (quests[QTYPE_MAZE]._qlevel == *currlevel) {
+    if (quests[QTYPE_MAZE]._qlevel == currlevel) {
         AddMazeBook(0, 0, MAXDUNX, MAXDUNY, *setpc_x, *setpc_y, *setpc_w + *setpc_x + 1, *setpc_h + *setpc_y + 1, 11);
     }
 }

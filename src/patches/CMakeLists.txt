@@ -19,6 +19,7 @@ add_library(patches STATIC
     patches/always_load_flare.cpp
     patches/automap_fix.cpp
     patches/blood_boil_fix.cpp
+    patches/bone_chamber_stairs_fix.cpp
     patches/cheat.cpp
     patches/devmode.cpp
     patches/enable_cut_monsters.cpp
