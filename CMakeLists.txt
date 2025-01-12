@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(preablo C CXX)
 
-set(PREABLO_TARGET "host" CACHE STRING "Which code to compile. Either host (deafult) or win32")
+set(PREABLO_TARGET "host" CACHE STRING "Which code to compile. Either host (default) or win32")
 
 if (PREABLO_TARGET STREQUAL "host")
     include(host.cmake)
