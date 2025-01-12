@@ -18,6 +18,7 @@ DECLARE_PATCH(cheat);
 DECLARE_PATCH(devmode);
 DECLARE_PATCH(enable_cut_monsters);
 DECLARE_PATCH(enable_unfinished_monsters);
+DECLARE_PATCH(fast_load);
 DECLARE_PATCH(fullgame);
 DECLARE_PATCH(infraring_fix);
 DECLARE_PATCH(load_mpq_customizations);
@@ -66,6 +67,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH(devmode)
     REGISTER_PATCH_RECOMMENDED(enable_cut_monsters)
     REGISTER_PATCH_DEBUG(enable_unfinished_monsters)
+    REGISTER_PATCH_RECOMMENDED(fast_load)
     REGISTER_PATCH_RECOMMENDED(fullgame)
     REGISTER_PATCH_RECOMMENDED(infraring_fix)
     {"load_mpq_customizations", load_mpq_customizations_description, load_mpq_customizations_main, /*checked=*/true, "pre-ablo.mpq"},

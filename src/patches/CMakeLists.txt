@@ -24,6 +24,7 @@ add_library(patches STATIC
     patches/devmode.cpp
     patches/enable_cut_monsters.cpp
     patches/enable_unfinished_monsters.cpp
+    patches/fast_load.cpp
     patches/fullgame.cpp
     patches/infraring_fix.cpp
     patches/load_mpq_customizations.cpp
