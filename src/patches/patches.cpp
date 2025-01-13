@@ -22,6 +22,7 @@ DECLARE_PATCH(fast_load);
 DECLARE_PATCH(fullgame);
 DECLARE_PATCH(infraring_fix);
 DECLARE_PATCH(load_mpq_customizations);
+DECLARE_PATCH(main_loop_yield_fix);
 DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(music_nompq_fix);
 DECLARE_PATCH(no_tp_light);
@@ -71,6 +72,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(fullgame)
     REGISTER_PATCH_RECOMMENDED(infraring_fix)
     {"load_mpq_customizations", load_mpq_customizations_description, load_mpq_customizations_main, /*checked=*/true, "pre-ablo.mpq"},
+    REGISTER_PATCH_RECOMMENDED(main_loop_yield_fix)
     REGISTER_PATCH_RECOMMENDED(mega_fix)
     REGISTER_PATCH_DEBUG(music_nompq_fix)
     REGISTER_PATCH_RECOMMENDED(no_tp_light)

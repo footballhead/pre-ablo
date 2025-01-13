@@ -28,6 +28,7 @@ add_library(patches STATIC
     patches/fullgame.cpp
     patches/infraring_fix.cpp
     patches/load_mpq_customizations.cpp
+    patches/main_loop_yield_fix.cpp
     patches/mega_fix.cpp
     patches/music_nompq_fix.cpp
     patches/no_tp_light.cpp

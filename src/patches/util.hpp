@@ -7,6 +7,7 @@
 #include <windows.h>
 
 constexpr uint8_t nop_opcode = 0x90;
+constexpr auto kCallInstructionSize = 5;
 
 template <typename T>
 bool patch(void* addr_to_patch, T new_val) {
@@ -42,6 +43,13 @@ bool patch_call(uint32_t address, T fn) {
 
 // Overwrites the contents starting at the given address with `jmp to`
 bool patch_jmp(uint32_t address, void* to);
+
+template <typename T>
+bool patch_jmp(uint32_t address, T to)
+{
+  return patch_jmp(address, reinterpret_cast<void*>(to));
+}
+
 // Overwrites the contents starting at the given address with `push global_var`
 bool patch_push(uint32_t address, void* global_var);
 
@@ -50,4 +58,9 @@ bool patch_bytes(uint32_t address, uint8_t const* patch, size_t size);
 inline bool patch_dword(uint32_t address, uint32_t dword) {
   return patch_bytes(address, reinterpret_cast<uint8_t const*>(&dword),
                      sizeof(dword));
+}
+
+inline bool patch_byte(uint32_t address, uint8_t byte) {
+  return patch_bytes(address, reinterpret_cast<uint8_t const*>(&byte),
+                     sizeof(byte));
 }
