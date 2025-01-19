@@ -30,6 +30,7 @@ DECLARE_PATCH(old_drlg);
 DECLARE_PATCH(options_menu);
 DECLARE_PATCH(panic_teleport);
 DECLARE_PATCH(plrgfx_frame_fix);
+DECLARE_PATCH(remove_promo);
 DECLARE_PATCH(retail_music);
 DECLARE_PATCH(savegame_patch_fix);
 DECLARE_PATCH(skip_intros);
@@ -80,6 +81,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(options_menu)
     REGISTER_PATCH_DEBUG(panic_teleport)
     REGISTER_PATCH_RECOMMENDED(plrgfx_frame_fix)
+    REGISTER_PATCH_RECOMMENDED(remove_promo)
     REGISTER_PATCH_DEBUG(retail_music)
     REGISTER_PATCH_DEBUG(savegame_patch_fix)
     REGISTER_PATCH_RECOMMENDED(skip_intros)

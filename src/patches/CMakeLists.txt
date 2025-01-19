@@ -36,6 +36,7 @@ add_library(patches STATIC
     patches/options_menu.cpp
     patches/panic_teleport.cpp
     patches/plrgfx_frame_fix.cpp
+    patches/remove_promo.cpp
     patches/retail_music.cpp
     patches/savegame_path_fix.cpp
     patches/skip_intros.cpp
