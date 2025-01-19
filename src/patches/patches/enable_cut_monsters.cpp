@@ -5,7 +5,7 @@
 #include "variables.hpp"
 
 #define PATCH_NAME enable_cut_monsters
-DESCRIBE_PATCH(R"txt(Enable cut monsters which appear to be "finished" (they have proper stats). This includes:
+DESCRIBE_PATCH(R"txt(Enables cut monsters which appear to be "finished" (they have proper stats). This includes:
 
 - Incinerator (the basis for Elemental?), which will appear on dlvl 8-10.
 

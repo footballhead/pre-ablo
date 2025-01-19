@@ -3,7 +3,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME panic_teleport
-DESCRIBE_PATCH("Give new players the Teleport ability so they can get unstuck in otherwise bad level generations.")
+DESCRIBE_PATCH("Gives new players the Teleport ability so they can get unstuck in otherwise bad level generations.")
 
 namespace {
 

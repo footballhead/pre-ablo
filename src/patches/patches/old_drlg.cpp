@@ -6,7 +6,7 @@
 #include "variables.hpp"
 
 #define PATCH_NAME old_drlg
-DESCRIBE_PATCH(R"txt(Enable the old Alpha DRLG for cathedral levels 1-4 in new games.
+DESCRIBE_PATCH(R"txt(Enables the old Alpha DRLG for cathedral levels 1-4 in new games.
 
 Known issues:
 

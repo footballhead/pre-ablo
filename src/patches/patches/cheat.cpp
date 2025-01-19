@@ -3,7 +3,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME cheat
-DESCRIBE_PATCH(R"txt(Turn on cheats. This has the following effects:
+DESCRIBE_PATCH(R"txt(Enables cheats. This has the following effects:
 
 - You cannot be hit
 - You have infinite mana

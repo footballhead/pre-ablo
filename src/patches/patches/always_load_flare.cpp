@@ -4,7 +4,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME always_load_flare
-DESCRIBE_PATCH(R"txt(This patch addresses two things related to monster missiles:
+DESCRIBE_PATCH(R"txt(Fixes two monster missiles bugs:
 
 - Always load the Succubi missile graphics. This fixes a crash encountering Blightfire, the unique Fire Clan archer, on level 7.
 

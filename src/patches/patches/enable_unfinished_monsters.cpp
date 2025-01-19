@@ -5,7 +5,7 @@
 #include "variables.hpp"
 
 #define PATCH_NAME enable_unfinished_monsters
-DESCRIBE_PATCH(R"txt(Enable cut monsters which look like they're "unfinished". They all appear on dlvl 13-15 with 10-20 health:
+DESCRIBE_PATCH(R"txt(Enables cut monsters which look like they're "unfinished". They all appear on dlvl 13-15 with 10-20 health:
 
 - Mage
 

@@ -8,7 +8,7 @@
 #define PATCH_NAME options_menu
 DESCRIBE_PATCH(R"txt(DO NOT TURN OFF! If you do, delete last_patch.txt in game directory.
 
-Insert an options menu on the main menu to customize patches.)txt");
+Inserts an Options menu on the main menu to customize patches.)txt");
 
 namespace {
 

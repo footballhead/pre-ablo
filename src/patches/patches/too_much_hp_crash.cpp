@@ -4,7 +4,7 @@
 #include "variables.hpp"
 
 #define PATCH_NAME too_much_hp_crash
-DESCRIBE_PATCH("Prevents a crash in situations where the player has more life than max (e.g. from Blood Boil), or less life than 0 (as is typical with Mana Shield).")
+DESCRIBE_PATCH("Prevents crashing in situations where the player has more life than max (e.g. from Blood Boil), or less life than 0 (as is typical with Mana Shield).")
 
 namespace {
 

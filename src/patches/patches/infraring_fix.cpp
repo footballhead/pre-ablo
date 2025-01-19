@@ -3,7 +3,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME infraring_fix
-DESCRIBE_PATCH("Fix crash when hovering over Infravision Ring or Undead Crown in inventory. Makes it easier to equip those items.")
+DESCRIBE_PATCH("Fixes a crash when hovering over Infravision Ring or Undead Crown in inventory. Makes it easier to equip those items.")
 
 namespace {
 

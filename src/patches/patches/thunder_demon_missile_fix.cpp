@@ -4,7 +4,7 @@
 #include "variables.hpp"
 
 #define PATCH_NAME thunder_demon_missile_fix
-DESCRIBE_PATCH("Prevent a crash when Thunder Demons attack with Lightning.")
+DESCRIBE_PATCH("Prevents crashing when Thunder Demons attack with Lightning.")
 
 namespace {
 

@@ -3,7 +3,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME skip_intros
-DESCRIBE_PATCH("Skip the logos, quotes, and intro animation when launching the game.")
+DESCRIBE_PATCH("Skips the logos, quotes, and intro animation when launching the game.")
 
 PATCH_MAIN
 {

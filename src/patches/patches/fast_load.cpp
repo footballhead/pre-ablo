@@ -3,7 +3,7 @@
 
 #define PATCH_NAME fast_load
 DESCRIBE_PATCH(
-    "Load faster during level transitions by removing the artificial wait to "
+    "Loads faster during level transitions by removing the artificial wait to "
     "paint when incrementing the progress bar.")
 
 PATCH_MAIN {

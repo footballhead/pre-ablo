@@ -3,7 +3,7 @@
 #include "util.hpp"
 
 #define PATCH_NAME plrgfx_frame_fix
-DESCRIBE_PATCH("Adjust death animations to match the files we have.")
+DESCRIBE_PATCH("Avoids a crash by adjusts death animations to match the files we have.")
 
 typedef enum anim_weapon_id {
     ANIM_ID_UNARMED        = 0x00,
