@@ -444,7 +444,7 @@ struct PlayerStruct
   int recv_v3;
   int recv_buffer_idx;
   int send_buffer_idx;
-  char mp_buffer[1024] __tabform(DEC);
+  char mp_buffer[4][256] __tabform(DEC);
   char walkpath[25] __tabform(NODUPS|DEC);
   _BYTE anonymous_6[3];
   int plr_walkPathRelated;

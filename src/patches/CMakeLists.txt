@@ -24,17 +24,16 @@ add_library(patches STATIC
     patches/devmode.cpp
     patches/enable_cut_monsters.cpp
     patches/enable_unfinished_monsters.cpp
-    patches/fast_load.cpp
     patches/fullgame.cpp
     patches/infraring_fix.cpp
     patches/load_mpq_customizations.cpp
-    patches/main_loop_yield_fix.cpp
     patches/mega_fix.cpp
     patches/music_nompq_fix.cpp
     patches/no_tp_light.cpp
     patches/old_drlg.cpp
     patches/options_menu.cpp
     patches/panic_teleport.cpp
+    patches/performance_improvements.cpp
     patches/plrgfx_frame_fix.cpp
     patches/remove_promo.cpp
     patches/retail_music.cpp
@@ -57,4 +56,6 @@ target_include_directories(patches
         ${CMAKE_CURRENT_BINARY_DIR} # Find version.h
         . # Help patches/ find our headers
     )
-
+target_link_libraries(patches PRIVATE winmm)
+# C++17 for inline variables
+target_compile_features(patches PRIVATE cxx_std_17)
