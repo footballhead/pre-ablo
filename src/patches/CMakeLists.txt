@@ -31,6 +31,7 @@ add_library(patches STATIC
     patches/music_nompq_fix.cpp
     patches/no_tp_light.cpp
     patches/old_drlg.cpp
+    patches/old_guardian.cpp
     patches/options_menu.cpp
     patches/panic_teleport.cpp
     patches/performance_improvements.cpp

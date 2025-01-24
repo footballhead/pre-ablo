@@ -25,6 +25,7 @@ DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(music_nompq_fix);
 DECLARE_PATCH(no_tp_light);
 DECLARE_PATCH(old_drlg);
+DECLARE_PATCH(old_guardian);
 DECLARE_PATCH(options_menu);
 DECLARE_PATCH(panic_teleport);
 DECLARE_PATCH(performance_improvements);
@@ -75,6 +76,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_DEBUG(music_nompq_fix)
     REGISTER_PATCH_RECOMMENDED(no_tp_light)
     REGISTER_PATCH(old_drlg)
+    REGISTER_PATCH(old_guardian)
     REGISTER_PATCH_RECOMMENDED(options_menu)
     REGISTER_PATCH_DEBUG(panic_teleport)
     REGISTER_PATCH_RECOMMENDED(performance_improvements)
