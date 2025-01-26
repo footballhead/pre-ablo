@@ -23,7 +23,6 @@ DECLARE_PATCH(infraring_fix);
 DECLARE_PATCH(load_mpq_customizations);
 DECLARE_PATCH(mega_fix);
 DECLARE_PATCH(music_nompq_fix);
-DECLARE_PATCH(no_tp_light);
 DECLARE_PATCH(old_drlg);
 DECLARE_PATCH(old_guardian);
 DECLARE_PATCH(options_menu);
@@ -39,6 +38,7 @@ DECLARE_PATCH(stone_curse_missile_fix);
 DECLARE_PATCH(stone_curse_target_fix);
 DECLARE_PATCH(thunder_demon_missile_fix);
 DECLARE_PATCH(too_much_hp_crash);
+DECLARE_PATCH(tp_load_fix);
 DECLARE_PATCH(tp_setlevel_fix);
 DECLARE_PATCH(undead_crown);
 DECLARE_PATCH(unimplemented_spells_fix);
@@ -74,7 +74,6 @@ const Patch patches_registry[] = {
     {"load_mpq_customizations", load_mpq_customizations_description, load_mpq_customizations_main, /*checked=*/true, "pre-ablo.mpq"},
     REGISTER_PATCH_RECOMMENDED(mega_fix)
     REGISTER_PATCH_DEBUG(music_nompq_fix)
-    REGISTER_PATCH_RECOMMENDED(no_tp_light)
     REGISTER_PATCH(old_drlg)
     REGISTER_PATCH(old_guardian)
     REGISTER_PATCH_RECOMMENDED(options_menu)
@@ -90,6 +89,7 @@ const Patch patches_registry[] = {
     REGISTER_PATCH_RECOMMENDED(stone_curse_target_fix)
     REGISTER_PATCH_RECOMMENDED(thunder_demon_missile_fix)
     REGISTER_PATCH_RECOMMENDED(too_much_hp_crash)
+    REGISTER_PATCH_RECOMMENDED(tp_load_fix)
     REGISTER_PATCH_RECOMMENDED(tp_setlevel_fix)
     REGISTER_PATCH_RECOMMENDED(undead_crown)
     REGISTER_PATCH_RECOMMENDED(unimplemented_spells_fix)

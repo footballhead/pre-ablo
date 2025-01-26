@@ -29,7 +29,6 @@ add_library(patches STATIC
     patches/load_mpq_customizations.cpp
     patches/mega_fix.cpp
     patches/music_nompq_fix.cpp
-    patches/no_tp_light.cpp
     patches/old_drlg.cpp
     patches/old_guardian.cpp
     patches/options_menu.cpp
@@ -45,6 +44,7 @@ add_library(patches STATIC
     patches/stone_curse_target_fix.cpp
     patches/thunder_demon_missile_fix.cpp
     patches/too_much_hp_crash.cpp
+    patches/tp_load_fix.cpp
     patches/tp_setlevel_fix.cpp
     patches/undead_crown.cpp
     patches/unimplemented_spells_fix.cpp

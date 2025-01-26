@@ -61,11 +61,11 @@ PATCH_MAIN {
 
   // SetMissileGfx: Keep the code that moves the missile index into ECX for
   // later use, but remove the conversion to a byte offset from missiles
-  // .text:00443356     mov     eax, pNewexpCel               ; No harm to keep
-  // .text:0044335B     mov     ecx, [ebp+mi]                 ; Keep
-  // .text:0044335E     lea     ecx, [ecx+ecx*4]              : NOP
-  // .text:00443361     shl     ecx, 5                        ; NOP
-  // .text:00443364     mov     missile._miAnimData[ecx], eax ; NOP then patch
+  // .text:0044333D  mov eax, pShatter1Cel              ; OK to keep
+  // .text:00443342  mov ecx, [ebp+mi]                  ; KEEP
+  // .text:00443345  lea ecx, [ecx+ecx*4]               ; nop
+  // .text:00443348  shl ecx, 5                         ; nop
+  // .text:0044334B  mov missile._miAnimData[ecx], eax  ; nop then patch
   ok &= nop(0x00443345, 0x0044336A);
   // ECX (the missile index) becomes the first __fastcall function parameter
   ok &= patch_call(0x00443364, (void*)SetMissileGfx_StoneCurseFix);
