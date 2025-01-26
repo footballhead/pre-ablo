@@ -1,51 +1,47 @@
-#include "patches.hpp"
-
 #include "functions.hpp"
 #include "macros.hpp"
+#include "patches.hpp"
 #include "util.hpp"
 #include "variables.hpp"
 
 #define PATCH_NAME old_drlg
-DESCRIBE_PATCH(R"txt(Enables the old Alpha DRLG for cathedral levels 1-4 in new games.
+DESCRIBE_PATCH(
+    R"txt(Enables the old Alpha DRLG for cathedral levels 1-4 in new games.
 
 Known issues:
 
-- The entrance to the Skeleton King's Lair does not generate on dlvl 3. This probably wasn't implemented at this point in development so this will not be fixed.
+- The entrance to the Skeleton King's Lair does not generate on dlvl 3. This probably wasn't implemented at this point in development so this will not be fixed.)txt")
 
-- Since the Skeleton King cannot be completed, the Magic Rock will not generate.)txt")
+void __fastcall InitObjects_patch() {
+  // Displaced
+  AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
 
-void __fastcall InitObjects_patch()
-{
-    // Displaced
-    AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
-
-    // Here's the fix
-    if (quests[QTYPE_MAZE]._qlevel == currlevel) {
-        AddMazeBook(0, 0, MAXDUNX, MAXDUNY, *setpc_x, *setpc_y, *setpc_w + *setpc_x + 1, *setpc_h + *setpc_y + 1, 11);
-    }
+  // Here's the fix
+  if (quests[QTYPE_MAZE]._qlevel == currlevel) {
+    AddMazeBook(0, 0, MAXDUNX, MAXDUNY, *setpc_x, *setpc_y,
+                *setpc_w + *setpc_x + 1, *setpc_h + *setpc_y + 1, 11);
+  }
 }
 
-PATCH_MAIN
-{
-    bool ok = true;
+PATCH_MAIN {
+  // 3 is skulpile, it must always load to avoid crashing
+  AllObjects[3].oload = 1;  // OBJ_MUST
+  AllObjects[3].otheme = -1;
 
-    // Make InitLevelType use old DRLG for levels 1-4
-    constexpr uint8_t mov_eax_1[] = {0xB8, 0x01, 0x00, 0x00, 0x00};
-    ok &= patch_bytes(0x00488473, mov_eax_1, sizeof(mov_eax_1));
+  // InitLevelType: Use old DRLG (leveltype==1) for levels 1-4
+  bool ok = patch_dword(0x00488473 + 1, 1);
 
-    // 3 is skulpile, it must always load to avoid crashing
-    AllObjects[3].oload = 1; // OBJ_MUST
-    AllObjects[3].otheme = -1;
+  // InitLevels: When using devmode, spawn in old DRLG.
+  ok &= patch_dword(0x004894AF + 5, 1);
 
-    // When using devmode, spawn in old DRLG
-    constexpr uint8_t mov_leveltype_1[] = {0xC7, 0x05, 0x48, 0x36, 0x4E, 0x00, 0x01, 0x00, 0x00, 0x00};
-    ok &= patch_bytes(0x004894AF, mov_leveltype_1, sizeof(mov_leveltype_1));
+  // InitObjects: Spawn Tome on level 4 so that the player can open the stairs.
+  ok &= nop(0x0045957E, 0x0045958B);
+  ok &= patch_call(0x0045957E, InitObjects_patch);
 
-    // fix Tome for catacombs not spawning on level 4
-    ok &= nop(0x0045957E, 0x0045958B); // Dsiplace AddL1Objs(0, 0, MAXDUNX, MAXDUNY);
-    ok &= patch_call(0x0045957E, (void*)InitObjects_patch);
+  // TalkToTowners: Remove beating The Skeleton King as a requirement for
+  // starting The Magic Rock. Since the player can never find The Skeleton King,
+  // this is necessary for them to do the quest.
+  ok &= nop(0x0044A9F5, 0x0044AA05);
 
-    // TODO mark the skeleton king quest as completed? at least so you can do magic rock
-
-    return ok;
+  return ok;
 }
