@@ -29,10 +29,10 @@ PATCH_MAIN {
   AllObjects[3].otheme = -1;
 
   // InitLevelType: Use old DRLG (leveltype==1) for levels 1-4
-  bool ok = patch_dword(0x00488473 + 1, 1);
+  bool ok = patch_dword(0x00488473 + 1, 1); // +1 for opcode
 
   // InitLevels: When using devmode, spawn in old DRLG.
-  ok &= patch_dword(0x004894AF + 5, 1);
+  ok &= patch_dword(0x004894AF + 6, 1); // +2 for mov opcode, +4 for address
 
   // InitObjects: Spawn Tome on level 4 so that the player can open the stairs.
   ok &= nop(0x0045957E, 0x0045958B);
