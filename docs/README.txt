@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.5.0
+PRE-ABLO v0.5.2
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -36,7 +36,7 @@ Installing
 First, install the Visual Studio 2019 redistributable. See this page:
 https://support.microsoft.com/en-ca/help/2977003/the-latest-supported-visual-c-downloads
 
-Next, extract the zip to C:\PRDEMO. It can be any folder, really, as long as
+Next, extract the zip to C:\PRE-ABLO. It can be any folder, really, as long as
 it's shorter than 48 letters. Otherwise, the game might crash on startup.
 
 Running
@@ -81,12 +81,12 @@ New Game with Same Character
 reset_dungeon.exe will regenerate all dungeon levels so that they can be
 explored again with the same character. To use:
 
-1. Go to town
-2. Save and exit
-3. Run reset_dungeon.exe
-4. Load game
-5. Use the stairs to the cathedral
-6. Enjoy!
+ 1. Go to town.
+ 2. Save and exit.
+ 3. Run reset_dungeon.exe.
+ 4. Load game.
+ 5. Use the stairs to the cathedral.
+ 6. Enjoy!
 
 Known Bugs
 --------------------------------------------------------------------------------
@@ -97,8 +97,6 @@ Here are some bugs worth mentioning:
 
   * Loading can crash depending on where the game is installed (#33)
       * WORKAROUND: Install to short path like C:\PRE-ABLO
-  * Stairs to the bone chamber say "up to level 6", can't click (#17)
-      * WORKAROUND: Walk through stairs trigger, cast a spell when on same tile
   * Hell dungeons look different on first load (monsters in walls, etc) (#39)
       * WORKAROUND: Start a new game, then load
   * reset_dungeon.exe launches Program Compatibility Assistant (#150)
@@ -108,6 +106,20 @@ If you encounter other issues, please reach out via Discord.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.5.2
+
+  * (New!) unimplemented_spells_fix: prevent bugs with unimplemented spells
+  * (New!) blood_boil_fix: fix a bug preventing Blood Boil from working
+  * (New!) stone_curse_target_fix: fix a bug preventing Stone Curse from working
+  * (New!) performance_improvements: load faster, use less CPU
+  * (New!) tp_load_fix: town portals won't crash loading the game now
+  * (New!) remove_promo: skip promotional slide show on quit
+  * (New!) old_guardian: replace Guardian with a prototype found in code
+  * (New!) bone_chamber_stairs_fix: allow clicking on the Bone Chamber stairs
+  * Remove no_tp_light since tp_load_fix supersedes it
+  * old_drlg: allow the player to get the Magic Rock quest
+  * load_mpq_customizations: exit the game when DIABDAT.MPQ is missing
 
 v0.5.1
 
