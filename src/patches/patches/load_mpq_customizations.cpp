@@ -29,6 +29,11 @@ BOOL __stdcall LoadDiabdat_patch(const char* szMpqName, DWORD dwPriority, DWORD 
     printf("MPQ: Loading %s...\n", szMpqName);
     BOOL ok = SFileOpenArchive(szMpqName, dwPriority, dwFlags, phMpq);
     printf("MPQ: %s: %s\n", szMpqName, ok ? "success" : "FAIL!");
+    // The game will hang if DIABDAT.MPQ can't be found. Print an error and exit to prevent the hang.
+    if (!ok) {
+        DiabloDebugMessageBox("DIABDAT.MPQ is mssing. Please reinstall and try again.");
+        ExitProcess(1);
+    }
 
     // FYI, here are the arguments at the patched call site. They're largely irrelevant.
     //  - szMpqName is `"diabdat.mpq"`
