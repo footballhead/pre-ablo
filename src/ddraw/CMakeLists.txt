@@ -18,3 +18,6 @@ target_link_libraries(ddraw OpenGL::GL glew_s)
 
 # produce ddraw.dll (not libddraw.dll)
 set_target_properties(ddraw PROPERTIES PREFIX "")
+
+add_executable(ddraw_test test.cpp)
+target_link_libraries(ddraw_test ddraw)

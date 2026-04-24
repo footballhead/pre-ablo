@@ -178,6 +178,10 @@ HRESULT DirectDrawSurface::Unlock(LPVOID lpSurfaceData) noexcept {
   TRACE("DirectDrawSurface::Unlock(lpSurfaceData=0x%p)\n", lpSurfaceData);
 #endif
 
+  if (lpDDPalette_ == nullptr) {
+    return DDERR_NOPALETTEATTACHED;
+  }
+
   // The docs say that lpSurfaceData should be a valid pointer but (outside of
   // cutscenes) it is nullptr. Assume it is the thing we locked: byte_buffer_
   //

@@ -1,5 +1,6 @@
 #include "palette.h"
 
+#include <cassert>
 #include <cstdio>
 
 #include "log.h"
@@ -34,7 +35,7 @@ ULONG DirectDrawPalette::AddRef() noexcept {
 
 ULONG DirectDrawPalette::Release() noexcept {
   TRACE("DirectDrawPalette::Release()\n");
-  // TODO: assert(ref_count_ > 0);
+  assert(ref_count_ > 0);
   auto current_count = InterlockedDecrement(&ref_count_);
   if (current_count == 0) {
     delete this;
@@ -63,7 +64,7 @@ HRESULT DirectDrawPalette::Initialize(LPDIRECTDRAW lpDD, DWORD dwFlags,
 #endif
 #endif
 
-  // TODO: assert(dwFlags & DDPCAPS_8BIT == DDPCAPS_8BIT)
+  assert((dwFlags & DDPCAPS_8BIT) == DDPCAPS_8BIT);
   memcpy(&colors_, lpDDColorTable, sizeof(PALETTEENTRY) * k8BitColorCount);
 
   return DDERR_ALREADYINITIALIZED;
@@ -89,7 +90,7 @@ HRESULT DirectDrawPalette::SetEntries(DWORD dwFlags, DWORD dwStartingEntry,
 #endif
 #endif
 
-  // TODO: assert(dwFlags & DDPCAPS_8BIT == DDPCAPS_8BIT)
+  assert((dwFlags & DDPCAPS_8BIT) == DDPCAPS_8BIT);
   memcpy(&colors_[dwStartingEntry], lpEntries, sizeof(PALETTEENTRY) * dwCount);
 
   return DD_OK;

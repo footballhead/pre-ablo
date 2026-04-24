@@ -1,5 +1,7 @@
 #include "ddraw_impl.h"
 
+#include <cassert>
+
 #include <GL/glew.h>
 
 #include "palette.h"
@@ -368,6 +370,8 @@ HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
                                    DWORD dwBpp) noexcept {
   TRACE("DirectDraw::SetDisplayMode(dwWidth=%u, dwHeight=%u, dwBpp=%u)\n",
         dwWidth, dwHeight, dwBpp);
+
+  assert(dwBpp == 8);
 
   if (!coop_level_) {
     return DDERR_GENERIC;
