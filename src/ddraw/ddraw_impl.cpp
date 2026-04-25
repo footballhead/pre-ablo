@@ -1,8 +1,9 @@
 #include "ddraw_impl.h"
 
-#include <cassert>
-
 #include <GL/glew.h>
+
+#include <algorithm>
+#include <cassert>
 
 #include "palette.h"
 #include "stub.h"
@@ -18,10 +19,19 @@ void ConfigureFullscreenMode(HWND hwnd, RECT rcMonitor) {
              /*bRepaint=*/FALSE);
 }
 
-void ScaleOpenGlViewport(const DirectDraw::DisplayModeParams &display_mode,
+// Performs aspect-ratio corrected scaling to fill the window with the game
+// contents and ensures that the contents are centered.
+//
+// The window might be a different size from the requested display mode. E.g.
+// your window might be 1920x1080 but Diablo renders to a 640x480 image.
+//
+// If the window aspect ratio is different from the game aspect ratio then
+// pillar boxing or letter boxing are used to compensate.
+//
+// TODO: Add configuration to turn off aspect-ratio in scaling.
+// TODO: Add configuration for nearest neigbor scaling instead of linear
+void ScaleOpenGlViewport(const DirectDraw::DisplayModeParams& display_mode,
                          int window_width, int window_height) {
-  int centered_x = 0;
-  int centered_y = 0;
   auto adjusted_width = window_width;
   auto adjusted_height = window_height;
 
@@ -32,7 +42,6 @@ void ScaleOpenGlViewport(const DirectDraw::DisplayModeParams &display_mode,
   // adjusted_height = display_mode->dwHeight * pixel_scale;
 
   // Scale using aspect ratio
-  // TODO: Let the user stretch if they want
   if (window_width > window_height) {
     const double display_aspect_ratio =
         static_cast<double>(display_mode.dwWidth) / display_mode.dwHeight;
@@ -44,8 +53,8 @@ void ScaleOpenGlViewport(const DirectDraw::DisplayModeParams &display_mode,
   }
 
   // Center in window
-  centered_x = (window_width - adjusted_width) / 2;
-  centered_y = (window_height - adjusted_height) / 2;
+  int centered_x = (window_width - adjusted_width) / 2;
+  int centered_y = (window_height - adjusted_height) / 2;
 
   glViewport(centered_x, centered_y, adjusted_width, adjusted_height);
 }
@@ -107,7 +116,6 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
     return std::nullopt;
   }
 
-  // TODO: Store hrc on this class and wglDeleteContext later
   const HGLRC hglrc = wglCreateContext(hdc);
   if (hglrc == nullptr) {
     TRACE("wglCreateContext failed: %d\n", GetLastError());
@@ -125,6 +133,7 @@ std::optional<DirectDraw::OpenGlState> MakeOpenGlContext(HWND hwnd) {
   };
 }
 
+// Requires OpenGL context
 void InitOpenGl() {
   // Important! We use texture mapping!
   glEnable(GL_TEXTURE_2D);
@@ -144,10 +153,15 @@ void InitOpenGl() {
   glFlush();
 }
 
+// Wrap app window procedure in order to intercept events. This allows us to
+// do stuff like trapping the cursor and fixing mouse coordinates.
+//
+// This is set up in SetCooperativeLevel and undone in Release
 LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
                                  LPARAM lParam) {
-  DirectDraw *lpDD =
-      reinterpret_cast<DirectDraw *>(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  DirectDraw* lpDD =
+      reinterpret_cast<DirectDraw*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+  assert(lpDD != nullptr);
 
   // TODO: SetCursorPos is relative to the screen.
 
@@ -159,36 +173,36 @@ LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
   switch (Msg) {
     case WM_MOUSEMOVE: {
       POINTS ptMouse = MAKEPOINTS(lParam);
-      TRACE("WM_MOUSEMOVE: ptMouse={%d, %d}\n", ptMouse.x, ptMouse.y);
 
       const auto display_mode = lpDD->GetDisplayMode();
       if (!display_mode) {
         break;
       }
 
-      const auto width = static_cast<SHORT>(display_mode->dwWidth);
-      const auto height = static_cast<SHORT>(display_mode->dwHeight);
-
-      // Feed the game a corrected mouse position. This is not the acutal mouse
-      // position but the value we give to the game is treated as such because
-      // it doesnt know the wiser. This is necessary since it crashes if
-      // ptMouse.x < 0 :X
+      // Clamp mouse position to inside the game area.
+      //
+      // Since the window may be bigger than the game (e.g. using a 1080p
+      // monitor to run a 480p game), the cursor may be outside the area that
+      // the game recognizes. This can cause out of bounds memory access.
+      //
+      // This works for Diablo since it renders software cursor where it thinks
+      // that the mouse is located, which is then scaled to the window. But it
+      // looks weird when the output is scaled.
       //
       // (Another way to solve this is to alter the game code to correct MouseX
       // and MouseY in the same way)
-      if (ptMouse.x < 0) {
-        ptMouse.x = 0;
-      } else if (ptMouse.x >= width - 1) {
-        ptMouse.x = width - 1;
-      }
+      POINTS top_left = {};
+      POINTS bottom_right = {};
+      lpDD->GetDisplayModeExtents(top_left, bottom_right);
 
-      if (ptMouse.y < 0) {
-        ptMouse.y = 0;
-      } else if (ptMouse.y >= height - 1) {
-        ptMouse.x = height - 1;
-      }
+      POINTS clamped_mouse = {
+          .x = std::clamp(ptMouse.x, top_left.x, bottom_right.x),
+          .y = std::clamp(ptMouse.y, top_left.y, bottom_right.y),
+      };
 
-      lParamOverride = MAKELPARAM(ptMouse.x, ptMouse.y);
+      lParamOverride = MAKELPARAM(clamped_mouse.x, clamped_mouse.y);
+      TRACE("WM_MOUSEMOVE: ptMouse={%d, %d} -> {%d, %d} \n", ptMouse.x,
+            ptMouse.y, clamped_mouse.x, clamped_mouse.y);
       break;
     }
     case WM_LBUTTONDOWN: {
@@ -199,22 +213,26 @@ LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
         break;
       }
 
-      // SetCapture is required for ClipCursor to take effect and stick
-      SetCapture(hWnd);
-      POINT ptTL = {.x = 0, .y = 0};
-      POINT ptBR = {
-          .x = static_cast<LONG>(display_mode->dwWidth),
-          .y = static_cast<LONG>(display_mode->dwHeight),
-      };
-      if (ClientToScreen(hWnd, &ptTL) && ClientToScreen(hWnd, &ptBR)) {
+      // TODO: Do I need to SetCapture?
+
+      POINT top_left = {};
+      POINT bottom_right = {};
+      lpDD->GetDisplayModeExtents(top_left, bottom_right);
+
+      // Translate from client to screen so that this works in windowed mode.
+      // TODO verify this
+      if (ClientToScreen(hWnd, &top_left) &&
+          ClientToScreen(hWnd, &bottom_right)) {
         RECT rcScreen = {
-            .left = ptTL.x,
-            .top = ptTL.y,
-            .right = ptBR.x,
-            .bottom = ptBR.y,
+            .left = top_left.x,
+            .top = top_left.y,
+            .right = bottom_right.x,
+            .bottom = bottom_right.y,
         };
+
         ClipCursor(&rcScreen);
       }
+
       break;
     }
     case WM_KILLFOCUS:
@@ -231,6 +249,12 @@ LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
 }  // namespace
 
 DirectDraw::~DirectDraw() {
+  if (coop_level_) {
+    // Our window procedure wrapper relies on `this` being valid.
+    SetWindowLongPtr(coop_level_->hwnd, GWLP_USERDATA, NULL);
+    SetWindowLongPtr(coop_level_->hwnd, GWLP_WNDPROC,
+                     reinterpret_cast<LONG_PTR>(old_wndproc_));
+  }
   if (gl_.hglrc != nullptr) {
     wglDeleteContext(gl_.hglrc);
   }
@@ -239,7 +263,7 @@ DirectDraw::~DirectDraw() {
   }
 }
 
-HRESULT DirectDraw::QueryInterface(REFIID riid, LPVOID FAR *ppvObj) noexcept {
+HRESULT DirectDraw::QueryInterface(REFIID riid, LPVOID FAR* ppvObj) noexcept {
   TRACE(
       "DirectDraw::QueryInterface(riid={%d-%d-%d-%d%d%d%d%d%d%d%d}, "
       "ppvObj=0x%p)\n",
@@ -247,7 +271,7 @@ HRESULT DirectDraw::QueryInterface(REFIID riid, LPVOID FAR *ppvObj) noexcept {
       riid.Data4[2], riid.Data4[3], riid.Data4[4], riid.Data4[5], riid.Data4[6],
       riid.Data4[7], ppvObj);
   if (riid == IID_IDirectDraw || riid == __uuidof(IUnknown)) {
-    *ppvObj = reinterpret_cast<LPVOID *>(this);
+    *ppvObj = reinterpret_cast<LPVOID*>(this);
     AddRef();
     return S_OK;
   }
@@ -262,7 +286,7 @@ ULONG DirectDraw::AddRef() noexcept {
 
 ULONG DirectDraw::Release() noexcept {
   TRACE("DirectDraw::Release()\n");
-  // TODO: assert(ref_count_ > 0);
+  assert(ref_count_ > 0);
   auto current_count = InterlockedDecrement(&ref_count_);
   if (current_count == 0) {
     delete this;
@@ -271,12 +295,11 @@ ULONG DirectDraw::Release() noexcept {
 }
 
 STUB(DirectDraw::Compact, void);
-STUB(DirectDraw::CreateClipper, DWORD, LPDIRECTDRAWCLIPPER FAR *,
-     IUnknown FAR *);
+STUB(DirectDraw::CreateClipper, DWORD, LPDIRECTDRAWCLIPPER FAR*, IUnknown FAR*);
 
 HRESULT DirectDraw::CreatePalette(DWORD dwFlags, LPPALETTEENTRY lpColorTable,
-                                  LPDIRECTDRAWPALETTE FAR *lplpDDPalette,
-                                  IUnknown FAR *pUnkOuter) noexcept {
+                                  LPDIRECTDRAWPALETTE FAR* lplpDDPalette,
+                                  IUnknown FAR* pUnkOuter) noexcept {
   TRACE(
       "DirectDraw::CreatePalette(dwFlags=0x%X, lpColorTable=0x%p, "
       "lplpDDPalette=0x%p, "
@@ -292,8 +315,8 @@ HRESULT DirectDraw::CreatePalette(DWORD dwFlags, LPPALETTEENTRY lpColorTable,
 }
 
 HRESULT DirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
-                                  LPDIRECTDRAWSURFACE FAR *lplpDDSurface,
-                                  IUnknown FAR *pUnkOuter) noexcept {
+                                  LPDIRECTDRAWSURFACE FAR* lplpDDSurface,
+                                  IUnknown FAR* pUnkOuter) noexcept {
   TRACE(
       "DirectDraw::CreateSurface(lpDDSurfaceDesc=0x%p, lplpDDSurface=0x%p, "
       "pUnkOuter=0x%p)\n",
@@ -330,7 +353,7 @@ HRESULT DirectDraw::CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
 }
 
 STUB(DirectDraw::DuplicateSurface, LPDIRECTDRAWSURFACE lpDDSurface,
-     LPDIRECTDRAWSURFACE FAR *lplpDupDDSurface);
+     LPDIRECTDRAWSURFACE FAR* lplpDupDDSurface);
 STUB(DirectDraw::EnumDisplayModes, DWORD, LPDDSURFACEDESC, LPVOID,
      LPDDENUMMODESCALLBACK);
 STUB(DirectDraw::EnumSurfaces, DWORD, LPDDSURFACEDESC, LPVOID,
@@ -338,13 +361,13 @@ STUB(DirectDraw::EnumSurfaces, DWORD, LPDDSURFACEDESC, LPVOID,
 STUB(DirectDraw::FlipToGDISurface, void);
 STUB(DirectDraw::GetCaps, LPDDCAPS, LPDDCAPS);
 STUB(DirectDraw::GetDisplayMode, LPDDSURFACEDESC);
-STUB(DirectDraw::GetFourCCCodes, DWORD FAR *, DWORD FAR *);
-STUB(DirectDraw::GetGDISurface, LPDIRECTDRAWSURFACE FAR *);
+STUB(DirectDraw::GetFourCCCodes, DWORD FAR*, DWORD FAR*);
+STUB(DirectDraw::GetGDISurface, LPDIRECTDRAWSURFACE FAR*);
 STUB(DirectDraw::GetMonitorFrequency, LPDWORD);
 STUB(DirectDraw::GetScanLine, LPDWORD);
 STUB(DirectDraw::GetVerticalBlankStatus, LPBOOL);
 
-HRESULT DirectDraw::Initialize(GUID FAR *lpGUID) noexcept {
+HRESULT DirectDraw::Initialize(GUID FAR* lpGUID) noexcept {
   TRACE("DirectDraw::Initialize(lpGUID=0x%p)\n", lpGUID);
   // Wonder if that's a round-about way of saying "this is a private function"
   // i.e. it is used but it's only used internally... Not that I have any
@@ -355,17 +378,37 @@ HRESULT DirectDraw::Initialize(GUID FAR *lpGUID) noexcept {
 
 STUB(DirectDraw::RestoreDisplayMode, void);
 
+// Wraps window procedue and creates OpenGL context.
 HRESULT DirectDraw::SetCooperativeLevel(HWND hWnd, DWORD dwFlags) noexcept {
   TRACE("DirectDraw::SetCooperativeLevel(hWnd=0x%p, dwFlags=0x%x)\n", hWnd,
         dwFlags);
 
+  // Store window handle for use in SetDisplayMode.
   coop_level_ = CooperativeLevelParams{
       .hwnd = hWnd,
   };
 
+  // Wrap window procedure so we can react to and fix events. Store "this"
+  // in user data since the window procedure is a static C function.
+  SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+  old_wndproc_ = reinterpret_cast<WNDPROC>(SetWindowLongPtr(
+      hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&OverrideWndProc)));
+
+  std::optional<OpenGlState> gl = MakeOpenGlContext(hWnd);
+  if (!gl) {
+    return DDERR_GENERIC;
+  }
+  gl_ = std::move(gl).value();
+
+  InitOpenGl();
+
+  // TODO: Hook SetCursorPos so the cursor doesn't fly across the screen
+  // when a panel closes/opens
+
   return DD_OK;
 }
 
+// Enters windowed fullscreen and sets OpenGL context scaling appropriately.
 HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
                                    DWORD dwBpp) noexcept {
   TRACE("DirectDraw::SetDisplayMode(dwWidth=%u, dwHeight=%u, dwBpp=%u)\n",
@@ -384,21 +427,6 @@ HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
 
   const HWND hwnd = coop_level_->hwnd;
 
-  // TODO: Hook SetCursorPos so the cursor doesn't fly across the screen when a
-  // panel closes/opens
-
-  // Replace existing WndProc. Store the old one so it can be used later. Use
-  // userdata to access `this` inside our WndProc
-  SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-  old_wndproc_ = reinterpret_cast<WNDPROC>(SetWindowLongPtr(
-      hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&OverrideWndProc)));
-
-  std::optional<OpenGlState> gl = MakeOpenGlContext(hwnd);
-  if (!gl) {
-    return DDERR_GENERIC;
-  }
-  gl_ = std::move(gl).value();
-
   MONITORINFO mi{};
   mi.cbSize = sizeof(MONITORINFO);
   GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi);
@@ -409,7 +437,10 @@ HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
   ConfigureFullscreenMode(hwnd, mi.rcMonitor);
   ScaleOpenGlViewport(*display_mode_, monitor_width, monitor_height);
 
-  InitOpenGl();
+  // Clear for good measure. (Not entirely sure if necessary)
+  glClearColor(0.F, 0.F, 0.F, 1.F);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glFlush();
 
   return DD_OK;
 }

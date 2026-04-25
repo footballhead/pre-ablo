@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <optional>
 
 #include "DDRAW.H"
@@ -24,7 +25,7 @@ class DirectDraw : public IDirectDraw {
   //
 
   HRESULT __stdcall QueryInterface(REFIID riid,
-                                   LPVOID FAR *ppvObj) noexcept override;
+                                   LPVOID FAR* ppvObj) noexcept override;
 
   ULONG __stdcall AddRef() noexcept override;
 
@@ -37,8 +38,8 @@ class DirectDraw : public IDirectDraw {
   HRESULT __stdcall Compact() noexcept override;
 
   HRESULT __stdcall CreateClipper(DWORD dwFlags,
-                                  LPDIRECTDRAWCLIPPER FAR *lplpDDClipper,
-                                  IUnknown FAR *pUnkOuter) noexcept override;
+                                  LPDIRECTDRAWCLIPPER FAR* lplpDDClipper,
+                                  IUnknown FAR* pUnkOuter) noexcept override;
 
   // Create a DIRECTDRAWPALETTE object for  this DirectDraw object.
   //
@@ -57,8 +58,8 @@ class DirectDraw : public IDirectDraw {
   //
   // Return Values: DD_OK or DDERR_*
   HRESULT __stdcall CreatePalette(DWORD dwFlags, LPPALETTEENTRY lpColorTable,
-                                  LPDIRECTDRAWPALETTE FAR *lplpDDPalette,
-                                  IUnknown FAR *pUnkOuter) noexcept override;
+                                  LPDIRECTDRAWPALETTE FAR* lplpDDPalette,
+                                  IUnknown FAR* pUnkOuter) noexcept override;
 
   // Create a DirectDrawSurface object for this DirectDraw object.  The
   // DirectDrawSurface object  represents a Surface (pixel memory), which
@@ -78,12 +79,12 @@ class DirectDraw : public IDirectDraw {
   // Note DirectDraw does not permit the creation of surfaces that are wider
   // than the primary surface.
   HRESULT __stdcall CreateSurface(LPDDSURFACEDESC lpDDSurfaceDesc,
-                                  LPDIRECTDRAWSURFACE FAR *lplpDDSurface,
-                                  IUnknown FAR *pUnkOuter) noexcept override;
+                                  LPDIRECTDRAWSURFACE FAR* lplpDDSurface,
+                                  IUnknown FAR* pUnkOuter) noexcept override;
 
   HRESULT __stdcall DuplicateSurface(
       LPDIRECTDRAWSURFACE lpDDSurface,
-      LPDIRECTDRAWSURFACE FAR *lplpDupDDSurface) noexcept override;
+      LPDIRECTDRAWSURFACE FAR* lplpDupDDSurface) noexcept override;
 
   HRESULT __stdcall EnumDisplayModes(
       DWORD dwFlags, LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext,
@@ -101,11 +102,11 @@ class DirectDraw : public IDirectDraw {
   HRESULT __stdcall GetDisplayMode(
       LPDDSURFACEDESC lpDDSurfaceDesc) noexcept override;
 
-  HRESULT __stdcall GetFourCCCodes(DWORD FAR *lpNumCodes,
-                                   DWORD FAR *lpCodes) noexcept override;
+  HRESULT __stdcall GetFourCCCodes(DWORD FAR* lpNumCodes,
+                                   DWORD FAR* lpCodes) noexcept override;
 
   HRESULT __stdcall GetGDISurface(
-      LPDIRECTDRAWSURFACE FAR *lplpGDIDDSSurface) noexcept override;
+      LPDIRECTDRAWSURFACE FAR* lplpGDIDDSSurface) noexcept override;
 
   HRESULT __stdcall GetMonitorFrequency(
       LPDWORD lpdwFrequency) noexcept override;
@@ -118,7 +119,7 @@ class DirectDraw : public IDirectDraw {
   // with the Common Object Model (COM) protocol.  Since the DirectDraw object
   // is initialized when it is created, calling this member will always result
   // in the ALREADYINITIALIZED return value
-  HRESULT __stdcall Initialize(GUID FAR *lpGUID) noexcept override;
+  HRESULT __stdcall Initialize(GUID FAR* lpGUID) noexcept override;
 
   HRESULT __stdcall RestoreDisplayMode() noexcept override;
 
@@ -172,6 +173,25 @@ class DirectDraw : public IDirectDraw {
   WNDPROC GetOldWndProc() const { return old_wndproc_; }
   std::optional<DisplayModeParams> GetDisplayMode() const {
     return display_mode_;
+  }
+  // Requires SetDisplayMode to be called.
+  void GetDisplayModeExtents(POINT& top_left, POINT& bottom_right) const {
+    assert(display_mode_.has_value());
+    assert(display_mode_->dwWidth > 0 && display_mode_->dwHeight > 0);
+    // right and bottom are inclusive, so make sure it's not out of bounds
+    top_left.x = 0;
+    top_left.y = 0;
+    bottom_right.x = static_cast<LONG>(display_mode_->dwWidth) - 1;
+    bottom_right.y = static_cast<LONG>(display_mode_->dwHeight) - 1;
+  }
+  void GetDisplayModeExtents(POINTS& top_left, POINTS& bottom_right) const {
+    assert(display_mode_.has_value());
+    assert(display_mode_->dwWidth > 0 && display_mode_->dwHeight > 0);
+    // right and bottom are inclusive, so make sure it's not out of bounds
+    top_left.x = 0;
+    top_left.y = 0;
+    bottom_right.x = static_cast<SHORT>(display_mode_->dwWidth) - 1;
+    bottom_right.y = static_cast<SHORT>(display_mode_->dwHeight) - 1;
   }
 
  private:
