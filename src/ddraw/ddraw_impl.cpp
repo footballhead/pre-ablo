@@ -9,6 +9,8 @@
 #include "stub.h"
 #include "surface.h"
 
+// #define LOG_VERBOSE 1
+
 namespace {
 
 void ConfigureFullscreenMode(HWND hwnd, RECT rcMonitor) {
@@ -201,8 +203,12 @@ LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
       };
 
       lParamOverride = MAKELPARAM(clamped_mouse.x, clamped_mouse.y);
+#ifndef NDEBUG
+#ifdef LOG_VERBOSE
       TRACE("WM_MOUSEMOVE: ptMouse={%d, %d} -> {%d, %d} \n", ptMouse.x,
             ptMouse.y, clamped_mouse.x, clamped_mouse.y);
+#endif
+#endif
       break;
     }
     case WM_LBUTTONDOWN: {
@@ -213,28 +219,15 @@ LRESULT CALLBACK OverrideWndProc(HWND hWnd, UINT Msg, WPARAM wParam,
         break;
       }
 
-      // TODO: Do I need to SetCapture?
-
-      POINT top_left = {};
-      POINT bottom_right = {};
-      lpDD->GetDisplayModeExtents(top_left, bottom_right);
-
-      // Translate from client to screen so that this works in windowed mode.
-      // TODO verify this
-      if (ClientToScreen(hWnd, &top_left) &&
-          ClientToScreen(hWnd, &bottom_right)) {
-        RECT rcScreen = {
-            .left = top_left.x,
-            .top = top_left.y,
-            .right = bottom_right.x,
-            .bottom = bottom_right.y,
-        };
-
-        ClipCursor(&rcScreen);
-      }
+      lpDD->ClipCursorToGameArea();
 
       break;
     }
+    case WM_SETFOCUS:
+      TRACE("WM_SETFOCUS\n");
+      // Re-clip mouse if alt-tabbed in
+      lpDD->ClipCursorToGameArea();
+      break;
     case WM_KILLFOCUS:
       TRACE("WM_KILLFOCUS: Release cursor\n");
       ClipCursor(NULL);
@@ -417,7 +410,7 @@ HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
   assert(dwBpp == 8);
 
   if (!coop_level_) {
-    return DDERR_GENERIC;
+    return DDERR_NOCOOPERATIVELEVELSET;
   }
 
   display_mode_ = DisplayModeParams{
@@ -442,7 +435,31 @@ HRESULT DirectDraw::SetDisplayMode(DWORD dwWidth, DWORD dwHeight,
   glClear(GL_COLOR_BUFFER_BIT);
   glFlush();
 
+  // Steal focus
+  SetFocus(coop_level_->hwnd);
+  ClipCursorToGameArea();
+
   return DD_OK;
 }
 
 STUB(DirectDraw::WaitForVerticalBlank, DWORD dwFlags, HANDLE hEvent);
+
+void DirectDraw::ClipCursorToGameArea() const {
+  assert(coop_level_.has_value());
+
+  POINT top_left = {};
+  POINT bottom_right = {};
+  GetDisplayModeExtents(top_left, bottom_right);
+
+  // Translate from client to screen so that this works in windowed mode.
+  if (ClientToScreen(coop_level_->hwnd, &top_left) &&
+      ClientToScreen(coop_level_->hwnd, &bottom_right)) {
+    RECT rcScreen = {
+        .left = top_left.x,
+        .top = top_left.y,
+        .right = bottom_right.x,
+        .bottom = bottom_right.y,
+    };
+    ClipCursor(&rcScreen);
+  }
+}

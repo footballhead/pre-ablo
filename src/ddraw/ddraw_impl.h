@@ -193,6 +193,7 @@ class DirectDraw : public IDirectDraw {
     bottom_right.x = static_cast<SHORT>(display_mode_->dwWidth) - 1;
     bottom_right.y = static_cast<SHORT>(display_mode_->dwHeight) - 1;
   }
+  void ClipCursorToGameArea() const;
 
  private:
   struct CooperativeLevelParams {
