@@ -22,7 +22,7 @@ DirectDrawSurface::~DirectDrawSurface() {
 }
 
 HRESULT DirectDrawSurface::QueryInterface(REFIID riid,
-                                          LPVOID FAR *ppvObj) noexcept {
+                                          LPVOID FAR* ppvObj) noexcept {
   TRACE(
       "DirectDrawSurface::QueryInterface(riid={%d-%d-%d-%d%d%d%d%d%d%d%d}, "
       "ppvObj=0x%p)\n",
@@ -31,7 +31,7 @@ HRESULT DirectDrawSurface::QueryInterface(REFIID riid,
       riid.Data4[7], ppvObj);
   // FYI IID_IDirectDraw == IID_IDirectDrawSurface == IID_IDirectDrawPalette
   if (riid == IID_IDirectDrawSurface || riid == __uuidof(IUnknown)) {
-    *ppvObj = reinterpret_cast<LPVOID *>(this);
+    *ppvObj = reinterpret_cast<LPVOID*>(this);
     AddRef();
     return S_OK;
   }
@@ -67,15 +67,15 @@ STUB(DirectDrawSurface::EnumOverlayZOrders, DWORD, LPVOID,
      LPDDENUMSURFACESCALLBACK);
 STUB(DirectDrawSurface::Flip, LPDIRECTDRAWSURFACE, DWORD);
 STUB(DirectDrawSurface::GetAttachedSurface, LPDDSCAPS,
-     LPDIRECTDRAWSURFACE FAR *);
+     LPDIRECTDRAWSURFACE FAR*);
 STUB(DirectDrawSurface::GetBltStatus, DWORD);
 STUB(DirectDrawSurface::GetCaps, LPDDSCAPS);
-STUB(DirectDrawSurface::GetClipper, LPDIRECTDRAWCLIPPER FAR *);
+STUB(DirectDrawSurface::GetClipper, LPDIRECTDRAWCLIPPER FAR*);
 STUB(DirectDrawSurface::GetColorKey, DWORD, LPDDCOLORKEY);
-STUB(DirectDrawSurface::GetDC, HDC FAR *);
+STUB(DirectDrawSurface::GetDC, HDC FAR*);
 STUB(DirectDrawSurface::GetFlipStatus, DWORD);
 STUB(DirectDrawSurface::GetOverlayPosition, LPLONG, LPLONG);
-STUB(DirectDrawSurface::GetPalette, LPDIRECTDRAWPALETTE FAR *);
+STUB(DirectDrawSurface::GetPalette, LPDIRECTDRAWPALETTE FAR*);
 STUB(DirectDrawSurface::GetPixelFormat, LPDDPIXELFORMAT);
 STUB(DirectDrawSurface::GetSurfaceDesc, LPDDSURFACEDESC);
 
@@ -89,8 +89,8 @@ HRESULT DirectDrawSurface::Initialize(
     return DDERR_GENERIC;
   }
 
-  const auto &width = lpDDSurfaceDesc->dwWidth;
-  const auto &height = lpDDSurfaceDesc->dwHeight;
+  const auto& width = lpDDSurfaceDesc->dwWidth;
+  const auto& height = lpDDSurfaceDesc->dwHeight;
   dimensions_ = Dimensions{
       .dwWidth = width,
       .dwHeight = height,
@@ -140,10 +140,10 @@ HRESULT DirectDrawSurface::Lock(LPRECT lpDestRect,
       "dwFlags=0x%x, hEvent=0x%p)\n",
       lpDestRect, lpDDSurfaceDesc, dwFlags, hEvent);
 #endif
+  // TODO: How to emulate DDLOCK_WAIT behavior?
   // dwFlags=0x1 (DDLOCK_WAIT)
-  // TODO: Fill in lpDDSurfaceDesc appropriately
 
-  // DrawMain (interfac_PaintQuotes) uses lPitch, lpSurface. Return is ignored
+  // DrawMain (interfac_PaintQuotes) uses lPitch, lpSurface. Return is ignored.
   lpDDSurfaceDesc->lPitch = dimensions_.dwWidth;
   lpDDSurfaceDesc->lpSurface = byte_buffer_.data();
 #ifdef LOG_VERBOSE
@@ -165,8 +165,7 @@ HRESULT DirectDrawSurface::SetPalette(
 
   // This is a bit of a logical jump but if they're using our DLL this is
   // probably our DirectDrawPalette and not some other implementation
-  DirectDrawPalette *myDDPalette =
-      static_cast<DirectDrawPalette *>(lpDDPalette);
+  auto* myDDPalette = static_cast<DirectDrawPalette*>(lpDDPalette);
   myDDPalette->AddRef();
   lpDDPalette_ = myDDPalette;
 
@@ -192,13 +191,13 @@ HRESULT DirectDrawSurface::Unlock(LPVOID lpSurfaceData) noexcept {
   }
 
   // TODO: Perform this in a shader instead. Consider OpenGL 3
-  const PALETTEENTRY *raw_palette = lpDDPalette_->GetRawEntries();
+  const PALETTEENTRY* raw_palette = lpDDPalette_->GetRawEntries();
   for (size_t i = 0; i < byte_buffer_.size(); ++i) {
     color_buffer_[i] = raw_palette[static_cast<BYTE>(byte_buffer_[i])];
   }
 
-  const auto &width = dimensions_.dwWidth;
-  const auto &height = dimensions_.dwHeight;
+  const auto& width = dimensions_.dwWidth;
+  const auto& height = dimensions_.dwHeight;
 
   // We have one texture and it's bound in Initialize
   glTexSubImage2D(GL_TEXTURE_2D, /*level=*/0, /*xoffset=*/0, /*yoffset=*/0,
