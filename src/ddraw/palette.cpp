@@ -64,7 +64,6 @@ HRESULT DirectDrawPalette::Initialize(LPDIRECTDRAW lpDD, DWORD dwFlags,
 #endif
 #endif
 
-  assert((dwFlags & DDPCAPS_8BIT) == DDPCAPS_8BIT);
   memcpy(&colors_, lpDDColorTable, sizeof(PALETTEENTRY) * k8BitColorCount);
 
   return DDERR_ALREADYINITIALIZED;
@@ -90,7 +89,6 @@ HRESULT DirectDrawPalette::SetEntries(DWORD dwFlags, DWORD dwStartingEntry,
 #endif
 #endif
 
-  assert((dwFlags & DDPCAPS_8BIT) == DDPCAPS_8BIT);
   memcpy(&colors_[dwStartingEntry], lpEntries, sizeof(PALETTEENTRY) * dwCount);
 
   return DD_OK;
