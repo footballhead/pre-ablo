@@ -74,6 +74,17 @@ PATCH_MAIN {
   // the jmp to the top of the loop after our function returns.
   ok &= patch_call(0x00484E53, MainLoopYield);
   ok &= patch_jmp(0x00484E53 + kCallInstructionSize, 0x00484CC3);
+  // WinMain: don't sleep during event processing. Otherwise, shaking the mouse
+  // can have adverse effects.
+  //
+  // The way that MSVC generates the while statement is that the `continue`
+  // jumps to the bottom of the loop. This is the same code that runs as if the
+  // execution had naturally reached the bottom of the loop. So `continue` is
+  // effectively a jump to the bottom, followed by a jump to the top. This is an
+  // odd choice though: why not just jump to the top? Our change does this so
+  // that the yield code is ignored for this one special case.
+  ok &= patch_jmp(0x00484D11, 0x00484CC3);
+  // (We still have like 4 or 5 bytes left to spare.)
   // dx_init: Remove PaintEventTimer registration (in favor of our own logic).
   ok &= nop(0x00485336, 0x0048535B);
   return ok;
