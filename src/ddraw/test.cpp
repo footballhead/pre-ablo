@@ -1,6 +1,9 @@
 #define NOMINMAX
 
+#include <algorithm>
+#include <array>
 #include <cassert>
+#include <cmath>
 #include <cstdint>
 #include <limits>
 
@@ -14,8 +17,9 @@ constexpr int kWindowHeight = 480;
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM w_param,
                                  LPARAM l_param) {
   switch (message) {
-    case WM_DESTROY:
+    case WM_CLOSE:    // ALT+F4
       PostQuitMessage(0);
+      // Since DirectDraw has a reference to hwnd, don't call DestroyWindow
       return 0;
     default:
       break;
@@ -58,21 +62,24 @@ HWND MakeWindow(HINSTANCE win32_instance, ATOM atom) {
   return window;
 }
 
-// rectangle is inclusive
-void DrawRectangle(DDSURFACEDESC& surface, const RECT& rectangle,
-                   BYTE color) {
-  char* data = reinterpret_cast<char*>(surface.lpSurface);
-
-  for (int x = rectangle.left; x <= rectangle.right; ++x) {
-    data[rectangle.top * surface.lPitch + x] = color;
-    data[rectangle.bottom * surface.lPitch + x] = color;
-  }
-
-  for (int y = rectangle.top; y <= rectangle.bottom; ++y) {;
-    data[y * surface.lPitch + rectangle.left] = color;
-    data[y * surface.lPitch + rectangle.right] = color;
-  }
+inline constexpr BYTE Quantize(float f) {
+  assert(f >= 0.F && f <= 1.F);
+  return static_cast<BYTE>(f * std::numeric_limits<BYTE>::max());
 }
+
+inline float ColorFunction(float radians) {
+  // Cut off top third and bottom third to approximate hue -> RGB.
+  // Then normalize 0..1
+  return std::clamp(cosf(radians) / 2.F, -1.F / 3.F, 1.F / 3.F) * (3.F / 2.F) /
+             2.F +
+         0.5F;
+}
+
+constexpr float kPi = 3.1415F;
+
+inline constexpr float ToRadians(float degrees) {
+  return degrees / 180.F * kPi;
+};
 
 }  // namespace
 
@@ -95,14 +102,22 @@ int main(int argc, char** argv) {
   assert(direct_draw->SetDisplayMode(kWindowWidth, kWindowHeight,
                                      /*dwBpp=*/8) == DD_OK);
 
-  // Initialize grayscale 256 color palette
-  PALETTEENTRY colors[256] = {};
-  for (int i = 0; i < sizeof(colors) / sizeof(colors[0]); ++i) {
-    BYTE b = static_cast<BYTE>(i);
-    colors[i] = {.peRed = b, .peGreen = b, .peBlue = b, .peFlags = 0};
+  // Approximate rainbow. Lazily use cos as periodic fn that approximates abs.
+  // This isn't perfect and kind of cheats yellow but is good enough for the
+  // example.
+  std::array<PALETTEENTRY, 256> colors = {};
+  for (int i = 0; i < static_cast<int>(colors.size()); ++i) {
+    // Do one repetition over domain of colors
+    float rads = i / (float)colors.size() * kPi * 2.F;
+    colors[i] = {
+        .peRed = Quantize(ColorFunction(rads)),
+        .peGreen = Quantize(ColorFunction(rads + (2.F * kPi / 3.F))),
+        .peBlue = Quantize(ColorFunction(rads - (2.F * kPi / 3.F))),
+        .peFlags = 0,
+    };
   }
   LPDIRECTDRAWPALETTE palette = nullptr;
-  assert(direct_draw->CreatePalette(DDPCAPS_8BIT, colors, &palette,
+  assert(direct_draw->CreatePalette(DDPCAPS_8BIT, colors.data(), &palette,
                                     /*pUnkOuter=*/nullptr) == DD_OK);
 
   // Make a surface with our palette to draw on
@@ -118,8 +133,9 @@ int main(int argc, char** argv) {
   assert(surface->SetPalette(palette) == DD_OK);
 
   bool running = true;
-  BYTE color = 0;
+  int ticks = 0;
   while (running) {
+    // Normal windows event loop handling.
     MSG message = {};
     while (PeekMessage(&message, /*hWnd=*/nullptr, /*wMsgFilterMin=*/0,
                        /*wMsgFilterMax=*/0, PM_REMOVE) != 0) {
@@ -131,23 +147,24 @@ int main(int argc, char** argv) {
       DispatchMessage(&message);
     }
 
-    // Draw noise into the surface buffer
+    // Draw a diagonal rainbow gradient onto the surface.
     DDSURFACEDESC locked_surface_description = {};
     assert(surface->Lock(/*lpRect=*/nullptr, &locked_surface_description,
                          /*dwFlags=*/0, /*event=*/nullptr) == DD_OK);
 
-    // You can do this with palette shifting but I want to test Lock/Unlock.
-    // Since ends are inclusive, need to subtract 1
-    int max_width = kWindowWidth - 1;
-    int max_height = kWindowHeight - 1;
-    for (int i = 0; i < max_width - i && i < max_height - i; ++i) {
-      DrawRectangle(locked_surface_description,
-                      RECT{i, i, max_width - i, max_height - i},
-                      color + i);
+    // NOTE: We don't set any other fields on DDSURFACEDESC outside lPitch and
+    // lpSurface. Diablo gets width and height from other vars.
+    char* data = reinterpret_cast<char*>(locked_surface_description.lpSurface);
+
+    for (DWORD y = 0; y < kWindowHeight; ++y) {
+      for (DWORD x = 0; x < kWindowWidth; ++x) {
+        data[y * locked_surface_description.lPitch + x] =
+            Quantize(sinf(ToRadians(ticks+x+y)) / 2.F + 0.5F);
+      }
     }
     assert(surface->Unlock(locked_surface_description.lpSurface) == DD_OK);
 
-    --color;
+    ++ticks;
 
     // Limit frame rate to 20FPS (don't hog CPU)
     Sleep(/*dwMilliseconds=*/50);
