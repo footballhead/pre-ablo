@@ -1,6 +1,6 @@
 On Windows, open me in WordPad!
 
-PRE-ABLO v0.5.2
+PRE-ABLO v0.5.3
 ================================================================================
 
 Website: https://www.pre-ablo.com/  
@@ -106,6 +106,10 @@ If you encounter other issues, please reach out via Discord.
 
 Changelog
 --------------------------------------------------------------------------------
+
+v0.5.3
+
+  * performance_improvements: fix some stuttering issues caused by v0.5.2
 
 v0.5.2
 
